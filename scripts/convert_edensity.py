@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""convert_pip.py
+"""convert_edensity.py
    This file includes a set of utility functions for parsing,
-   editing and converting PIP data from .dat files to compressed
-   netCDF4 files.
+   editing and converting PIP edensity data from .dat files 
+   to compressed netCDF4 files.
 """
 
 ##### Imports
@@ -56,7 +56,8 @@ def convert_edensity():
         df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
         ds = df.to_xarray()
         ds = ds.rename({'nR_mmhr': 'nrr', 'R_mmhr': 'rr', 'eDensity': 'ed'})
-        ds = ds.assign_coords({'lat': 46.53, 'lon': -87.55})
+        ds['lat'] = 46.53
+        ds['lon'] = -87.55
 
         ##### Define global/variable attributes according to CF-1.10 conventions
         ds.ed.attrs['units'] = 'g cm-3'
