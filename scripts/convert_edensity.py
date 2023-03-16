@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 
 ##### Globals
-data_path = '../example_data/LakeEffect/PIP/2020_MQT/PIP_3/f_3_1_Summary_Tables_R/'
+data_path = '../example_data/LakeEffect/PIP/2020_MQT/Study/f_3_1_Summary_Tables_P/'
 files = sorted(glob.glob(data_path + '*.dat'))
 
 ##### convert_edensity

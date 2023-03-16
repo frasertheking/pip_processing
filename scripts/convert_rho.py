@@ -3,7 +3,7 @@
 
 """convert_vvd.py
    This file includes a set of utility functions for parsing,
-   editing and converting PIP VVD data from .dat files 
+   editing and converting PIP rho data from .dat files 
    to compressed netCDF4 files.
 """
 
@@ -14,8 +14,8 @@ import numpy as np
 import xarray as xr
 
 ##### Globals
-data_path = '../example_data/LakeEffect/PIP/2020_MQT/PIP_3/f_2_4_VVD_Tables/'
-files = sorted(glob.glob(data_path + '*_A.dat'))
+data_path = '../example_data/LakeEffect/PIP/2020_MQT/Study/f_2_6_rho_Plots_D_minute_dat/'
+files = sorted(glob.glob(data_path + '*.dat'))
 
 ##### convert_edensity
 ##### Takes in PIP L3 summary table .dat files and extracts relevant climate variables to save in netCDF format
@@ -73,9 +73,9 @@ def convert_vvd():
         ds['bin_edges'] = bin_edges
         
         ##### Define global/variable attributes according to CF-1.10 conventions
-        ds.vvd.attrs['units'] = 'm s-1'
-        ds.vvd.attrs['long_name'] = 'Vertical velocity distributions'
-        ds.vvd.attrs['standard_name'] = 'velocity_distribution'
+        ds.vvd.attrs['units'] = 'g cm-3'
+        ds.vvd.attrs['long_name'] = 'Effective density distributions'
+        ds.vvd.attrs['standard_name'] = 'effective_density_distribution'
         ds.vvd.attrs['missing_value'] = 'NaN'
         
         ds.bin_centers.attrs['units'] ='mm'
