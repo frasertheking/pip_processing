@@ -26,7 +26,7 @@ declare -a units=("m−3 mm−1" "m s-1" "g cm-3" "g cm-3")
 declare -a long=("Drop size distributions" "Vertical velocity distributions" "Effective density distributions" "Effective density")
 declare -a standard=("drop_size_distribution" "velocity_distribution" "effective_density_distribution" "effective_density")
 
-$LOC=0
+LOC=0
 for i in "${arr[@]}"
 do
     echo "${DATA_PATH}${i}"
@@ -37,7 +37,7 @@ do
         else
             python ed_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}"
         fi
-        break
+        # break
     done
     (( LOC++ ))
 done
