@@ -28,6 +28,10 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
 
     f = open(filepath)
     lines = f.readlines()
+    if len(lines) < 14:
+        print("File is empty!")
+        return
+    
     year, month, day = re.split(r'\t+', lines[5].rstrip('\t\n'))[0], \
                         re.split(r'\t+', lines[5].rstrip('\t\n'))[1], \
                         re.split(r'\t+', lines[5].rstrip('\t\n'))[2]
@@ -98,8 +102,8 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
 
     ds.attrs['Conventions'] = 'CF-1.10'
     ds.attrs['Contact'] = 'Claire Pettersen (pettersc@umich.edu)'
-    ds.attrs['Author'] = 'Fraser King'
     ds.attrs['Reference'] = 'https://doi.org/10.3390/atmos11080785'
+    # ds.attrs['Author'] = 'Fraser King'
 
     ##### Compress and save in NETCDF4 format
     comp = dict(zlib=True, complevel=2)
@@ -115,6 +119,12 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
 def convert_ed(filepath, outpath, lat, lon):
     basename = os.path.splitext(os.path.basename(filepath))[0]
     print("Working on", basename)
+
+    f = open(filepath)
+    lines = f.readlines()
+    if len(lines) < 11:
+        print("File is empty!")
+        return
 
     ##### Parse input
     df = pd.read_csv(filepath, sep='\t', skiprows=range(0, 8))
@@ -168,8 +178,8 @@ def convert_ed(filepath, outpath, lat, lon):
 
     ds.attrs['Conventions'] = 'CF-1.10'
     ds.attrs['Contact'] = 'Claire Pettersen (pettersc@umich.edu)'
-    ds.attrs['Author'] = 'Fraser King'
     ds.attrs['Reference'] = 'https://doi.org/10.3390/atmos11080785'
+    # ds.attrs['Author'] = 'Fraser King'
 
     ##### Compress and save in NETCDF4 format
     comp = dict(zlib=True, complevel=2)
