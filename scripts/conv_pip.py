@@ -11,7 +11,7 @@
 """
 
 ##### Imports
-import os, re
+import os, re, sys
 import pandas as pd
 import xarray as xr
 
@@ -23,7 +23,7 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
     print("Working on", basename)
 
     skip_toks = 4
-    if var == 'dsd': # dsd files are slightly different
+    if var == 'psd': # psd files are slightly different
         skip_toks = 5
 
     f = open(filepath)
@@ -51,7 +51,7 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
     df['time'] = pd.to_datetime(df[['year', 'month', 'day', 'hour', 'minute']], format = '%Y/%MM/%DD %HH:%mm')
 
     columns = ['Bin_cen', 'day_time', 'hr_d', 'min_d', 'year', 'month', 'day', 'hour', 'minute']
-    if var == 'dsd':
+    if var == 'psd':
         columns=['Bin_cen', 'Num_d', 'day_time', 'hr_d', 'min_d', 'year', 'month', 'day', 'hour', 'minute']
     df.drop(columns=columns, inplace=True)
 
@@ -77,8 +77,8 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
     ds = xr.Dataset(coords={'time': times, 'bin_centers': bin_centers})
-    ds['lat'] = lat
-    ds['lon'] = lon
+    ds['lat'] = float(lat)
+    ds['lon'] = float(lon)
     ds[var] =(['time', 'bin_centers'], df.to_numpy())
     ds['bin_edges'] = bin_edges
     
@@ -155,8 +155,8 @@ def convert_ed(filepath, outpath, lat, lon):
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     ds = df.to_xarray()
     ds = ds.rename({'nR_mmhr': 'nrr', 'R_mmhr': 'rr', 'eDensity': 'ed'})
-    ds['lat'] = lat
-    ds['lon'] = lon
+    ds['lat'] = float(lat)
+    ds['lon'] = float(lon)
 
     ##### Define global/variable attributes according to CF-1.10 conventions
     ds.ed.attrs['units'] = 'g cm-3'
