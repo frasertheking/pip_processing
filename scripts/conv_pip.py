@@ -11,7 +11,7 @@
 """
 
 ##### Imports
-import os, re, sys
+import os, re
 import pandas as pd
 import xarray as xr
 
