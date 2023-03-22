@@ -1,33 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -*- author: Fraser King -*-
-# -*- date: March 15, 2023 -*-
+# -*- date: March 22, 2023 -*-
 # -*- affil: University of Michigan -*-
 
-"""conv_pip.py
+"""conv_pt.py
    This file includes a set of utility functions for parsing,
-   editing and converting PIP level3/study data from .dat files 
-   to compressed netCDF4 files.
+   editing and converting PIP level3 particle table data from
+   .dat files to compressed netCDF4 files.
 """
 
 ##### Imports
 import os, re
 import pandas as pd
 
-"""convert_dist
+"""convert_particle_table
    This function is used to convert a PIP .dat distribution file to netCDF format
 """
-def convert_particles(filepath, outpath, lat, lon):
+def convert_particle_table(filepath, outpath, lat, lon):
     basename = os.path.splitext(os.path.basename(filepath))[0]
     print("Working on", basename)
 
-    # skip_toks = 4
-    # if var == 'psd': # psd files are slightly different
-    #     skip_toks = 5
-
     f = open(filepath)
     lines = f.readlines()
-    if len(lines) < 11:
+    if len(lines) < 12:
         print("File is empty!")
         return
     
