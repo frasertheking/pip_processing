@@ -17,6 +17,13 @@ If you download a set of Level 3/Study PIP data, you can edit the data path in e
   ./example_convert.sh
 ```
 
+## Level 3 Particle Tables
+Since the particle table files are compressed with a unique file/directory structure, we have a slightly different workflow for converting these to netCDF files.
+
+```bash
+  ./example_pt_convert.sh
+```
+
 ## Contact
 Fraser King
 kingfr@umich.edu
