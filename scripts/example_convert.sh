@@ -36,7 +36,7 @@ do
         if [[ $LOC -lt 3 ]]; then
             python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}"
         else
-            python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}"
+            python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON
         fi
         # break
     done
