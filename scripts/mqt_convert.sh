@@ -47,7 +47,7 @@ do
             else
                 python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"
             fi
-            break
+            # break
         done
         (( LOC++ ))
     done
