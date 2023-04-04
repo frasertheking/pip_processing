@@ -11,9 +11,12 @@
 
 LAT=46.5318
 LON=-87.5483
+SHORT="MQT"
 SITE="NWS Marquette, Michigan"
-DATA_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/"
-OUT_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/netCDF/"
+START_YEAR=2014
+END_YEAR=2022
+PIP_PATH="/data/LakeEffect/PIP/"
+
 mkdir -p "${OUT_PATH}particle_size_distributions/"
 mkdir -p "${OUT_PATH}velocity_distributions/"
 mkdir -p "${OUT_PATH}edensity_distributions/"
@@ -28,19 +31,25 @@ declare -a units=("m−3 mm−1" "m s-1" "g cm-3" "g cm-3")
 declare -a long=("Drop size distributions" "Vertical velocity distributions" "Effective density distributions" "Effective density")
 declare -a standard=("drop_size_distribution" "velocity_distribution" "effective_density_distribution" "effective_density")
 
-LOC=0
-for i in "${arr[@]}"
+for y in $(seq $START_YEAR $END_YEAR)
 do
-    echo "${DATA_PATH}${i}"
-    for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
-        # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
-        if [[ $LOC -lt 3 ]]; then
-            python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"
-        else
-            python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"
-        fi
-        break
+    LOC=0
+    for i in "${arr[@]}"
+    do
+        DATA_PATH="${PIP_PATH}${y}_${SHORT}"
+        OUT_PATH="${DATA_PATH}/netCDF"
+        echo "${DATA_PATH}${i}"
+        for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
+            # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
+            if [[ $LOC -lt 3 ]]; then
+                python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"
+            else
+                python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"
+            fi
+            break
+        done
+        (( LOC++ ))
     done
-    (( LOC++ ))
 done
 
+echo "Conversion complete!"
