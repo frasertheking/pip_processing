@@ -18,11 +18,6 @@ END_YEAR=2022
 PIP_PATH="/data/LakeEffect/PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
 
-mkdir -p "${TMP_OUT}particle_size_distributions/"
-mkdir -p "${TMP_OUT}velocity_distributions/"
-mkdir -p "${TMP_OUT}edensity_distributions/"
-mkdir -p "${TMP_OUT}edensity_lwe_rate/"
-
 declare -a arr=("PIP_3/f_1_4_DSD_Tables_ascii/" "PIP_3/f_2_4_VVD_Tables/" "Study/f_2_6_rho_Plots_D_minute_dat/" "Study/f_3_1_Summary_Tables_P/")
 declare -a wild=("" "_A" "" "") # Need this since VVD has A/S/N filepath pattern
 
@@ -34,6 +29,11 @@ declare -a standard=("drop_size_distribution" "velocity_distribution" "effective
 
 for y in $(seq $START_YEAR $END_YEAR)
 do
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/particle_size_distributions/"
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/velocity_distributions/"
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/edensity_distributions/"
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/edensity_lwe_rate/"
+
     LOC=0
     for i in "${arr[@]}"
     do
