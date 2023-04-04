@@ -14,8 +14,8 @@ import sys
 import conv_pip
 
 ##### Read in arguments
-filepath, outpath, var, lat, lon, units, long_name, standard_name = \
-      sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]
+filepath, outpath, var, lat, lon, units, long_name, standard_name, loc = \
+      sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]
 
 ##### Call conversion utility
-conv_pip.convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_name)
+conv_pip.convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_name, loc)

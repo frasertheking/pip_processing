@@ -14,7 +14,7 @@ import sys
 import conv_pt
 
 ##### Read in arguments
-filepath, outpath, lat, lon = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+filepath, outpath, lat, lon, loc = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
 
 ##### Call conversion utility
-conv_pt.convert_particle_table(filepath, outpath, lat, lon)
+conv_pt.convert_particle_table(filepath, outpath, lat, lon, loc)

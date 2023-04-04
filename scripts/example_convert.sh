@@ -7,10 +7,11 @@
 # using our conv_pip.py utility function. Can convert both distributions
 # and 1D effective density / precipitation rates
 
-### NOTE: Replace the path and lat/lon information for the site you are converting.
+### NOTE: Replace the path and lat/lon/site information for the site you are converting.
 
 LAT=46.53
 LON=-87.55
+SITE="NWS Marquette, Michigan"
 DATA_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/"
 OUT_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/netCDF/"
 mkdir -p "${OUT_PATH}particle_size_distributions/"
@@ -34,9 +35,9 @@ do
     for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
         # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
         if [[ $LOC -lt 3 ]]; then
-            python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}"
+            python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" $SITE
         else
-            python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON
+            python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON $SITE
         fi
         # break
     done

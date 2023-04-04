@@ -17,7 +17,7 @@ import pandas as pd
 """convert_particle_table
    This function is used to convert a PIP .dat distribution file to netCDF format
 """
-def convert_particle_table(filepath, outpath, lat, lon):
+def convert_particle_table(filepath, outpath, lat, lon, loc):
     basename = os.path.splitext(os.path.basename(filepath))[0]
     print("Working on", basename)
 
@@ -54,9 +54,15 @@ def convert_particle_table(filepath, outpath, lat, lon):
         ds[var].attrs['missing_value'] = 'NaN'
 
     ds.attrs['Conventions'] = 'CF-1.10'
-    ds.attrs['Contact'] = 'Claire Pettersen (pettersc@umich.edu)'
+    ds.attrs['Contact1'] = 'Claire Pettersen (pettersc@umich.edu), Primary Contact'
+    ds.attrs['Contact2'] = 'Fraser King (kingfr@umich.edu)'
+    ds.attrs['Contact3'] = 'David Wolff (david.b.wolff@nasa.gov)'
+    ds.attrs['Reference1'] = 'https://doi.org/10.3390/atmos11080785'
+    ds.attrs['Reference2'] = 'https://doi.org/10.3390/rs13112183'
+    ds.attrs['Reference3'] = 'https://doi.org/10.1175/JAMC-D-19-0099.1'
+    ds.attrs['Reference4'] = 'https://doi.org/10.1175/BAMS-D-19-0128.1'
     ds.attrs['Reference'] = 'https://doi.org/10.3390/atmos11080785'
-    # ds.attrs['Author'] = 'Fraser King'
+    ds.attrs['Comment1'] = 'Data was acquired at the ' + loc + ' site (Lat: ' + str(lat) + ', Lon: ' + str(lon) + ')'
 
     ##### Compress and save in NETCDF4 format
     comp = dict(zlib=True, complevel=2)
