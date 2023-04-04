@@ -9,8 +9,8 @@
 
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
 
-LAT=46.53
-LON=-87.55
+LAT=46.5318
+LON=-87.5483
 SITE="NWS Marquette, Michigan"
 DATA_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/"
 OUT_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/netCDF/"
@@ -35,9 +35,9 @@ do
     for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
         # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
         if [[ $LOC -lt 3 ]]; then
-            python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" $SITE
+            python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"
         else
-            python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON $SITE
+            python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"
         fi
         # break
     done

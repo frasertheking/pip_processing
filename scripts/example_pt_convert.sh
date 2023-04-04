@@ -12,8 +12,8 @@
 ###       We also delete the extracted .dat files after the conversion to netCDF is
 ###       complete to save on system space.
 
-LAT=46.53
-LON=-87.55
+LAT=46.5318
+LON=-87.5483
 SITE="NWS Marquette, Michigan"
 DATA_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/"
 OUT_PATH="/Users/fraserking/Development/pip_processing/example_data/LakeEffect/PIP/2020_MQT/netCDF/"
@@ -25,7 +25,7 @@ for dir in "${DATA_PATH}PIP_3/f_1_2_Particle_Tables_ascii/"*/; do
             last_dir=$(basename ${dir})
             mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
             unzip $filepath -d $dir     # Need to unzip the tables first
-            python pt_wrap.py "${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON $SITE
+            python pt_wrap.py "${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
             rm -r "${filepath%.zip}"    # Delete unzipped file
         done
     fi

@@ -61,7 +61,6 @@ def convert_particle_table(filepath, outpath, lat, lon, loc):
     ds.attrs['Reference2'] = 'https://doi.org/10.3390/rs13112183'
     ds.attrs['Reference3'] = 'https://doi.org/10.1175/JAMC-D-19-0099.1'
     ds.attrs['Reference4'] = 'https://doi.org/10.1175/BAMS-D-19-0128.1'
-    ds.attrs['Reference'] = 'https://doi.org/10.3390/atmos11080785'
     ds.attrs['Comment1'] = 'Data was acquired at the ' + loc + ' site (Lat: ' + str(lat) + ', Lon: ' + str(lon) + ')'
 
     ##### Compress and save in NETCDF4 format
