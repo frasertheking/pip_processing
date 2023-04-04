@@ -16,6 +16,7 @@ SITE="NWS Marquette, Michigan"
 START_YEAR=2014
 END_YEAR=2022
 PIP_PATH="/data/LakeEffect/PIP/"
+TMP_OUT="/data2/fking/s03/converted/"
 
 mkdir -p "${OUT_PATH}particle_size_distributions/"
 mkdir -p "${OUT_PATH}velocity_distributions/"
@@ -37,7 +38,7 @@ do
     for i in "${arr[@]}"
     do
         DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
-        OUT_PATH="${DATA_PATH}/netCDF/"
+        OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
             # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
