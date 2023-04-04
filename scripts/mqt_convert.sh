@@ -36,8 +36,8 @@ do
     LOC=0
     for i in "${arr[@]}"
     do
-        DATA_PATH="${PIP_PATH}${y}_${SHORT}"
-        OUT_PATH="${DATA_PATH}/netCDF"
+        DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
+        OUT_PATH="${DATA_PATH}/netCDF/"
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
             # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
