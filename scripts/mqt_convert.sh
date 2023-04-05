@@ -63,6 +63,7 @@ do
         if [ -d "$dir" ]; then
             # handle .zip files
             for filepath in "${dir}"*.zip; do
+                echo "Found zipfiles"
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
                 unzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
@@ -70,17 +71,19 @@ do
                 rm -r "${CONV_PATH}${filepath%.zip}"    # Delete unzipped file
             done
 
-            # handle .zip files
-            for filepath in "${dir}"*.zip; do
+            # handle .gz files
+            for filepath in "${dir}"*.gz; do
+                echo "Found gz files"
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
-                unzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
-                python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-                rm -r "${CONV_PATH}${filepath%.zip}"    # Delete unzipped file
+                gzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
+                python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+                rm -r "${CONV_PATH}${filepath%.gz}"    # Delete unzipped file
             done
 
             # handle uncompressed files
             for filepath in "${dir}"*.dat; do
+                echo "Found uncompressed files"
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
                 python pt_wrap.py "${filepath}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
