@@ -81,15 +81,11 @@ do
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
                 mkdir -p "${CONV_PATH}${dir}"
-
-                echo ""
-                echo $filepath
-                echo "${CONV_PATH}${filepath%.gz}"
-                echo
-
-                gzip $filepath -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
+                cp  $filepath -d "${CONV_PATH}${filepath}"
+                gzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
                 python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
                 rm -r "${CONV_PATH}${filepath%.gz}"    # Delete unzipped file
+                rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
                 rm -r "${CONV_PATH}${dir}"
             done
 
