@@ -69,7 +69,7 @@ do
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
                 mkdir -p "${CONV_PATH}${dir}"
-                unzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
+                unzip $filepath -d "${CONV_PATH}${filepath%.zip}"   # Need to unzip the tables first
                 python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
                 rm -r "${CONV_PATH}${filepath%.zip}"    # Delete unzipped file
                 rm -r "${CONV_PATH}${dir}"
@@ -81,7 +81,7 @@ do
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
                 mkdir -p "${CONV_PATH}${dir}"
-                gzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
+                gzip $filepath -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
                 python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
                 rm -r "${CONV_PATH}${filepath%.gz}"    # Delete unzipped file
                 rm -r "${CONV_PATH}${dir}"
