@@ -54,7 +54,6 @@ declare -a standard=("drop_size_distribution" "velocity_distribution" "effective
 #     done
 # done
 
-
 for y in $(seq $START_YEAR $END_YEAR)
 do
     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/particle_tables/"
@@ -62,6 +61,7 @@ do
     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
     for dir in "${DATA_PATH}PIP_3/f_1_2_Particle_Tables_ascii/"*/; do
         if [ -d "$dir" ]; then
+            # handle .zip files
             for filepath in "${dir}"*.zip; do
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
@@ -69,6 +69,23 @@ do
                 python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
                 rm -r "${CONV_PATH}${filepath%.zip}"    # Delete unzipped file
             done
+
+            # handle .zip files
+            for filepath in "${dir}"*.zip; do
+                last_dir=$(basename ${dir})
+                mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
+                unzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
+                python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+                rm -r "${CONV_PATH}${filepath%.zip}"    # Delete unzipped file
+            done
+
+            # handle uncompressed files
+            for filepath in "${dir}"*.dat; do
+                last_dir=$(basename ${dir})
+                mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
+                python pt_wrap.py "${filepath}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+            done
+
         fi
     done
 done
