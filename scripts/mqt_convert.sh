@@ -70,6 +70,11 @@ do
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
                 mkdir -p "${CONV_PATH}${dir}"
                 cp  $filepath -d "${CONV_PATH}${filepath}"
+
+                echo ""
+                echo "${CONV_PATH}${filepath}"
+                echo ""
+
                 unzip "${CONV_PATH}${filepath}" # "${CONV_PATH}${filepath%.zip}"   # Need to unzip the tables first
                 python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
                 rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
