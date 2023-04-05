@@ -64,6 +64,8 @@ do
             # handle .zip files
             for filepath in "${dir}"*.zip; do
                 echo "Found zipfiles"
+                echo $filepath
+
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
                 unzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
