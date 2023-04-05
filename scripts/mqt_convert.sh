@@ -17,7 +17,7 @@ START_YEAR=2014
 END_YEAR=2022
 PIP_PATH="/data/LakeEffect/PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
-CONV_PATH="/data2/fking/s03/temporary/"
+CONV_PATH="/data2/fking/s03/temporary"
 
 declare -a arr=("PIP_3/f_1_4_DSD_Tables_ascii/" "PIP_3/f_2_4_VVD_Tables/" "Study/f_2_6_rho_Plots_D_minute_dat/" "Study/f_3_1_Summary_Tables_P/")
 declare -a wild=("" "_A" "" "") # Need this since VVD has A/S/N filepath pattern
@@ -68,9 +68,11 @@ do
 
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
+                mkdir -p "${CONV_PATH}${dir}"
                 unzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
                 python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
                 rm -r "${CONV_PATH}${filepath%.zip}"    # Delete unzipped file
+                rm -r "${CONV_PATH}${dir}"
             done
 
             # handle .gz files
@@ -78,9 +80,11 @@ do
                 echo "Found gz files"
                 last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}particle_tables/${last_dir}"
+                mkdir -p "${CONV_PATH}${dir}"
                 gzip $filepath -d "${CONV_PATH}${dir}"     # Need to unzip the tables first
                 python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}particle_tables/${last_dir}/" $LAT $LON "${SITE}"
                 rm -r "${CONV_PATH}${filepath%.gz}"    # Delete unzipped file
+                rm -r "${CONV_PATH}${dir}"
             done
 
             # handle uncompressed files
