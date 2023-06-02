@@ -11,11 +11,11 @@
 
 LAT=46.5318
 LON=-87.5483
-SHORT="MQT"
-SITE="NWS Marquette, Michigan"
-START_YEAR=2019
+SHORT="APX"
+SITE="Gaylord, Michigan"
+START_YEAR=2022
 END_YEAR=2022
-PIP_PATH="/data/LakeEffect/PIP/"
+PIP_PATH="/data/APX/PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
 CONV_PATH="/data2/fking/s03/temporary"
 

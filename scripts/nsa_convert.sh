@@ -9,13 +9,13 @@
 
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
 
-LAT=46.5318
-LON=-87.5483
-SHORT="MQT"
-SITE="NWS Marquette, Michigan"
-START_YEAR=2019
-END_YEAR=2022
-PIP_PATH="/data/LakeEffect/PIP/"
+LAT=69.0579
+LON=-152.8628
+SHORT="NSA"
+SITE="North Slope, Alaska"
+START_YEAR=2018
+END_YEAR=2018
+PIP_PATH="/data/DOE_NSA/PIP/SN_PIP010/"
 TMP_OUT="/data2/fking/s03/converted/"
 CONV_PATH="/data2/fking/s03/temporary"
 
@@ -38,7 +38,7 @@ do
     LOC=0
     for i in "${arr[@]}"
     do
-        DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
+        DATA_PATH="${PIP_PATH}${y}_UTQ/"
         OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
