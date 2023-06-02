@@ -8,9 +8,9 @@
 # and 1D effective density / precipitation rates
 
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
-
-LAT=46.5318
-LON=-87.5483
+, 
+LAT=44.9079
+LON=-84.7187
 SHORT="APX"
 SITE="Gaylord, Michigan"
 START_YEAR=2022
@@ -38,7 +38,7 @@ do
     LOC=0
     for i in "${arr[@]}"
     do
-        DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
+        DATA_PATH="${PIP_PATH}${SHORT}_${y}/"
         OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
