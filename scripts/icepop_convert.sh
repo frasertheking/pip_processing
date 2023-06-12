@@ -7,9 +7,9 @@
 # using our conv_pip.py utility function. Can convert both distributions
 # and 1D effective density / precipitation rates
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
-LAT=37.738
-LON=128.806
-SHORT="KO1"
+LAT=37.665
+LON=128.7
+SHORT="KO2"
 SITE="South Korea"
 START_YEAR=2018
 END_YEAR=2018
