@@ -6,9 +6,7 @@
 # Loop through PIP .dat files in a directory and convert them to netCDF
 # using our conv_pip.py utility function. Can convert both distributions
 # and 1D effective density / precipitation rates
-
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
-, 
 LAT=37.738
 LON=128.806
 SHORT="K01"
