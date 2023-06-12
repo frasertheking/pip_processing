@@ -9,7 +9,7 @@
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
 LAT=37.738
 LON=128.806
-SHORT="K01"
+SHORT="KO1"
 SITE="South Korea"
 START_YEAR=2018
 END_YEAR=2018
