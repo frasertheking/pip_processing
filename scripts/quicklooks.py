@@ -18,15 +18,6 @@ SITE = 'MQT'
 pip_path = '/data/LakeEffect/PIP/Netcdf_Converted/'
 mrr_path = '/data/LakeEffect/MRR/NetCDF_DN/'
 
-NANO_FACTOR = 1000000000
-
-mrr_dates = []
-for file in list(glob.glob(mrr_path + '*.nc')):                                       
-    mrr_dates.append(file[-16:-8])
-    
-pip_dates = []
-for file in list(glob.glob(pip_path + '/edensity_distributions/*.nc')):
-    pip_dates.append(file[-37:-29])
 
 # The root directory
 TOP = '/data/LakeEffect/PIP/Netcdf_Converted'
@@ -36,14 +27,12 @@ for year in range(2015, 2023):
     for file in glob.glob(pip_path):
         pip_dates.append(file[-37:-29])
 
-print(pip_dates)
-
 matched_dates = []
-for date in mrr_dates:
-    files = glob.glob(pip_path + '/*/*' + date + '*.nc')
-    if len(files) == 4:
+files = glob.glob(os.path.join(mrr_path, '*.nc'))
+for date in pip_dates:
+    if len([f for f in files if date in os.path.basename(f)]) > 0:
         matched_dates.append(date)
-        
+
 print("Matched:", len(matched_dates))
 print(matched_dates)
 
