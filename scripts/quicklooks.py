@@ -61,7 +61,8 @@ def create_precip_plots(site):
             avg_ed[doy-1].append(np.nanmean(ed))
         except FileNotFoundError:
             print(f"No file found at {pip_path + '/edensity_lwe_rate/006' + date + '2350_01_P_Minute.nc'}")
-
+        except Exception as e:
+            print(f"An error occurred: {e}")
         
     std_snow = [np.nanstd(x) for x in avg_snow]
     std_rain = [np.nanstd(x) for x in avg_rain]
@@ -126,6 +127,8 @@ def create_hists_for_site(site):
             dsd_height_list.append(dsd_height)
         except FileNotFoundError:
             print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc'}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
         try:
             file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '2350_01_vvd_A.nc'
@@ -137,6 +140,8 @@ def create_hists_for_site(site):
             vvd_height_list.append(vvd_height)
         except FileNotFoundError:
             print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '2350_01_vvd_A.nc'}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
         try:
             file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '2350_01_rho_Plots_D_minute.nc'
@@ -148,6 +153,8 @@ def create_hists_for_site(site):
             rho_height_list.append(rho_height)
         except FileNotFoundError:
             print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '2350_01_rho_Plots_D_minute.nc'}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
     ze_ds = np.concatenate(ze_list)
     dv_ds = np.concatenate(dv_list)
