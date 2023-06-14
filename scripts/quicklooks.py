@@ -1,4 +1,4 @@
-import glob
+import sys,os,glob
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -27,6 +27,14 @@ for file in list(glob.glob(mrr_path + '*.nc')):
 pip_dates = []
 for file in list(glob.glob(pip_path + '/edensity_distributions/*.nc')):
     pip_dates.append(file[-37:-29])
+
+# The root directory
+TOP = '/data/LakeEffect/PIP/Netcdf_Converted'
+pip_dates = []
+for year in range(2015, 2023):
+    pip_path = os.path.join(TOP, f"{year}_MQT", "netCDF", "edensity_distributions", "*.nc")
+    for file in glob.glob(pip_path):
+        pip_dates.append(file[-37:-29])
 
 print(pip_dates)
 
