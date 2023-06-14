@@ -139,7 +139,7 @@ def create_hists_for_site(site):
             print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '2350_01_vvd_A.nc'}")
 
         try:
-            file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '2350_01_vvd_A.nc'
+            file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '2350_01_rho_Plots_D_minute.nc'
             matching_files = glob.glob(file_pattern)
             ds_pip = xr.open_dataset(matching_files[0])  
             rho = ds_pip['rho'].values
