@@ -15,8 +15,8 @@ plt.rcParams.update({'font.size': 15})
 
 SITE = 'MQT'
 
-pip_path = '/data/LakeEffect/PIP/Netcdf_Converted'
-mrr_path = '/data/LakeEffect/MRR/NetCDF_DN'
+pip_path = '/data/LakeEffect/PIP/Netcdf_Converted/'
+mrr_path = '/data/LakeEffect/MRR/NetCDF_DN/'
 
 NANO_FACTOR = 1000000000
 
