@@ -24,10 +24,11 @@ mrr_dates = []
 for file in list(glob.glob(mrr_path + '*.nc')):                                       
     mrr_dates.append(file[-16:-8])
     
-print(mrr_dates)
 pip_dates = []
 for file in list(glob.glob(pip_path + '/edensity_distributions/*.nc')):
     pip_dates.append(file[-37:-29])
+
+print(pip_dates)
 
 matched_dates = []
 for date in mrr_dates:
