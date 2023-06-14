@@ -23,8 +23,8 @@ mrr_path = '/data/LakeEffect/MRR/NetCDF_DN/'
 TOP = '/data/LakeEffect/PIP/Netcdf_Converted'
 pip_dates = []
 for year in range(2015, 2023):
-    pip_path = os.path.join(TOP, f"{year}_MQT", "netCDF", "edensity_distributions", "*.nc")
-    for file in glob.glob(pip_path):
+    pip_path_temp = os.path.join(TOP, f"{year}_MQT", "netCDF", "edensity_distributions", "*.nc")
+    for file in glob.glob(pip_path_temp):
         pip_dates.append(file[-37:-29])
 
 matched_dates = []
@@ -108,19 +108,19 @@ def create_hists_for_site(site):
         mrr_height_list.append(mrr_height)
 
         # PIP
-        ds_pip = xr.open_dataset(pip_path + '/particle_size_distributions/006' + date + '2350_01_dsd.nc')   
+        ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc')   
         dsd = ds_pip['psd'].values
         dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
         dsd_list.append(dsd.T.flatten())
         dsd_height_list.append(dsd_height)
 
-        ds_pip = xr.open_dataset(pip_path + '/velocity_distributions/006' + date + '2350_01_vvd_A.nc')
+        ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + date + '2350_01_vvd_A.nc')
         vvd = ds_pip['vvd'].values
         vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
         vvd_list.append(vvd.T.flatten())
         vvd_height_list.append(vvd_height)
 
-        ds_pip = xr.open_dataset(pip_path + '/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc')   
+        ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc')   
         rho = ds_pip['rho'].values
         rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
         rho_list.append(rho.T.flatten())
