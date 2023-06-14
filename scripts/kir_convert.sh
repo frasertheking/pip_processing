@@ -8,14 +8,13 @@
 # and 1D effective density / precipitation rates
 
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
-, 
-LAT=44.9079
-LON=-84.7187
+LAT=67.84
+LON=20.41
 SHORT="KIS"
-SITE="Gaylord, Michigan"
+SITE="Kiruna, Sweden"
 START_YEAR=2022
 END_YEAR=2022
-PIP_PATH="/data/APX/PIP/"
+PIP_PATH="/data/HiLaMS/KIR/PIP/PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
 CONV_PATH="/data2/fking/s03/temporary"
 
@@ -28,31 +27,31 @@ declare -a units=("m−3 mm−1" "m s-1" "g cm-3" "g cm-3")
 declare -a long=("Drop size distributions" "Vertical velocity distributions" "Effective density distributions" "Effective density")
 declare -a standard=("drop_size_distribution" "velocity_distribution" "effective_density_distribution" "effective_density")
 
-# for y in $(seq $START_YEAR $END_YEAR)
-# do
-#     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/particle_size_distributions/"
-#     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/velocity_distributions/"
-#     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/edensity_distributions/"
-#     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/edensity_lwe_rate/"
+for y in $(seq $START_YEAR $END_YEAR)
+do
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/particle_size_distributions/"
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/velocity_distributions/"
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/edensity_distributions/"
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/edensity_lwe_rate/"
 
-#     LOC=0
-#     for i in "${arr[@]}"
-#     do
-#         DATA_PATH="${PIP_PATH}${SHORT}_${y}/"
-#         OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
-#         echo "${DATA_PATH}${i}"
-#         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
-#             # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
-#             if [[ $LOC -lt 3 ]]; then
-#                 python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"
-#             else
-#                 python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"
-#             fi
-#             # break
-#         done
-#         (( LOC++ ))
-#     done
-# done
+    LOC=0
+    for i in "${arr[@]}"
+    do
+        DATA_PATH="${PIP_PATH}${SHORT}_${y}/"
+        OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
+        echo "${DATA_PATH}${i}"
+        for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
+            # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
+            if [[ $LOC -lt 3 ]]; then
+                python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"
+            else
+                python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"
+            fi
+            # break
+        done
+        (( LOC++ ))
+    done
+done
 
 for y in $(seq $START_YEAR $END_YEAR)
 do
