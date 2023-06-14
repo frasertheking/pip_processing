@@ -239,5 +239,5 @@ def create_hists_for_site(site):
     plt.tight_layout()
     plt.savefig('../images/' + site + '_pip.png')
     
-# create_hists_for_site('MQT')
-# create_precip_plots('MQT')
+create_hists_for_site('MQT')
+create_precip_plots('MQT')
