@@ -14,7 +14,6 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
 SITE = 'MQT'
-
 pip_path = '/data/LakeEffect/PIP/Netcdf_Converted/'
 mrr_path = '/data/LakeEffect/MRR/NetCDF_DN/'
 
@@ -33,8 +32,7 @@ for date in pip_dates:
     if len([f for f in files if date in os.path.basename(f)]) > 0:
         matched_dates.append(date)
 
-print("Matched:", len(matched_dates))
-# print(matched_dates)
+print("Total Matched:", len(matched_dates))
 
 def get_day_of_year(date_string):
     date = datetime.strptime(date_string, '%Y%m%d')
@@ -45,12 +43,12 @@ def create_precip_plots(site):
     avg_snow = [[] for i in range(365)]
     avg_rain = [[] for i in range(365)]
     avg_ed = [[] for i in range(365)]
-#     months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
     for date in matched_dates:
+        print("\nWorking on date", date)
         doy = get_day_of_year(date)
-
+        year = date[:4]
         try:
-            file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '2350_01_P_Minute.nc'
+            file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
             matching_files = glob.glob(file_pattern)
             ds_lwe = xr.open_dataset(matching_files[0])   
             snow = ds_lwe['nrr'].values  
@@ -59,8 +57,9 @@ def create_precip_plots(site):
             avg_snow[doy-1].append(np.nanmean(snow))
             avg_rain[doy-1].append(np.nanmean(rain))
             avg_ed[doy-1].append(np.nanmean(ed))
+            print("Done!")
         except FileNotFoundError:
-            print(f"No file found at {pip_path + '/edensity_lwe_rate/006' + date + '2350_01_P_Minute.nc'}")
+            print(f"No file found at {pip_path + '/edensity_lwe_rate/006' + date + '*_P_Minute.nc'}")
         except Exception as e:
             print(f"An error occurred: {e}")
         
@@ -82,6 +81,7 @@ def create_precip_plots(site):
     ax2.set_ylabel('Effective Density')
     ax2.set_xlabel('Month')
     plt.savefig('../images/' + site + '_precip.png')
+    print("Success!")
 
 def create_hists_for_site(site):
     ze_list = []
@@ -97,7 +97,7 @@ def create_hists_for_site(site):
     rho_height_list = []
 
     for date in matched_dates:
-    #     print("Getting date", date)
+        print("\nWorking on", date)
         year = date[:4]
         month = date[4:6]
         day = date[-2:]
@@ -116,45 +116,50 @@ def create_hists_for_site(site):
         mrr_height_list.append(mrr_height)
 
         # PIP
-
         try:
-            file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '2350_01_dsd.nc'
+            file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
             matching_files = glob.glob(file_pattern)
             ds_pip = xr.open_dataset(matching_files[0])   
             dsd = ds_pip['psd'].values
             dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
             dsd_list.append(dsd.T.flatten())
             dsd_height_list.append(dsd_height)
+            print("PSDs loaded!")
         except FileNotFoundError:
-            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc'}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '*_dsd.nc'}")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '*_dsd.nc'}")
 
         try:
-            file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '2350_01_vvd_A.nc'
+            file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
             matching_files = glob.glob(file_pattern)
             ds_pip = xr.open_dataset(matching_files[0])   
             vvd = ds_pip['vvd'].values
             vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
             vvd_list.append(vvd.T.flatten())
             vvd_height_list.append(vvd_height)
+            print("VVDs loaded!")
         except FileNotFoundError:
-            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '2350_01_vvd_A.nc'}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
 
         try:
-            file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '2350_01_rho_Plots_D_minute.nc'
+            file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'
             matching_files = glob.glob(file_pattern)
             ds_pip = xr.open_dataset(matching_files[0])  
             rho = ds_pip['rho'].values
             rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
             rho_list.append(rho.T.flatten())
             rho_height_list.append(rho_height)
+            print("EDs loaded!")
         except FileNotFoundError:
-            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '2350_01_rho_Plots_D_minute.nc'}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
+
+    print("Ze stats", len(ze_list))
+    print("DSD stats", len(dsd_list))
 
     ze_ds = np.concatenate(ze_list)
     dv_ds = np.concatenate(dv_list)
@@ -268,6 +273,7 @@ def create_hists_for_site(site):
     axes[2].set_yscale('linear')
     plt.tight_layout()
     plt.savefig('../images/' + site + '_pip.png')
+    print("Success!")
     
 create_hists_for_site('MQT')
 create_precip_plots('MQT')
