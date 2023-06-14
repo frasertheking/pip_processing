@@ -34,7 +34,7 @@ for date in pip_dates:
         matched_dates.append(date)
 
 print("Matched:", len(matched_dates))
-print(matched_dates)
+# print(matched_dates)
 
 def get_day_of_year(date_string):
     date = datetime.strptime(date_string, '%Y%m%d')
@@ -108,23 +108,33 @@ def create_hists_for_site(site):
         mrr_height_list.append(mrr_height)
 
         # PIP
-        ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc')   
-        dsd = ds_pip['psd'].values
-        dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
-        dsd_list.append(dsd.T.flatten())
-        dsd_height_list.append(dsd_height)
 
-        ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + date + '2350_01_vvd_A.nc')
-        vvd = ds_pip['vvd'].values
-        vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
-        vvd_list.append(vvd.T.flatten())
-        vvd_height_list.append(vvd_height)
+        try:
+            ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc')   
+            dsd = ds_pip['psd'].values
+            dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
+            dsd_list.append(dsd.T.flatten())
+            dsd_height_list.append(dsd_height)
+        except FileNotFoundError:
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc'}")
 
-        ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc')   
-        rho = ds_pip['rho'].values
-        rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
-        rho_list.append(rho.T.flatten())
-        rho_height_list.append(rho_height)
+        try:
+            ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + date + '2350_01_vvd_A.nc')
+            vvd = ds_pip['vvd'].values
+            vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
+            vvd_list.append(vvd.T.flatten())
+            vvd_height_list.append(vvd_height)
+        except FileNotFoundError:
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + date + '2350_01_vvd_A.nc'}")
+
+        try:
+            ds_pip = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc')   
+            rho = ds_pip['rho'].values
+            rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
+            rho_list.append(rho.T.flatten())
+            rho_height_list.append(rho_height)
+        except FileNotFoundError:
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc'}")
 
     ze_ds = np.concatenate(ze_list)
     dv_ds = np.concatenate(dv_list)
