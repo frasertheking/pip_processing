@@ -37,7 +37,7 @@ do
     LOC=0
     for i in "${arr[@]}"
     do
-        DATA_PATH="${PIP_PATH}${SHORT}_${y}/"
+        DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
         OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
@@ -56,7 +56,7 @@ done
 for y in $(seq $START_YEAR $END_YEAR)
 do
     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/particle_tables/"
-    DATA_PATH="${PIP_PATH}${SHORT}_${y}/"
+    DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
     for dir in "${DATA_PATH}PIP_3/f_1_2_Particle_Tables_ascii/"*/; do
         if [ -d "$dir" ]; then
