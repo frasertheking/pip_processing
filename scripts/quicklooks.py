@@ -20,9 +20,6 @@ mrr_path = '/data/LakeEffect/MRR/NetCDF_DN'
 
 NANO_FACTOR = 1000000000
 
-times = np.asarray((ds_met['UTC Time'].values / NANO_FACTOR), dtype=int)
-utc_time = pd.to_datetime(times, unit='s', origin='unix')
-
 mrr_dates = []
 for file in list(glob.glob(mrr_path + '*.nc')):                                       
     mrr_dates.append(file[-16:-8])
