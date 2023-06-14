@@ -179,7 +179,7 @@ def create_hists_for_site(site):
     mask = ~np.isnan(ze_x)
     ze_x = ze_x[mask]
     ze_y = ze_y[mask]
-    ze_hist, ze_xedges, ze_yedges = np.histogram2d(ze_y, ze_x, bins=[28, 64])
+    ze_hist, ze_xedges, ze_yedges = np.histogram2d(ze_y, ze_x, bins=[28, 128])
 
     dv_x = np.asarray(dv_ds).flatten()
     dv_y = np.asarray(mrr_height_ds).flatten()
@@ -188,7 +188,7 @@ def create_hists_for_site(site):
     mask = ~np.isnan(dv_x)
     dv_x = dv_x[mask]
     dv_y = dv_y[mask]
-    dv_hist, dv_xedges, dv_yedges = np.histogram2d(dv_y, dv_x, bins=[28, 64])
+    dv_hist, dv_xedges, dv_yedges = np.histogram2d(dv_y, dv_x, bins=[28, 128])
 
     sw_x = np.asarray(sw_ds).flatten()
     sw_y = np.asarray(mrr_height_ds).flatten()
@@ -197,7 +197,7 @@ def create_hists_for_site(site):
     mask = ~np.isnan(sw_x)
     sw_x = sw_x[mask]
     sw_y = sw_y[mask]
-    sw_hist, sw_xedges, sw_yedges = np.histogram2d(sw_y, sw_x, bins=[28, 64])
+    sw_hist, sw_xedges, sw_yedges = np.histogram2d(sw_y, sw_x, bins=[28, 128])
 
     fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
     fig.suptitle(site + ' MRR')
