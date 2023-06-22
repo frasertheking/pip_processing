@@ -168,6 +168,7 @@ do
 
                 # define output file name based on the input file (assuming output extension is .nc)
                 outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+                echo $outfile
 
                 # if output file already exists, skip to the next iteration
                 if [ -f "$outfile" ]; then
