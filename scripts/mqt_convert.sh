@@ -114,6 +114,7 @@ do
             for filepath in "${dir}"*.zip; do
                 echo "Found zipfiles"
                 echo $filepath
+                last_dir=$(basename ${dir})
 
                 # define output file name based on the input file (assuming output extension is .nc)
                 outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
@@ -124,7 +125,6 @@ do
                     continue
                 fi
 
-                last_dir=$(basename ${dir})
                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
                 mkdir -p "${CONV_PATH}${dir}"
                 cp  $filepath -d "${CONV_PATH}${filepath}"
@@ -138,7 +138,19 @@ do
             # handle .gz files
             for filepath in "${dir}"*.gz; do
                 echo "Found gz files"
+                echo $filepath
+
                 last_dir=$(basename ${dir})
+
+                # define output file name based on the input file (assuming output extension is .nc)
+                outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+
+                # if output file already exists, skip to the next iteration
+                if [ -f "$outfile" ]; then
+                    echo "Skipping already processed file: $filepath"
+                    continue
+                fi
+
                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
                 mkdir -p "${CONV_PATH}${dir}"
                 cp  $filepath -d "${CONV_PATH}${filepath}"
@@ -151,7 +163,18 @@ do
             # handle uncompressed files
             for filepath in "${dir}"*.dat; do
                 echo "Found uncompressed files"
+                echo $filepath
                 last_dir=$(basename ${dir})
+
+                # define output file name based on the input file (assuming output extension is .nc)
+                outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+
+                # if output file already exists, skip to the next iteration
+                if [ -f "$outfile" ]; then
+                    echo "Skipping already processed file: $filepath"
+                    continue
+                fi
+
                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
                 python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
             done
