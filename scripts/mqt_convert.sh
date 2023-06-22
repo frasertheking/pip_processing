@@ -193,7 +193,7 @@ for y in $(seq $START_YEAR $END_YEAR); do
                             ;;
                     esac
 
-                    echo 'python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"'
+                    echo python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
 
                     # convert the file (assuming the uncompressed .dat file should be used)
                     python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
