@@ -117,7 +117,7 @@ do
                 last_dir=$(basename ${dir})
 
                 # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
 
                 # if output file already exists, skip to the next iteration
                 if [ -f "$outfile" ]; then
@@ -143,7 +143,7 @@ do
                 last_dir=$(basename ${dir})
 
                 # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
 
                 # if output file already exists, skip to the next iteration
                 if [ -f "$outfile" ]; then
@@ -167,7 +167,7 @@ do
                 last_dir=$(basename ${dir})
 
                 # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
                 echo $outfile
 
                 # if output file already exists, skip to the next iteration
