@@ -208,7 +208,7 @@ for y in $(seq $START_YEAR $END_YEAR); do
     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
     DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
-    find "${DATA_PATH}PIP_2/a_Particle_Tables/" -type d | parallel conv_dat_to_nc
+    find "${DATA_PATH}PIP_2/a_Particle_Tables/" -type d | xargs -I {} -P 4 bash -c 'conv_dat_to_nc "$@"' _ {}
 done
 
 echo "Conversion complete!"
