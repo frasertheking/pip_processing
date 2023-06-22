@@ -152,25 +152,20 @@ declare -a standard=("drop_size_distribution" "velocity_distribution" "effective
 # done
 
 # PIP_2
-export -f conv_dat_to_nc  # Export function to be used by GNU Parallel
-for y in $(seq $START_YEAR $END_YEAR); do
-    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
-    DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
-    OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
-    find "${DATA_PATH}PIP_2/a_Particle_Tables/" -type d | parallel conv_dat_to_nc
-done
+
 
 conv_dat_to_nc() {
     dir=$1
     # handle .zip files
-    find "${dir}" -name '*.zip' | parallel unzip_and_process
+    find "${dir}" -name '*.zip' | xargs -I {} -P 4 bash -c 'unzip_and_process "$@"' _ {}
 
     # handle .gz files
-    find "${dir}" -name '*.gz' | parallel gzip_and_process
+    find "${dir}" -name '*.gz' | xargs -I {} -P 4 bash -c 'gzip_and_process "$@"' _ {}
 
     # handle uncompressed files
-    find "${dir}" -name '*.dat' | parallel process_uncompressed
+    find "${dir}" -name '*.dat' | xargs -I {} -P 4 bash -c 'process_uncompressed "$@"' _ {}
 }
+
 unzip_and_process() {
     filepath=$1
     echo "Found zipfiles"
@@ -207,5 +202,13 @@ process_uncompressed() {
     mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
     python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
 }
+
+export -f conv_dat_to_nc  # Export function to be used by GNU Parallel
+for y in $(seq $START_YEAR $END_YEAR); do
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
+    DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
+    OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
+    find "${DATA_PATH}PIP_2/a_Particle_Tables/" -type d | parallel conv_dat_to_nc
+done
 
 echo "Conversion complete!"
