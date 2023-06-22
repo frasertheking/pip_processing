@@ -13,7 +13,7 @@ LAT=46.5318
 LON=-87.5483
 SHORT="MQT"
 SITE="NWS Marquette, Michigan"
-START_YEAR=2015
+START_YEAR=2014
 END_YEAR=2022
 PIP_PATH="/data/LakeEffect/PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
@@ -192,6 +192,8 @@ for y in $(seq $START_YEAR $END_YEAR); do
                             gzip -d "${CONV_PATH}${filepath}"
                             ;;
                     esac
+
+                    echo 'python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"'
 
                     # convert the file (assuming the uncompressed .dat file should be used)
                     python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
