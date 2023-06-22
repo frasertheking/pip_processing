@@ -153,19 +153,6 @@ declare -a standard=("drop_size_distribution" "velocity_distribution" "effective
 
 # PIP_2
 
-
-conv_dat_to_nc() {
-    dir=$1
-    # handle .zip files
-    find "${dir}" -name '*.zip' | xargs -I {} -P 4 bash -c 'unzip_and_process "$@"' _ {}
-
-    # handle .gz files
-    find "${dir}" -name '*.gz' | xargs -I {} -P 4 bash -c 'gzip_and_process "$@"' _ {}
-
-    # handle uncompressed files
-    find "${dir}" -name '*.dat' | xargs -I {} -P 4 bash -c 'process_uncompressed "$@"' _ {}
-}
-
 unzip_and_process() {
     filepath=$1
     echo "Found zipfiles"
@@ -202,6 +189,19 @@ process_uncompressed() {
     mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
     python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
 }
+
+conv_dat_to_nc() {
+    dir=$1
+    # handle .zip files
+    find "${dir}" -name '*.zip' | xargs -I {} -P 4 bash -c 'unzip_and_process "$@"' _ {}
+
+    # handle .gz files
+    find "${dir}" -name '*.gz' | xargs -I {} -P 4 bash -c 'gzip_and_process "$@"' _ {}
+
+    # handle uncompressed files
+    find "${dir}" -name '*.dat' | xargs -I {} -P 4 bash -c 'process_uncompressed "$@"' _ {}
+}
+
 
 export -f conv_dat_to_nc  # Export function to be used by GNU Parallel
 for y in $(seq $START_YEAR $END_YEAR); do
