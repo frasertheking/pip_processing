@@ -11,7 +11,7 @@
 """
 
 ##### Imports
-import os, re
+import os, re, gc
 import pandas as pd
 
 """convert_particle_table
@@ -67,4 +67,5 @@ def convert_particle_table(filepath, outpath, lat, lon, loc):
     comp = dict(zlib=True, complevel=2)
     encoding = {var: comp for var in ds.data_vars}
     ds.to_netcdf(outpath + basename + '.nc', encoding=encoding)
+    gc.collect()
     print("Conversion complete!")
