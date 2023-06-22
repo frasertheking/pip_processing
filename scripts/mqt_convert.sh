@@ -103,108 +103,117 @@ declare -a standard=("drop_size_distribution" "velocity_distribution" "effective
 # done
 
 # PIP_2
-# for y in $(seq $START_YEAR $END_YEAR)
-# do
-#     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
-#     DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
-#     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
-#     for dir in "${DATA_PATH}PIP_2/a_Particle_Tables/"*/; do
-#         if [ -d "$dir" ]; then
-#             # handle .zip files
-#             for filepath in "${dir}"*.zip; do
-#                 echo "Found zipfiles"
-#                 echo $filepath
-
-#                 last_dir=$(basename ${dir})
-#                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-#                 mkdir -p "${CONV_PATH}${dir}"
-#                 cp  $filepath -d "${CONV_PATH}${filepath}"
-
-#                 unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/" # "${CONV_PATH}${filepath%.zip}"   # Need to unzip the tables first
-#                 python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-#                 rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
-#                 rm -r "${CONV_PATH}${dir}"
-#             done
-
-#             # handle .gz files
-#             for filepath in "${dir}"*.gz; do
-#                 echo "Found gz files"
-#                 last_dir=$(basename ${dir})
-#                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-#                 mkdir -p "${CONV_PATH}${dir}"
-#                 cp  $filepath -d "${CONV_PATH}${filepath}"
-#                 gzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
-#                 python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-#                 rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
-#                 rm -r "${CONV_PATH}${dir}"
-#             done
-
-#             # handle uncompressed files
-#             for filepath in "${dir}"*.dat; do
-#                 echo "Found uncompressed files"
-#                 last_dir=$(basename ${dir})
-#                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-#                 python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-#             done
-
-#         fi
-#     done
-# done
-
-for y in $(seq $START_YEAR $END_YEAR); do
-    OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
-    DATA_PATH="${PIP_PATH}${y}_${SHORT}/PIP_2/a_Particle_Tables/"
-
-    mkdir -p "${OUT_PATH}"
-
-    for dir in "${DATA_PATH}"*/; do
+for y in $(seq $START_YEAR $END_YEAR)
+do
+    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
+    DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
+    OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
+    for dir in "${DATA_PATH}PIP_2/a_Particle_Tables/"*/; do
         if [ -d "$dir" ]; then
-            last_dir=$(basename "${dir}")
+            # handle .zip files
+            for filepath in "${dir}"*.zip; do
+                echo "Found zipfiles"
+                echo $filepath
 
-            mkdir -p "${OUT_PATH}${last_dir}"
-            mkdir -p "${CONV_PATH}${dir}"
+                # define output file name based on the input file (assuming output extension is .nc)
+                outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
 
-            # process files based on extension
-            for ext in zip gz dat; do
-                for filepath in "${dir}"*.${ext}; do
-                    [ -f "$filepath" ] || continue  # if file does not exist, skip to the next iteration
+                # if output file already exists, skip to the next iteration
+                if [ -f "$outfile" ]; then
+                    echo "Skipping already processed file: $filepath"
+                    continue
+                fi
 
-                    # define output file name based on the input file (assuming output extension is .nc)
-                    outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+                last_dir=$(basename ${dir})
+                mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
+                mkdir -p "${CONV_PATH}${dir}"
+                cp  $filepath -d "${CONV_PATH}${filepath}"
 
-                    # if output file already exists, skip to the next iteration
-                    if [ -f "$outfile" ]; then
-                        echo "Skipping already processed file: $filepath"
-                        continue
-                    fi
-
-                    echo "Processing ${ext} file: $filepath"
-
-                    # copy the file to CONV_PATH
-                    cp "$filepath" "${CONV_PATH}${filepath}"
-
-                    # extract the file if it's compressed
-                    case $ext in
-                        zip)
-                            unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/"
-                            ;;
-                        gz)
-                            gzip -d "${CONV_PATH}${filepath}"
-                            ;;
-                    esac
-
-                    echo python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
-
-                    # convert the file (assuming the uncompressed .dat file should be used)
-                    python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
-
-                    # remove the converted file and the directory
-                    rm -r "${CONV_PATH}${filepath}"
-                    rm -r "${CONV_PATH}${dir}"
-                done
+                unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/" # "${CONV_PATH}${filepath%.zip}"   # Need to unzip the tables first
+                python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+                rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
+                rm -r "${CONV_PATH}${dir}"
             done
+
+            # handle .gz files
+            for filepath in "${dir}"*.gz; do
+                echo "Found gz files"
+                last_dir=$(basename ${dir})
+                mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
+                mkdir -p "${CONV_PATH}${dir}"
+                cp  $filepath -d "${CONV_PATH}${filepath}"
+                gzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
+                python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+                rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
+                rm -r "${CONV_PATH}${dir}"
+            done
+
+            # handle uncompressed files
+            for filepath in "${dir}"*.dat; do
+                echo "Found uncompressed files"
+                last_dir=$(basename ${dir})
+                mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
+                python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+            done
+
         fi
     done
 done
+
+# for y in $(seq $START_YEAR $END_YEAR); do
+#     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
+#     DATA_PATH="${PIP_PATH}${y}_${SHORT}/PIP_2/a_Particle_Tables/"
+
+#     mkdir -p "${OUT_PATH}"
+
+#     for dir in "${DATA_PATH}"*/; do
+#         if [ -d "$dir" ]; then
+#             last_dir=$(basename "${dir}")
+
+#             mkdir -p "${OUT_PATH}${last_dir}"
+#             mkdir -p "${CONV_PATH}${dir}"
+
+#             # process files based on extension
+#             for ext in zip gz dat; do
+#                 for filepath in "${dir}"*.${ext}; do
+#                     [ -f "$filepath" ] || continue  # if file does not exist, skip to the next iteration
+
+#                     # define output file name based on the input file (assuming output extension is .nc)
+#                     outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+
+#                     # if output file already exists, skip to the next iteration
+#                     if [ -f "$outfile" ]; then
+#                         echo "Skipping already processed file: $filepath"
+#                         continue
+#                     fi
+
+#                     echo "Processing ${ext} file: $filepath"
+
+#                     # copy the file to CONV_PATH
+#                     cp "$filepath" "${CONV_PATH}${filepath}"
+
+#                     # extract the file if it's compressed
+#                     case $ext in
+#                         zip)
+#                             unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/"
+#                             ;;
+#                         gz)
+#                             gzip -d "${CONV_PATH}${filepath}"
+#                             ;;
+#                     esac
+
+#                     echo python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
+
+#                     # convert the file (assuming the uncompressed .dat file should be used)
+#                     python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
+
+#                     # remove the converted file and the directory
+#                     rm -r "${CONV_PATH}${filepath}"
+#                     rm -r "${CONV_PATH}${dir}"
+#                 done
+#             done
+#         fi
+#     done
+# done
 
 echo "Conversion complete!"
