@@ -151,66 +151,58 @@ declare -a standard=("drop_size_distribution" "velocity_distribution" "effective
 #     done
 # done
 
-# PIP_2
-
-unzip_and_process() {
-    filepath=$1
-    echo "Found zipfiles"
-    echo $filepath
-
-    last_dir=$(basename ${dir})
-    mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-    mkdir -p "${CONV_PATH}${dir}"
-    cp  $filepath -d "${CONV_PATH}${filepath}"
-
-    unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/" # "${CONV_PATH}${filepath%.zip}"   # Need to unzip the tables first
-    python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-    rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
-    rm -r "${CONV_PATH}${dir}"
-}
-
-gzip_and_process() {
-    filepath=$1
-    echo "Found gz files"
-    last_dir=$(basename ${dir})
-    mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-    mkdir -p "${CONV_PATH}${dir}"
-    cp  $filepath -d "${CONV_PATH}${filepath}"
-    gzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
-    python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-    rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
-    rm -r "${CONV_PATH}${dir}"
-}
-
-process_uncompressed() {
-    filepath=$1
-    echo "Found uncompressed files"
-    last_dir=$(basename ${dir})
-    mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-    python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-}
-
-conv_dat_to_nc() {
-    dir=$1
-    # handle .zip files
-    find "${dir}" -name '*.zip' | xargs -I {} -P 4 bash -c 'unzip_and_process "$@"' _ {}
-
-    # handle .gz files
-    find "${dir}" -name '*.gz' | xargs -I {} -P 4 bash -c 'gzip_and_process "$@"' _ {}
-
-    # handle uncompressed files
-    find "${dir}" -name '*.dat' | xargs -I {} -P 4 bash -c 'process_uncompressed "$@"' _ {}
-}
-
-export -f unzip_and_process
-export -f gzip_and_process
-export -f process_uncompressed
-export -f conv_dat_to_nc  # Export function to be used by GNU Parallel
 for y in $(seq $START_YEAR $END_YEAR); do
-    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
-    DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
-    OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
-    find "${DATA_PATH}PIP_2/a_Particle_Tables/" -type d | xargs -I {} -P 4 bash -c 'conv_dat_to_nc "$@"' _ {}
+    OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
+    DATA_PATH="${PIP_PATH}${y}_${SHORT}/PIP_2/a_Particle_Tables/"
+
+    mkdir -p "${OUT_PATH}"
+
+    for dir in "${DATA_PATH}"*/; do
+        if [ -d "$dir" ]; then
+            last_dir=$(basename "${dir}")
+
+            mkdir -p "${OUT_PATH}${last_dir}"
+            mkdir -p "${CONV_PATH}${dir}"
+
+            # process files based on extension
+            for ext in zip gz dat; do
+                for filepath in "${dir}"*.${ext}; do
+                    [ -f "$filepath" ] || continue  # if file does not exist, skip to the next iteration
+
+                    # define output file name based on the input file (assuming output extension is .nc)
+                    outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+
+                    # if output file already exists, skip to the next iteration
+                    if [ -f "$outfile" ]; then
+                        echo "Skipping already processed file: $filepath"
+                        continue
+                    fi
+
+                    echo "Processing ${ext} file: $filepath"
+
+                    # copy the file to CONV_PATH
+                    cp "$filepath" "${CONV_PATH}${filepath}"
+
+                    # extract the file if it's compressed
+                    case $ext in
+                        zip)
+                            unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/"
+                            ;;
+                        gz)
+                            gzip -d "${CONV_PATH}${filepath}"
+                            ;;
+                    esac
+
+                    # convert the file (assuming the uncompressed .dat file should be used)
+                    python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
+
+                    # remove the converted file and the directory
+                    rm -r "${CONV_PATH}${filepath}"
+                    rm -r "${CONV_PATH}${dir}"
+                done
+            done
+        fi
+    done
 done
 
 echo "Conversion complete!"
