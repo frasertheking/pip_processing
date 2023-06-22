@@ -202,7 +202,9 @@ conv_dat_to_nc() {
     find "${dir}" -name '*.dat' | xargs -I {} -P 4 bash -c 'process_uncompressed "$@"' _ {}
 }
 
-
+export -f unzip_and_process
+export -f gzip_and_process
+export -f process_uncompressed
 export -f conv_dat_to_nc  # Export function to be used by GNU Parallel
 for y in $(seq $START_YEAR $END_YEAR); do
     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
