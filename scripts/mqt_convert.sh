@@ -117,10 +117,10 @@ do
                 last_dir=$(basename ${dir})
 
                 # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}a_particle_tables/${last_dir}"
+                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
 
                 # if output file already exists, skip to the next iteration
-                if [ -d "$outfile" ]; then
+                if [ -f "$outfile" ]; then
                     echo "Skipping already processed file: $filepath"
                     continue
                 fi
@@ -143,10 +143,10 @@ do
                 last_dir=$(basename ${dir})
 
                 # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}a_particle_tables/${last_dir}"
+                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
 
                 # if output file already exists, skip to the next iteration
-                if [ -d "$outfile" ]; then
+                if [ -f "$outfile" ]; then
                     echo "Skipping already processed file: $filepath"
                     continue
                 fi
@@ -167,11 +167,11 @@ do
                 last_dir=$(basename ${dir})
 
                 # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}a_particle_tables/${last_dir}"
+                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
                 echo $outfile
 
                 # if output file already exists, skip to the next iteration
-                if [ -d "$outfile" ]; then
+                if [ -f "$outfile" ]; then
                     echo "Skipping already processed file: $filepath"
                     continue
                 fi
@@ -184,5 +184,60 @@ do
     done
 done
 
+# for y in $(seq $START_YEAR $END_YEAR); do
+#     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
+#     DATA_PATH="${PIP_PATH}${y}_${SHORT}/PIP_2/a_Particle_Tables/"
+
+#     mkdir -p "${OUT_PATH}"
+
+#     for dir in "${DATA_PATH}"*/; do
+#         if [ -d "$dir" ]; then
+#             last_dir=$(basename "${dir}")
+
+#             mkdir -p "${OUT_PATH}${last_dir}"
+#             mkdir -p "${CONV_PATH}${dir}"
+
+#             # process files based on extension
+#             for ext in zip gz dat; do
+#                 for filepath in "${dir}"*.${ext}; do
+#                     [ -f "$filepath" ] || continue  # if file does not exist, skip to the next iteration
+
+#                     # define output file name based on the input file (assuming output extension is .nc)
+#                     outfile="${OUT_PATH}${last_dir}/$(basename "${filepath%.*}").nc"
+
+#                     # if output file already exists, skip to the next iteration
+#                     if [ -f "$outfile" ]; then
+#                         echo "Skipping already processed file: $filepath"
+#                         continue
+#                     fi
+
+#                     echo "Processing ${ext} file: $filepath"
+
+#                     # copy the file to CONV_PATH
+#                     cp "$filepath" "${CONV_PATH}${filepath}"
+
+#                     # extract the file if it's compressed
+#                     case $ext in
+#                         zip)
+#                             unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/"
+#                             ;;
+#                         gz)
+#                             gzip -d "${CONV_PATH}${filepath}"
+#                             ;;
+#                     esac
+
+#                     echo python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
+
+#                     # convert the file (assuming the uncompressed .dat file should be used)
+#                     python pt_wrap.py "${CONV_PATH}${filepath%.*}.dat" "$outfile" $LAT $LON "${SITE}"
+
+#                     # remove the converted file and the directory
+#                     rm -r "${CONV_PATH}${filepath}"
+#                     rm -r "${CONV_PATH}${dir}"
+#                 done
+#             done
+#         fi
+#     done
+# done
 
 echo "Conversion complete!"
