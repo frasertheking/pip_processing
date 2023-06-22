@@ -31,7 +31,7 @@ def convert_particle_table(filepath, outpath, lat, lon, loc):
     units = ['id', 'nd', 'Site', 'nd', 'Logical', 'nd', 'nd', 'Interval', 'Interval', 'Interval', 'nd', 'mm', 'mm', 'mm^2', 'mm', 'mm', 'deg', 'mm', 'mm', 'mm', 'mm', 'nd', 'nd', 'nd', 'nd', 'mm', 'mm', 'nd', '16_bit', '8_bit']
 
     ##### Parse input
-    df = pd.read_csv(filepath, sep='\t', skiprows=range(0, 10), header=0, names=columns)
+    df = pd.read_csv(filepath, sep='\t', skiprows=range(0, 10), header=0, names=columns, error_bad_lines=False)
     df = df[df['RecNum'] > -99]
 
     df['Hour'] = df['Hr']
