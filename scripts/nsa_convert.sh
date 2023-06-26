@@ -106,7 +106,7 @@ declare -a standard=("drop_size_distribution" "velocity_distribution" "effective
 for y in $(seq $START_YEAR $END_YEAR)
 do
     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
-    DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
+    DATA_PATH="${PIP_PATH}${y}_UTQ/"
     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
     for dir in "${DATA_PATH}PIP_2/a_Particle_Tables/"*/; do
         if [ -d "$dir" ]; then
