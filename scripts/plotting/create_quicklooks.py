@@ -15,6 +15,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
 def sanity_check(site, pip_path, mrr_path):
+    print("\n\n\nPerforming sanity check on", site)
+
     pip_dates = []
     for year in range(2015, 2023):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
@@ -22,13 +24,10 @@ def sanity_check(site, pip_path, mrr_path):
             pip_dates.append(file[-37:-29])
 
     matched_dates = []
-    if mrr_path == None:
-        matched_dates = pip_dates
-    else:
-        files = glob.glob(os.path.join(mrr_path, '*.nc'))
-        for date in pip_dates:
-            if len([f for f in files if date in os.path.basename(f)]) > 0:
-                matched_dates.append(date)
+    files = glob.glob(os.path.join(mrr_path, '*.nc'))
+    for date in pip_dates:
+        if len([f for f in files if date in os.path.basename(f)]) > 0:
+            matched_dates.append(date)
 
     print(matched_dates)
     print("Total Matched:", len(matched_dates))
@@ -58,7 +57,7 @@ def sanity_check(site, pip_path, mrr_path):
                 avg_ed[doy-1].append(np.nanmean(ed))
                 print("Done!")
             except FileNotFoundError:
-                print(f"No file found at {pip_path + '/edensity_lwe_rate/006' + date + '*_P_Minute.nc'}")
+                print(f"No file found at {pip_path + '/edensity_lwe_rate/*' + date + '*_P_Minute.nc'}")
             except Exception as e:
                 print(f"An error occurred: {e}")
             
@@ -106,16 +105,23 @@ def sanity_check(site, pip_path, mrr_path):
             date = year + month + day
 
             # MRR
-            ds_mrr = xr.open_dataset(mrr_path + 'MRR_NWS_' + site + '_' + date + '_snow.nc')
-            ze = ds_mrr['Ze'].values
-            dv = ds_mrr['W'].values
-            sw = ds_mrr['spectralWidth'].values
-            mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
+            try:
+                file_pattern = mrr_path + '*' + date + '*.nc'
+                matching_files = glob.glob(file_pattern)
+                ds_mrr = xr.open_dataset(matching_files[0]) 
+                ze = ds_mrr['Ze'].values
+                dv = ds_mrr['W'].values
+                sw = ds_mrr['spectralWidth'].values
+                mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
 
-            ze_list.append(ze.T.flatten())
-            dv_list.append(dv.T.flatten())
-            sw_list.append(sw.T.flatten())
-            mrr_height_list.append(mrr_height)
+                ze_list.append(ze.T.flatten())
+                dv_list.append(dv.T.flatten())
+                sw_list.append(sw.T.flatten())
+                mrr_height_list.append(mrr_height)
+            except FileNotFoundError:
+                print(f"No file found at {mrr_path + '*' + site + '_' + date + '*.nc'}")
+            except Exception as e:
+                print(e)
 
             # PIP
             try:
@@ -351,5 +357,6 @@ def sanity_check(site, pip_path, mrr_path):
     create_hists_for_site(site)
     create_precip_plots(site)
 
-sanity_check('FIN', '/data2/fking/s03/converted/', None)
-sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', None)
+sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF')
+sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/')
+sanity_check('HAUK', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/')
