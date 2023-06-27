@@ -21,6 +21,7 @@ def sanity_check(site, pip_path, mrr_path):
     for year in range(2015, 2023):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
         for file in glob.glob(pip_path_temp):
+            print(file)
             pip_dates.append(file[-37:-29])
 
     matched_dates = []
@@ -360,6 +361,6 @@ def sanity_check(site, pip_path, mrr_path):
     create_hists_for_site(site)
     create_precip_plots(site)
 
-sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF')
-sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/')
+# sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF')
+# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/')
 sanity_check('HAUK', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/')
