@@ -41,49 +41,49 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         day_of_year = date.timetuple().tm_yday
         return day_of_year
 
-    def create_precip_plots(site):
-        avg_snow = [[] for i in range(365)]
-        avg_rain = [[] for i in range(365)]
-        avg_ed = [[] for i in range(365)]
-        for date in matched_dates:
-            print("\nWorking on date", date)
-            doy = get_day_of_year(date)
-            year = date[:4]
-            try:
-                file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
-                matching_files = glob.glob(file_pattern)
-                ds_lwe = xr.open_dataset(matching_files[0])   
-                snow = ds_lwe['nrr'].values  
-                rain = ds_lwe['rr'].values
-                ed = ds_lwe['ed'].values
-                avg_snow[doy-1].append(np.nanmean(snow))
-                avg_rain[doy-1].append(np.nanmean(rain))
-                avg_ed[doy-1].append(np.nanmean(ed))
-                print("Done!")
-            except FileNotFoundError:
-                print(f"No file found at {pip_path + '/edensity_lwe_rate/*' + date + '*_P_Minute.nc'}")
-            except Exception as e:
-                print(f"An error occurred: {e}")
+    # def create_precip_plots(site):
+    #     avg_snow = [[] for i in range(365)]
+    #     avg_rain = [[] for i in range(365)]
+    #     avg_ed = [[] for i in range(365)]
+    #     for date in matched_dates:
+    #         print("\nWorking on date", date)
+    #         doy = get_day_of_year(date)
+    #         year = date[:4]
+    #         try:
+    #             file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
+    #             matching_files = glob.glob(file_pattern)
+    #             ds_lwe = xr.open_dataset(matching_files[0])   
+    #             snow = ds_lwe['nrr'].values  
+    #             rain = ds_lwe['rr'].values
+    #             ed = ds_lwe['ed'].values
+    #             avg_snow[doy-1].append(np.nanmean(snow))
+    #             avg_rain[doy-1].append(np.nanmean(rain))
+    #             avg_ed[doy-1].append(np.nanmean(ed))
+    #             print("Done!")
+    #         except FileNotFoundError:
+    #             print(f"No file found at {pip_path + '/edensity_lwe_rate/*' + date + '*_P_Minute.nc'}")
+    #         except Exception as e:
+    #             print(f"An error occurred: {e}")
             
-        std_snow = [np.nanstd(x) for x in avg_snow]
-        std_rain = [np.nanstd(x) for x in avg_rain]
-        std_ed = [np.nanstd(x) for x in avg_ed]
-        avg_snow = [np.nanmean(x) for x in avg_snow]
-        avg_rain = [np.nanmean(x) for x in avg_rain]
-        avg_ed = [np.nanmean(x) for x in avg_ed]
+    #     std_snow = [np.nanstd(x) for x in avg_snow]
+    #     std_rain = [np.nanstd(x) for x in avg_rain]
+    #     std_ed = [np.nanstd(x) for x in avg_ed]
+    #     avg_snow = [np.nanmean(x) for x in avg_snow]
+    #     avg_rain = [np.nanmean(x) for x in avg_rain]
+    #     avg_ed = [np.nanmean(x) for x in avg_ed]
 
-        fig, axes = plt.subplots(figsize=(12,6))
-        axes.set_title(site + " Monthly Average Precip")
-        axes.plot(np.arange(365), avg_snow, color='red', linewidth=3, label='snow')
-        axes.plot(np.arange(365), avg_rain, color='blue', linewidth=3, label='rain')
-        axes.set_ylabel('Precipitation Rate (mm hr$^{-1}$)')
-        plt.legend()
-        ax2 = axes.twinx()
-        ax2.plot(np.arange(365), avg_ed, color='black', linewidth=3)
-        ax2.set_ylabel('Effective Density')
-        ax2.set_xlabel('Month')
-        plt.savefig('../../images/' + site + '_precip.png')
-        print("Success!")
+    #     fig, axes = plt.subplots(figsize=(12,6))
+    #     axes.set_title(site + " Monthly Average Precip")
+    #     axes.plot(np.arange(365), avg_snow, color='red', linewidth=3, label='snow')
+    #     axes.plot(np.arange(365), avg_rain, color='blue', linewidth=3, label='rain')
+    #     axes.set_ylabel('Precipitation Rate (mm hr$^{-1}$)')
+    #     plt.legend()
+    #     ax2 = axes.twinx()
+    #     ax2.plot(np.arange(365), avg_ed, color='black', linewidth=3)
+    #     ax2.set_ylabel('Effective Density')
+    #     ax2.set_xlabel('Month')
+    #     plt.savefig('../../images/' + site + '_precip.png')
+    #     print("Success!")
 
     def create_hists_for_site(site, match_dates):
         ze_list = []
@@ -455,7 +455,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         plt.savefig('../../images/' + site + '_pip.png')
 
     create_hists_for_site(site, match_dates)
-    create_precip_plots(site, match_dates)
+    # create_precip_plots(site, match_dates)
 
 # sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF')
 # sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/')
