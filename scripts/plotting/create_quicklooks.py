@@ -14,7 +14,7 @@ from scipy.optimize import curve_fit
 warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
-def sanity_check(site, pip_path, mrr_path):
+def sanity_check(site, pip_path, mrr_path, match_dates):
     print("\n\n\nPerforming sanity check on", site)
 
     pip_dates = []
@@ -26,9 +26,12 @@ def sanity_check(site, pip_path, mrr_path):
 
     matched_dates = []
     files = glob.glob(os.path.join(mrr_path, '*.nc'))
-    for date in pip_dates:
-        if len([f for f in files if date in os.path.basename(f)]) > 0:
-            matched_dates.append(date)
+    if not(match_dates):
+        matched_dates = files
+    else:
+        for date in pip_dates:
+            if len([f for f in files if date in os.path.basename(f)]) > 0:
+                matched_dates.append(date)
 
     print(matched_dates)
     print("Total Matched:", len(matched_dates))
@@ -82,7 +85,7 @@ def sanity_check(site, pip_path, mrr_path):
         plt.savefig('../../images/' + site + '_precip.png')
         print("Success!")
 
-    def create_hists_for_site(site):
+    def create_hists_for_site(site, match_dates):
         ze_list = []
         dv_list = []
         sw_list = []
@@ -98,110 +101,215 @@ def sanity_check(site, pip_path, mrr_path):
         N_0_array = []
         lambda_array = []
 
-        for date in matched_dates:
-            print("\nWorking on", date)
-            year = date[:4]
-            month = date[4:6]
-            day = date[-2:]
-            date = year + month + day
+        if match_dates:
+            for date in matched_dates:
+                print("\nWorking on", date)
+                year = date[:4]
+                month = date[4:6]
+                day = date[-2:]
+                date = year + month + day
 
-            # MRR
-            try:
-                file_pattern = mrr_path + '/*' + date + '*.nc'
-                print(file_pattern)
-                matching_files = glob.glob(file_pattern)
-                print(matching_files)
-                ds_mrr = xr.open_dataset(matching_files[0]) 
-                ze = ds_mrr['Ze'].values
-                dv = ds_mrr['W'].values
-                sw = ds_mrr['spectralWidth'].values
-                mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
+                # MRR
+                try:
+                    file_pattern = mrr_path + '/*' + date + '*.nc'
+                    print(file_pattern)
+                    matching_files = glob.glob(file_pattern)
+                    print(matching_files)
+                    ds_mrr = xr.open_dataset(matching_files[0]) 
+                    ze = ds_mrr['Ze'].values
+                    dv = ds_mrr['W'].values
+                    sw = ds_mrr['spectralWidth'].values
+                    mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
 
-                ze_list.append(ze.T.flatten())
-                dv_list.append(dv.T.flatten())
-                sw_list.append(sw.T.flatten())
-                mrr_height_list.append(mrr_height)
-                print("MRRs Loaded!")
-            except FileNotFoundError:
-                print(f"No file found at {mrr_path + '*' + site + '_' + date + '*.nc'}")
-            except Exception as e:
-                print(e)
-
-            # PIP
-            try:
-                file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
-                matching_files = glob.glob(file_pattern)
-                ds_pip = xr.open_dataset(matching_files[0])   
-                dsd = ds_pip['psd'].values
-                bin_centers = ds_pip.bin_centers.values
-                dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
-                dsd_list.append(dsd.T.flatten())
-                dsd_height_list.append(dsd_height)
-
-                func = lambda t, a, b: a * np.exp(-b*t)
-
-                # Loop over each minute
-                for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
-
-                    # Calculate 15-minute running average for this minute and all bins
-                    running_avg = np.mean(dsd[i:i+15, :], axis=0)
-
-                    # Remove nans from running_avg and corresponding bin_centers
-                    valid_indices = ~np.isnan(running_avg)
-                    running_avg = running_avg[valid_indices]
-                    valid_bin_centers = bin_centers[valid_indices]
-
-                    # If there are no valid data points left after removing NaNs, skip this minute
-                    if running_avg.size == 0:
-                        N_0_array.append(np.nan)
-                        lambda_array.append(np.nan)
-                        continue
-
-                    # Perform curve fitting
-                    try:
-                        popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
-                        if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
-                            N_0_array.append(popt[0])
-                            lambda_array.append(popt[1])
-                    except RuntimeError:
-                        N_0_array.append(np.nan)
-                        lambda_array.append(np.nan)
+                    ze_list.append(ze.T.flatten())
+                    dv_list.append(dv.T.flatten())
+                    sw_list.append(sw.T.flatten())
+                    mrr_height_list.append(mrr_height)
+                    print("MRRs Loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {mrr_path + '*' + site + '_' + date + '*.nc'}")
+                except Exception as e:
+                    print(e)
 
 
-                print("PSDs loaded!")
-            except FileNotFoundError:
-                print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + date + '*_dsd.nc'}")
-            except Exception as e:
-                print(e)
+                # PIP
+                try:
+                    file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
+                    matching_files = glob.glob(file_pattern)
+                    ds_pip = xr.open_dataset(matching_files[0])   
+                    dsd = ds_pip['psd'].values
+                    bin_centers = ds_pip.bin_centers.values
+                    dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
+                    dsd_list.append(dsd.T.flatten())
+                    dsd_height_list.append(dsd_height)
 
-            try:
-                file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
-                matching_files = glob.glob(file_pattern)
-                ds_pip = xr.open_dataset(matching_files[0])   
-                vvd = ds_pip['vvd'].values
-                vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
-                vvd_list.append(vvd.T.flatten())
-                vvd_height_list.append(vvd_height)
-                print("VVDs loaded!")
-            except FileNotFoundError:
-                print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
-            except Exception as e:
-                print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
+                    func = lambda t, a, b: a * np.exp(-b*t)
 
-            try:
-                file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'
-                matching_files = glob.glob(file_pattern)
-                ds_pip = xr.open_dataset(matching_files[0])  
-                rho = ds_pip['rho'].values
-                rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
-                rho_list.append(rho.T.flatten())
-                rho_height_list.append(rho_height)
-                print("EDs loaded!")
-            except FileNotFoundError:
-                print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
-            except Exception as e:
-                print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
+                    # Loop over each minute
+                    for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
 
+                        # Calculate 15-minute running average for this minute and all bins
+                        running_avg = np.mean(dsd[i:i+15, :], axis=0)
+
+                        # Remove nans from running_avg and corresponding bin_centers
+                        valid_indices = ~np.isnan(running_avg)
+                        running_avg = running_avg[valid_indices]
+                        valid_bin_centers = bin_centers[valid_indices]
+
+                        # If there are no valid data points left after removing NaNs, skip this minute
+                        if running_avg.size == 0:
+                            N_0_array.append(np.nan)
+                            lambda_array.append(np.nan)
+                            continue
+
+                        # Perform curve fitting
+                        try:
+                            popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
+                            if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
+                                N_0_array.append(popt[0])
+                                lambda_array.append(popt[1])
+                        except RuntimeError:
+                            N_0_array.append(np.nan)
+                            lambda_array.append(np.nan)
+
+
+                    print("PSDs loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + date + '*_dsd.nc'}")
+                except Exception as e:
+                    print(e)
+
+                try:
+                    file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
+                    matching_files = glob.glob(file_pattern)
+                    ds_pip = xr.open_dataset(matching_files[0])   
+                    vvd = ds_pip['vvd'].values
+                    vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
+                    vvd_list.append(vvd.T.flatten())
+                    vvd_height_list.append(vvd_height)
+                    print("VVDs loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
+                except Exception as e:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
+
+                try:
+                    file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'
+                    matching_files = glob.glob(file_pattern)
+                    ds_pip = xr.open_dataset(matching_files[0])  
+                    rho = ds_pip['rho'].values
+                    rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
+                    rho_list.append(rho.T.flatten())
+                    rho_height_list.append(rho_height)
+                    print("EDs loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
+                except Exception as e:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
+        else:
+            for date in matched_dates:
+                print("\nWorking on", date)
+                year = date[:4]
+                month = date[4:6]
+                day = date[-2:]
+                date = year + month + day
+
+                # MRR
+                try:
+                    file_pattern = mrr_path + '/*' + date + '*.nc'
+                    print(file_pattern)
+                    matching_files = glob.glob(file_pattern)
+                    print(matching_files)
+                    ds_mrr = xr.open_dataset(matching_files[0]) 
+                    ze = ds_mrr['Ze'].values
+                    dv = ds_mrr['W'].values
+                    sw = ds_mrr['spectralWidth'].values
+                    mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
+
+                    ze_list.append(ze.T.flatten())
+                    dv_list.append(dv.T.flatten())
+                    sw_list.append(sw.T.flatten())
+                    mrr_height_list.append(mrr_height)
+                    print("MRRs Loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {mrr_path + '*' + site + '_' + date + '*.nc'}")
+                except Exception as e:
+                    print(e)
+            for date in pip_dates:
+                # PIP
+                try:
+                    file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
+                    matching_files = glob.glob(file_pattern)
+                    ds_pip = xr.open_dataset(matching_files[0])   
+                    dsd = ds_pip['psd'].values
+                    bin_centers = ds_pip.bin_centers.values
+                    dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
+                    dsd_list.append(dsd.T.flatten())
+                    dsd_height_list.append(dsd_height)
+
+                    func = lambda t, a, b: a * np.exp(-b*t)
+
+                    # Loop over each minute
+                    for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
+
+                        # Calculate 15-minute running average for this minute and all bins
+                        running_avg = np.mean(dsd[i:i+15, :], axis=0)
+
+                        # Remove nans from running_avg and corresponding bin_centers
+                        valid_indices = ~np.isnan(running_avg)
+                        running_avg = running_avg[valid_indices]
+                        valid_bin_centers = bin_centers[valid_indices]
+
+                        # If there are no valid data points left after removing NaNs, skip this minute
+                        if running_avg.size == 0:
+                            N_0_array.append(np.nan)
+                            lambda_array.append(np.nan)
+                            continue
+
+                        # Perform curve fitting
+                        try:
+                            popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
+                            if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
+                                N_0_array.append(popt[0])
+                                lambda_array.append(popt[1])
+                        except RuntimeError:
+                            N_0_array.append(np.nan)
+                            lambda_array.append(np.nan)
+
+
+                    print("PSDs loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + date + '*_dsd.nc'}")
+                except Exception as e:
+                    print(e)
+
+                try:
+                    file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
+                    matching_files = glob.glob(file_pattern)
+                    ds_pip = xr.open_dataset(matching_files[0])   
+                    vvd = ds_pip['vvd'].values
+                    vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
+                    vvd_list.append(vvd.T.flatten())
+                    vvd_height_list.append(vvd_height)
+                    print("VVDs loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
+                except Exception as e:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'}")
+
+                try:
+                    file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'
+                    matching_files = glob.glob(file_pattern)
+                    ds_pip = xr.open_dataset(matching_files[0])  
+                    rho = ds_pip['rho'].values
+                    rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
+                    rho_list.append(rho.T.flatten())
+                    rho_height_list.append(rho_height)
+                    print("EDs loaded!")
+                except FileNotFoundError:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
+                except Exception as e:
+                    print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
 
         print("Ze stats", len(ze_list))
         print("DSD stats", len(dsd_list))
@@ -358,11 +466,11 @@ def sanity_check(site, pip_path, mrr_path):
         plt.tight_layout()
         plt.savefig('../../images/' + site + '_pip.png')
 
-    create_hists_for_site(site)
-    create_precip_plots(site)
+    create_hists_for_site(site, match_dates)
+    create_precip_plots(site, match_dates)
 
 # sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF')
 # sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/')
 # sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/')
-sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/')
-sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/')
+# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/')
+sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
