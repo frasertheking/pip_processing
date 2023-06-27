@@ -36,55 +36,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
     print(matched_dates)
     print("Total Matched:", len(matched_dates))
 
-    def get_day_of_year(date_string):
-        date = datetime.strptime(date_string, '%Y%m%d')
-        day_of_year = date.timetuple().tm_yday
-        return day_of_year
-
-    # def create_precip_plots(site):
-    #     avg_snow = [[] for i in range(365)]
-    #     avg_rain = [[] for i in range(365)]
-    #     avg_ed = [[] for i in range(365)]
-    #     for date in matched_dates:
-    #         print("\nWorking on date", date)
-    #         doy = get_day_of_year(date)
-    #         year = date[:4]
-    #         try:
-    #             file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
-    #             matching_files = glob.glob(file_pattern)
-    #             ds_lwe = xr.open_dataset(matching_files[0])   
-    #             snow = ds_lwe['nrr'].values  
-    #             rain = ds_lwe['rr'].values
-    #             ed = ds_lwe['ed'].values
-    #             avg_snow[doy-1].append(np.nanmean(snow))
-    #             avg_rain[doy-1].append(np.nanmean(rain))
-    #             avg_ed[doy-1].append(np.nanmean(ed))
-    #             print("Done!")
-    #         except FileNotFoundError:
-    #             print(f"No file found at {pip_path + '/edensity_lwe_rate/*' + date + '*_P_Minute.nc'}")
-    #         except Exception as e:
-    #             print(f"An error occurred: {e}")
-            
-    #     std_snow = [np.nanstd(x) for x in avg_snow]
-    #     std_rain = [np.nanstd(x) for x in avg_rain]
-    #     std_ed = [np.nanstd(x) for x in avg_ed]
-    #     avg_snow = [np.nanmean(x) for x in avg_snow]
-    #     avg_rain = [np.nanmean(x) for x in avg_rain]
-    #     avg_ed = [np.nanmean(x) for x in avg_ed]
-
-    #     fig, axes = plt.subplots(figsize=(12,6))
-    #     axes.set_title(site + " Monthly Average Precip")
-    #     axes.plot(np.arange(365), avg_snow, color='red', linewidth=3, label='snow')
-    #     axes.plot(np.arange(365), avg_rain, color='blue', linewidth=3, label='rain')
-    #     axes.set_ylabel('Precipitation Rate (mm hr$^{-1}$)')
-    #     plt.legend()
-    #     ax2 = axes.twinx()
-    #     ax2.plot(np.arange(365), avg_ed, color='black', linewidth=3)
-    #     ax2.set_ylabel('Effective Density')
-    #     ax2.set_xlabel('Month')
-    #     plt.savefig('../../images/' + site + '_precip.png')
-    #     print("Success!")
-
     def create_hists_for_site(site, match_dates):
         ze_list = []
         dv_list = []
@@ -147,22 +98,16 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                     # Loop over each minute
                     for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
-
-                        # Calculate 15-minute running average for this minute and all bins
                         running_avg = np.mean(dsd[i:i+15, :], axis=0)
-
-                        # Remove nans from running_avg and corresponding bin_centers
                         valid_indices = ~np.isnan(running_avg)
                         running_avg = running_avg[valid_indices]
                         valid_bin_centers = bin_centers[valid_indices]
 
-                        # If there are no valid data points left after removing NaNs, skip this minute
                         if running_avg.size == 0:
                             N_0_array.append(np.nan)
                             lambda_array.append(np.nan)
                             continue
 
-                        # Perform curve fitting
                         try:
                             popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
                             if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
@@ -239,22 +184,16 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                     # Loop over each minute
                     for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
-
-                        # Calculate 15-minute running average for this minute and all bins
                         running_avg = np.mean(dsd[i:i+15, :], axis=0)
-
-                        # Remove nans from running_avg and corresponding bin_centers
                         valid_indices = ~np.isnan(running_avg)
                         running_avg = running_avg[valid_indices]
                         valid_bin_centers = bin_centers[valid_indices]
 
-                        # If there are no valid data points left after removing NaNs, skip this minute
                         if running_avg.size == 0:
                             N_0_array.append(np.nan)
                             lambda_array.append(np.nan)
                             continue
 
-                        # Perform curve fitting
                         try:
                             popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
                             if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
@@ -263,7 +202,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         except RuntimeError:
                             N_0_array.append(np.nan)
                             lambda_array.append(np.nan)
-
 
                     print("PSDs loaded!")
                 except FileNotFoundError:
@@ -345,7 +283,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         axes[0].set_title("Reflectivity")
         axes[0].imshow(ze_hist, origin='lower', cmap='Reds', aspect='auto', extent=[ze_yedges[0], ze_yedges[-1], ze_xedges[0], ze_xedges[-1]])
         axes[0].invert_yaxis()
-        axes[0].set_xlim((-20, 20))
+        axes[0].set_xlim((-20, 30))
         formatter = ticker.FuncFormatter(lambda y, pos: f'{y/10:.1f}')
         axes[0].yaxis.set_major_formatter(formatter)
         labels = [item.get_text() for item in axes[0].get_yticklabels()]
@@ -356,7 +294,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         axes[1].imshow(dv_hist, origin='lower', cmap='Blues', aspect='auto', extent=[dv_yedges[0], dv_yedges[-1], dv_xedges[0], dv_xedges[-1]])
         axes[1].invert_yaxis()
         axes[1].set_xlabel("m s$^{-1}$")
-        axes[1].set_xlim((-10, 10))
+        axes[1].set_xlim((-5, 5))
         axes[2].set_title("Spectral Width")
         axes[2].imshow(sw_hist, origin='lower', cmap='Oranges', aspect='auto', extent=[sw_yedges[0], sw_yedges[-1], sw_xedges[0], sw_xedges[-1]])
         axes[2].invert_yaxis()
@@ -455,7 +393,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         plt.savefig('../../images/' + site + '_pip.png')
 
     create_hists_for_site(site, match_dates)
-    # create_precip_plots(site, match_dates)
 
 sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
 sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
