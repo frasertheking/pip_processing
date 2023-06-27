@@ -1,4 +1,4 @@
-import sys,os,glob
+import sys,os,glob,re
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -208,34 +208,17 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
         else:
             for date in matched_dates:
-                print("\nWorking on", date)
-                year = date[:4]
-                month = date[4:6]
-                day = date[-2:]
-                date = year + month + day
-                print('sponge', year, month, day)
+                ds_mrr = xr.open_dataset(date) 
+                ze = ds_mrr['Ze'].values
+                dv = ds_mrr['W'].values
+                sw = ds_mrr['spectralWidth'].values
+                mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
 
-                # MRR
-                try:
-                    file_pattern = mrr_path + '/*' + date + '*.nc'
-                    print(file_pattern)
-                    matching_files = glob.glob(file_pattern)
-                    print(matching_files)
-                    ds_mrr = xr.open_dataset(matching_files[0]) 
-                    ze = ds_mrr['Ze'].values
-                    dv = ds_mrr['W'].values
-                    sw = ds_mrr['spectralWidth'].values
-                    mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
-
-                    ze_list.append(ze.T.flatten())
-                    dv_list.append(dv.T.flatten())
-                    sw_list.append(sw.T.flatten())
-                    mrr_height_list.append(mrr_height)
-                    print("MRRs Loaded!")
-                except FileNotFoundError:
-                    print(f"No file found at {mrr_path + '*' + site + '_' + date + '*.nc'}")
-                except Exception as e:
-                    print(e)
+                ze_list.append(ze.T.flatten())
+                dv_list.append(dv.T.flatten())
+                sw_list.append(sw.T.flatten())
+                mrr_height_list.append(mrr_height)
+                print("MRRs Loaded!")
             for date in pip_dates:
                 # PIP
                 try:
