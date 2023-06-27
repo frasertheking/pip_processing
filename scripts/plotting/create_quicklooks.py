@@ -259,7 +259,7 @@ def create_hists_for_site(site):
     axes[2].set_xlabel("m s$^{-1}$")
     axes[2].set_xlim((0, 0.5))
     plt.tight_layout()
-    plt.savefig('../images/' + site + '_mrr.png')
+    plt.savefig('../../images/' + site + '_mrr.png')
 
     ########### N0 Lambda Stuff
     bin_N0 = np.arange(0, 6.2, 0.2)
@@ -276,7 +276,7 @@ def create_hists_for_site(site):
     cb.set_label(label="Counts", size=14)
     cb.ax.tick_params(labelsize=14) 
     plt.grid()
-    plt.savefig('../images/' + site + '_n0_lambda.png')
+    plt.savefig('../../images/' + site + '_n0_lambda.png')
 
     plt.figure(dpi=150)
     bin_lambda = np.arange(0, 10, 0.2)
@@ -287,7 +287,7 @@ def create_hists_for_site(site):
     plt.ylabel("Normalized Counts", size=14)
     plt.grid()
     plt.legend()
-    plt.savefig('../images/' + site + '_lambda.png')
+    plt.savefig('../../images/' + site + '_lambda.png')
 
     plt.figure(dpi=150)
     bin_N0 = np.arange(0.0, 6, 0.2)
@@ -298,7 +298,7 @@ def create_hists_for_site(site):
     plt.xlim(1, 6)
     plt.grid()
     plt.legend()
-    plt.savefig('../images/' + site + '_n0.png')
+    plt.savefig('../../images/' + site + '_n0.png')
 
 
     bin_DSD = np.linspace(.001,5,54)
@@ -348,7 +348,7 @@ def create_hists_for_site(site):
     axes[2].set_xlabel("Mean De (mm)")
     axes[2].set_yscale('linear')
     plt.tight_layout()
-    plt.savefig('../images/' + site + '_pip.png')
+    plt.savefig('../../images/' + site + '_pip.png')
 
 
 
