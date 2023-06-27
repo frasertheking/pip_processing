@@ -1,4 +1,4 @@
-import sys,os,glob,re
+import sys,os,glob
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -16,18 +16,13 @@ plt.rcParams.update({'font.size': 15})
 
 def sanity_check(site, pip_path, mrr_path):
     print("\n\n\nPerforming sanity check on", site)
-    
-    date_pattern = r'\d{8}'
+
     pip_dates = []
     for year in range(2015, 2023):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
         print(pip_path_temp)
         for file in glob.glob(pip_path_temp):
-            print(file)
-            match = re.search(date_pattern, file)
-            if match:
-                pip_dates.append(match.group())
-
+            pip_dates.append(file[-37:-29])
 
     matched_dates = []
     files = glob.glob(os.path.join(mrr_path, '*.nc'))
