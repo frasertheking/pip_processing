@@ -1,4 +1,4 @@
-import sys,os,glob
+import sys,os,glob,re
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -16,14 +16,17 @@ plt.rcParams.update({'font.size': 15})
 
 def sanity_check(site, pip_path, mrr_path):
     print("\n\n\nPerforming sanity check on", site)
-
+    
+    date_pattern = r'\d{8}'
     pip_dates = []
     for year in range(2015, 2023):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
-        print(pip_path_temp)
         for file in glob.glob(pip_path_temp):
-            print(file)
-            pip_dates.append(file[-37:-29])
+            # pip_dates.append(file[-37:-29])
+            match = re.search(date_pattern, file)
+            if match:
+                pip_dates.append(match.group())
+
 
     matched_dates = []
     files = glob.glob(os.path.join(mrr_path, '*.nc'))
@@ -364,4 +367,4 @@ def sanity_check(site, pip_path, mrr_path):
 
 # sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF')
 # sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/')
-sanity_check('HAUK', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/')
+sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/')
