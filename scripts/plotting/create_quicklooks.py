@@ -125,6 +125,7 @@ def create_hists_for_site(site):
             matching_files = glob.glob(file_pattern)
             ds_pip = xr.open_dataset(matching_files[0])   
             dsd = ds_pip['psd'].values
+            bin_centers = ds_pip.bin_centers.values
             dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
             dsd_list.append(dsd.T.flatten())
             dsd_height_list.append(dsd_height)
