@@ -78,7 +78,7 @@ def sanity_check(site, pip_path, mrr_path):
         ax2.plot(np.arange(365), avg_ed, color='black', linewidth=3)
         ax2.set_ylabel('Effective Density')
         ax2.set_xlabel('Month')
-        plt.savefig('../images/' + site + '_precip.png')
+        plt.savefig('../../images/' + site + '_precip.png')
         print("Success!")
 
     def create_hists_for_site(site):
