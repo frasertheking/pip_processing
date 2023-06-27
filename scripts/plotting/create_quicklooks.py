@@ -22,7 +22,7 @@ def sanity_check(site, pip_path, mrr_path):
     for year in range(2015, 2023):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
         for file in glob.glob(pip_path_temp):
-            # pip_dates.append(file[-37:-29])
+            print(file)
             match = re.search(date_pattern, file)
             if match:
                 pip_dates.append(match.group())
