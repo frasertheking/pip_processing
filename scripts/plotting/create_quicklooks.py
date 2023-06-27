@@ -163,7 +163,7 @@ def create_hists_for_site(site):
         except FileNotFoundError:
             print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + date + '*_dsd.nc'}")
         except Exception as e:
-            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + date + '*_dsd.nc'}")
+            print(e)
 
         try:
             file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
