@@ -106,7 +106,7 @@ def sanity_check(site, pip_path, mrr_path):
 
             # MRR
             try:
-                file_pattern = mrr_path + '*' + date + '*.nc'
+                file_pattern = mrr_path + '/*' + date + '*.nc'
                 print(file_pattern)
                 matching_files = glob.glob(file_pattern)
                 print(matching_files)
