@@ -220,6 +220,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                 mrr_height_list.append(mrr_height)
                 print("MRRs Loaded!")
             for date in pip_dates:
+                print('sponge2', date)
                 # PIP
                 try:
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
