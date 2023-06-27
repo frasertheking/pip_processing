@@ -213,6 +213,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                 month = date[4:6]
                 day = date[-2:]
                 date = year + month + day
+                print('sponge', year, month, day)
 
                 # MRR
                 try:
