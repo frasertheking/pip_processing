@@ -10,6 +10,7 @@ import warnings
 from matplotlib.colors import LogNorm
 from datetime import datetime, timedelta
 from matplotlib.colors import LogNorm
+from scipy.optimize import curve_fit
 warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
@@ -96,6 +97,9 @@ def create_hists_for_site(site):
     rho_list = []
     rho_height_list = []
 
+    N_0_array = []
+    lambda_array = []
+
     for date in matched_dates:
         print("\nWorking on", date)
         year = date[:4]
@@ -124,11 +128,42 @@ def create_hists_for_site(site):
             dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
             dsd_list.append(dsd.T.flatten())
             dsd_height_list.append(dsd_height)
+
+            func = lambda t, a, b: a * np.exp(-b*t)
+
+            # Loop over each minute
+            for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
+
+                # Calculate 15-minute running average for this minute and all bins
+                running_avg = np.mean(dsd[i:i+15, :], axis=0)
+
+                # Remove nans from running_avg and corresponding bin_centers
+                valid_indices = ~np.isnan(running_avg)
+                running_avg = running_avg[valid_indices]
+                valid_bin_centers = bin_centers[valid_indices]
+
+                # If there are no valid data points left after removing NaNs, skip this minute
+                if running_avg.size == 0:
+                    N_0_array.append(np.nan)
+                    lambda_array.append(np.nan)
+                    continue
+
+                # Perform curve fitting
+                try:
+                    popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
+                    if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
+                        N_0_array.append(popt[0])
+                        lambda_array.append(popt[1])
+                except RuntimeError:
+                    N_0_array.append(np.nan)
+                    lambda_array.append(np.nan)
+
+
             print("PSDs loaded!")
         except FileNotFoundError:
-            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '*_dsd.nc'}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + date + '*_dsd.nc'}")
         except Exception as e:
-            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '*_dsd.nc'}")
+            print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + date + '*_dsd.nc'}")
 
         try:
             file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
@@ -157,6 +192,7 @@ def create_hists_for_site(site):
             print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
         except Exception as e:
             print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
+
 
     print("Ze stats", len(ze_list))
     print("DSD stats", len(dsd_list))
@@ -224,22 +260,66 @@ def create_hists_for_site(site):
     plt.tight_layout()
     plt.savefig('../images/' + site + '_mrr.png')
 
-    # PIP
+    ########### N0 Lambda Stuff
+    bin_N0 = np.arange(0, 6.2, 0.2)
+    bin_lambda = np.arange(-1, 1.05, 0.05)
+    AR_N0_lambda_hist = np.histogram2d(np.ma.log10(lambda_array), np.ma.log10(N_0_array), (bin_lambda,bin_N0))
+    plt.figure(dpi=150)
+    plt.pcolormesh(bin_lambda, bin_N0, np.ma.masked_less(AR_N0_lambda_hist[0].T, 10), vmin=0, cmap="viridis")
+    plt.xlim(-0.4,1.0)
+    plt.ylim(0,6)
+    plt.title("PIP AR Snowfall", size=16)
+    plt.ylabel("$Log_{10}(N_{0})$", size=14)
+    plt.xlabel("$Log_{10}(λ)$", size=14)
+    cb = plt.colorbar(label = 'counts', extend="max")
+    cb.set_label(label="Counts", size=14)
+    cb.ax.tick_params(labelsize=14) 
+    plt.grid()
+    plt.savefig('../images/' + site + '_n0_lambda.png')
+
+    plt.figure(dpi=150)
+    bin_lambda = np.arange(0, 10, 0.2)
+    plt.hist(lambda_array, bins=bin_lambda, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0, label="AR Snowfall")
+    plt.title("PIP Lambda (λ) Histograms", size=20)
+    plt.xlim(0.3, 8)
+    plt.xlabel("Lambda (λ) [$mm^{-1}$]", size=14)
+    plt.ylabel("Normalized Counts", size=14)
+    plt.grid()
+    plt.legend()
+    plt.savefig('../images/' + site + '_lambda.png')
+
+    plt.figure(dpi=150)
+    bin_N0 = np.arange(0.0, 6, 0.2)
+    plt.hist(np.ma.log10(N_0_array), bins=bin_N0, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0, label="AR Snowfall")
+    plt.title("PIP $N_0$ Histograms", size=20)
+    plt.xlabel("$Log_{10}(N_0)$", size=14)
+    plt.ylabel("Normalized Counts", size=14)
+    plt.xlim(1, 6)
+    plt.grid()
+    plt.legend()
+    plt.savefig('../images/' + site + '_n0.png')
+
+
+    bin_DSD = np.linspace(.001,5,54)
+    bin_VVD = np.arange(0.1,5.1,0.1)
+    bin_eden = np.arange(0.01,1.01,0.01)    
+    bin_D = np.arange(0,26,1)
+    
     dsd_x = np.asarray(dsd_ds).flatten()
     dsd_y = np.asarray(dsd_height_ds).flatten()
     dsd_x[dsd_x<=0] = np.nan
     mask = ~np.isnan(dsd_x)
     dsd_x = dsd_x[mask]
     dsd_y = dsd_y[mask]
-    dsd_hist, dsd_xedges, dsd_yedges = np.histogram2d(dsd_y, dsd_x, bins=[128, 128])
-    
+    dsd_hist, dsd_xedges, dsd_yedges = np.histogram2d(dsd_y, np.ma.log10(dsd_x), (bin_D, bin_DSD))
+
     vvd_x = np.asarray(vvd_ds).flatten()
     vvd_y = np.asarray(vvd_height_ds).flatten()
     vvd_x[vvd_x<=0] = np.nan
     mask = ~np.isnan(vvd_x)
     vvd_x = vvd_x[mask]
     vvd_y = vvd_y[mask]
-    vvd_hist, vvd_xedges, vvd_yedges = np.histogram2d(vvd_y, vvd_x, bins=[128, 128])
+    vvd_hist, vvd_xedges, vvd_yedges = np.histogram2d(vvd_y, vvd_x, (bin_D, bin_VVD))
     
     rho_x = np.asarray(rho_ds).flatten()
     rho_y = np.asarray(rho_height_ds).flatten()
@@ -247,39 +327,30 @@ def create_hists_for_site(site):
     mask = ~np.isnan(rho_x)
     rho_x = rho_x[mask]
     rho_y = rho_y[mask]
-    rho_hist, rho_xedges, rho_yedges = np.histogram2d(rho_y, rho_x, bins=[128, 128])
+    rho_hist, rho_xedges, rho_yedges = np.histogram2d(rho_y, rho_x, (bin_D, bin_eden))
 
     fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=False)
     fig.suptitle(site + ' PIP')
     axes[0].set_title("Particle Size Distribution")
-    axes[0].imshow(dsd_hist.T, origin='lower', cmap='viridis', aspect='auto', norm=LogNorm(vmin=0.01, vmax=2500000), extent=[dsd_xedges[0], dsd_xedges[-1], dsd_yedges[0], dsd_yedges[-1]])
+    axes[0].imshow(dsd_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[dsd_xedges[0], dsd_xedges[-1], dsd_yedges[0], dsd_yedges[-1]])
     axes[0].set_xlabel("Mean De (mm)")
-    axes[0].set_xlim((0, 50))
     bin_centers = ds_pip.bin_centers.values
     ticks_idx = np.linspace(0, 49, 6, dtype=int)
-    axes[0].set_xticks(ticks_idx)
-    axes[0].set_xticklabels(bin_centers[ticks_idx])
-    axes[0].set_ylabel('m$^{−3}$ mm$^{−1}$')
-    axes[0].set_yscale('log')
-#     axes[0].set_ylim((0, 1000))
     axes[1].set_title("Velocity Distribution")
-    axes[1].imshow(vvd_hist.T, origin='lower', cmap='Purples', aspect='auto',  norm=LogNorm(vmin=0.01, vmax=2500000), extent=[vvd_xedges[0], vvd_xedges[-1], vvd_yedges[0], vvd_yedges[-1]])
+    axes[1].imshow(vvd_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[vvd_xedges[0], vvd_xedges[-1], vvd_yedges[0], vvd_yedges[-1]])
     axes[1].set_ylabel("m s$^{−1}$")
     axes[1].set_xlabel("Mean De (mm)")
     axes[1].set_yscale('linear')
-    axes[1].set_xlim((0, 50))
-    axes[1].set_xticks(ticks_idx)
-    axes[1].set_xticklabels(bin_centers[ticks_idx])
     axes[2].set_title("eDensity Distribution")
-    axes[2].imshow(rho_hist.T, origin='lower', cmap='Greens', aspect='auto',  norm=LogNorm(vmin=0.01, vmax=2500000),extent=[rho_xedges[0], rho_xedges[-1], rho_yedges[0], rho_yedges[-1]])
+    axes[2].imshow(rho_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[rho_xedges[0], rho_xedges[-1], rho_yedges[0], rho_yedges[-1]])
     axes[2].set_xlabel("g cm$^{-3}$")
     axes[2].set_xlabel("Mean De (mm)")
-    axes[2].set_xlim((0, 50))
-    axes[2].set_xticks(ticks_idx)
-    axes[2].set_xticklabels(bin_centers[ticks_idx])
     axes[2].set_yscale('linear')
     plt.tight_layout()
     plt.savefig('../images/' + site + '_pip.png')
-    
+
+
+
+
 create_hists_for_site('MQT')
 # create_precip_plots('MQT')
