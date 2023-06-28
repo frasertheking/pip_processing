@@ -288,7 +288,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             return data_x, height_y
 
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim):
-            hist, xedges, yedges = np.histogram2d(y, x, bins=[56, 256])
+            hist, xedges, yedges = np.histogram2d(y, x, bins=[28, 256])
             ax.set_title(title)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
             ax.set_xlim(xlim)
@@ -297,9 +297,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cbar.ax.set_ylabel('Counts')
 
         def plot_pip_histogram(ax, x, y, title, color, xlabel, bins):
-            hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,0.5), bins])
+            hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
-            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
+            im = ax.imshow(hist.T, cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
             ax.set_ylabel(xlabel)
             cbar = ax.figure.colorbar(im, ax=ax)
             cbar.ax.set_ylabel('Counts')
@@ -323,9 +323,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[1].set_xlabel("Mean D$_e$ (mm)")
             axes[2].set_xlabel("Mean D$_e$ (mm)")
 
-            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001,5,54))
-            plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1,5.1,0.1))
-            plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'magma', "Effective Density (g cm$^{-3}$)", np.arange(0.01,1.01,0.01))
+            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 108))
+            plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.05))
+            plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'magma', "Effective Density (g cm$^{-3}$)", np.arange(0.01, 1.01, 0.005))
 
             plt.tight_layout()
             plt.savefig('../../images/' + site + '_pip' + str(match_dates) + '.png')
