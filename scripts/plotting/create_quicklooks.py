@@ -290,16 +290,17 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[28, 256])
             ax.set_title(title)
+            hist = 100 * hist / np.sum(hist)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
             cbar = ax.figure.colorbar(im, ax=ax)
-            cbar.ax.set_ylabel('Counts')
+            cbar.ax.set_ylabel('Counts (%)')
 
         def plot_pip_histogram(ax, x, y, title, color, xlabel, bins, log_scale=False):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
-
+            hist = 100 * hist / np.sum(hist)
             if log_scale:
                 norm = LogNorm()
             else:
@@ -310,7 +311,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             ax.set_ylabel(xlabel)
             ax.set_xlabel("Mean D$_e$ (mm)")
             cbar = ax.figure.colorbar(im, ax=ax)
-            cbar.ax.set_ylabel('Counts')
+            cbar.ax.set_ylabel('Counts (%)')
 
         def plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
@@ -328,7 +329,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6))
             fig.suptitle(site + ' PIP (Matched =' + str(match_dates) + ')')
 
-            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 108), True)
+            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), True)
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
             plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'magma', "Effective Density (g cm$^{-3}$)", np.arange(0.01, 1.01, 0.005))
 
@@ -365,7 +366,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
             axes[1].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0)
             axes[1].set_xlim(0.3, 8)
-            axes[1].set_xlabel("Lambda (λ) [$mm^{-1}$]", size=14)
+            axes[1].set_xlabel("Lambda (λ) ($mm^{-1}$)", size=14)
             axes[1].set_ylabel("Normalized Counts", size=14)
 
             axes[2].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0)
