@@ -297,7 +297,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cbar.ax.set_ylabel('Counts')
 
         def plot_pip_histogram(ax, x, y, title, color, xlabel, bins, log_scale=False):
-            hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
+            hist, xedges, yedges = np.histogram2d(x, y, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
 
             if log_scale:
