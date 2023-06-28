@@ -96,12 +96,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dsd = ds_pip['psd'].values
                     bin_centers = ds_pip.bin_centers.values
 
-                    print(bin_centers)
-                    print("sponge0", dsd.shape)
                     dsd = dsd[snow_indices, :]
-                    print("sponge1", dsd.shape, bin_centers.shape)
-                    bin_centers = bin_centers[snow_indices]
-                    print("sponge2", dsd.shape, bin_centers.shape)
 
                     dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
                     dsd_list.append(dsd.T.flatten())
@@ -149,9 +144,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])   
                     vvd = ds_pip['vvd'].values
 
-                    print("sponge3", vvd.shape)
                     vvd = vvd[snow_indices, :]
-                    print("sponge4", vvd.shape)
 
                     vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
                     vvd_list.append(vvd.T.flatten())
@@ -174,9 +167,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])  
                     rho = ds_pip['rho'].values
 
-                    print("sponge5", rho.shape)
                     rho = rho[snow_indices, :]
-                    print("sponge6", rho.shape)
 
                     rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
                     rho_list.append(rho.T.flatten())
