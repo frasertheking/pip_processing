@@ -96,11 +96,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dsd = ds_pip['psd'].values
                     bin_centers = ds_pip.bin_centers.values
 
-                    condition = np.isin(np.arange(dsd.shape[1]), snow_indices)
-                    condition = condition[np.newaxis, :]  # add new dimension to make it broadcastable
-                    print('sponge', condition.shape, dsd.shape)
-                    dsd = np.ma.masked_where(condition, dsd)
-                    bin_centers = np.ma.masked_where(condition, bin_centers)
+                    index_array = np.ones_like(dsd, dtype=bool)
+                    index_array[:, snow_indices] = False
+                    dsd = np.ma.array(dsd, mask=~index_array)
+                    bin_centers = np.ma.array(bin_centers, mask=~index_array)
 
                     dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
                     dsd_list.append(dsd.T.flatten())
@@ -148,9 +147,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])   
                     vvd = ds_pip['vvd'].values
 
-                    condition = np.isin(np.arange(dsd.shape[1]), snow_indices)
-                    condition = condition[np.newaxis, :]  # add new dimension to make it broadcastable
-                    vvd = np.ma.masked_where(condition, vvd)
+                    index_array = np.ones_like(vvd, dtype=bool)
+                    index_array[:, snow_indices] = False
+                    vvd = np.ma.array(vvd, mask=~index_array)
 
                     vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
                     vvd_list.append(vvd.T.flatten())
@@ -173,9 +172,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])  
                     rho = ds_pip['rho'].values
 
-                    condition = np.isin(np.arange(dsd.shape[1]), snow_indices)
-                    condition = condition[np.newaxis, :]  # add new dimension to make it broadcastable
-                    rho = np.ma.masked_where(condition, rho)
+                    index_array = np.ones_like(rho, dtype=bool)
+                    index_array[:, snow_indices] = False
+                    rho = np.ma.array(rho, mask=~index_array)
 
                     rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
                     rho_list.append(rho.T.flatten())
