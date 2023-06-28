@@ -297,7 +297,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cbar.ax.set_ylabel('Counts')
 
         def plot_pip_histogram(ax, x, y, title, color, xlabel, bins, log_scale=False):
-            hist, xedges, yedges = np.histogram2d(x, y, bins=[np.arange(0,26,1), bins])
+            hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
 
             if log_scale:
@@ -305,7 +305,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             else:
                 norm = None
 
-            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], norm=norm)
+            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], norm=norm)
 
             ax.set_ylabel(xlabel)
             ax.set_xlabel("Mean D$_e$ (mm)")
@@ -333,7 +333,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'magma', "Effective Density (g cm$^{-3}$)", np.arange(0.01, 1.01, 0.005))
 
             plt.tight_layout()
-            plt.savefig('../../images/' + site + '_pip' + str(match_dates) + '.png')
+            plt.savefig('../../images/' + site + '_pip_' + str(match_dates) + '.png')
 
         def process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates):
             ze_data = prepare_data(ze_list, mrr_height_list, [-30, np.inf])
