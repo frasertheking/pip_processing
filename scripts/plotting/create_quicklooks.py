@@ -89,7 +89,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
                     snow_indices = np.where(ed <= 0.2)[0]
-                    print('sponge', ed.shape, np.asarray(snow_indices).shape)
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
                     matching_files = glob.glob(file_pattern)
@@ -97,9 +96,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dsd = ds_pip['psd'].values
                     bin_centers = ds_pip.bin_centers.values
 
-                    print("sponge0", dsd.shape)
                     dsd = dsd[snow_indices, :]
-                    print("sponge1", dsd.shape)
 
                     dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
                     dsd_list.append(dsd.T.flatten())
@@ -182,7 +179,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
         else:
             for date in matched_dates:
-                print("aaaaaaaaaaaaaaaaaaaa")
                 ds_mrr = xr.open_dataset(date) 
                 ze = ds_mrr['Ze'].values
                 dv = ds_mrr['W'].values
@@ -294,8 +290,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         def plot_pip_histogram(ax, x, y, title, color, xlabel, bins):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
-            ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
+            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
             ax.set_xlabel(xlabel)
+            cbar = ax.figure.colorbar(im, ax=ax)
+            cbar.ax.set_ylabel('Counts')
 
         def plot_mrr_figures(site, ze_data, dv_data, sw_data):
             fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
