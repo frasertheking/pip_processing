@@ -53,6 +53,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         lambda_array = []
 
         if match_dates:
+            for date in matched_dates:
+                print("\nWorking on", date)
+                year = date[:4]
+                month = date[4:6]
+                day = date[-2:]
+                date = year + month + day
+                
                 # MRR
                 try:
                     file_pattern = mrr_path + '/*' + date + '*.nc'
