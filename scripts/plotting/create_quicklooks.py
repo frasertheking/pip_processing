@@ -89,6 +89,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
                     snow_indices = np.where(ed <= 0.2)[0]
+                    print('sponge', ed.shape, np.asarray(snow_indices).shape)
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
                     matching_files = glob.glob(file_pattern)
