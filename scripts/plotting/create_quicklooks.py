@@ -461,9 +461,31 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
             plot_pip_figures(site, dsd_data, vvd_data, rho_data)
 
+        def plot_n0_lambda(site, lam, n0, lam_bins, n0_bins):
+            n0_lambda_hist = np.histogram2d(np.ma.log10(lam), np.ma.log10(n0), (lam_bins, n0_bins))
+            fig, axes = plt.subplots(1, 3, figsize=(16,6))
+            fig.suptitle(site + ' n$_0$ Lambda Summary')
+            axes[0].pcolormesh(lam_bins, n0_bins, np.ma.masked_less(n0_lambda_hist[0].T, 10), vmin=0, cmap="viridis")
+            axes[0].set_xlim(-0.4, 1.0)
+            axes[0].set_ylim(0, 6)
+            axes[0].set_ylabel("$Log_{10}(N_{0})$")
+            axes[0].set_xlabel("$Log_{10}(λ)$")
+            cb = axes[0].colorbar(label = 'counts', extend="max")
+            cb.set_label(label="Counts", size=14)
+            axes[1].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0)
+            axes[1].set_xlim(0.3, 8)
+            axes[1].set_xlabel("Lambda (λ) [$mm^{-1}$]", size=14)
+            axes[1].set_ylabel("Normalized Counts", size=14)
+            axes[2].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0)
+            axes[2].set_xlabel("$Log_{10}(N_0)$", size=14)
+            axes[2].set_ylabel("Normalized Counts", size=14)
+            axes[2].set_xlim(1, 6)
+            plt.savefig('../../images/' + site + '_n0_lambda.png')
+
         # Call the process_data function with the appropriate data lists
         process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list)
         process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list)
+        plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.05), np.arange(0, 6.2, 0.2))
 
     create_hists_for_site(site, match_dates)
 
