@@ -296,10 +296,17 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cbar = ax.figure.colorbar(im, ax=ax)
             cbar.ax.set_ylabel('Counts')
 
-        def plot_pip_histogram(ax, x, y, title, color, xlabel, bins):
+        def plot_pip_histogram(ax, x, y, title, color, xlabel, bins, log_scale=False):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
-            im = ax.imshow(hist.T, cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
+
+            if log_scale:
+                norm = LogNorm()
+            else:
+                norm = None
+
+            im = ax.imshow(np.flipud(hist.T), origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[-1], xedges[0]], norm=norm)
+
             ax.set_ylabel(xlabel)
             cbar = ax.figure.colorbar(im, ax=ax)
             cbar.ax.set_ylabel('Counts')
@@ -307,7 +314,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         def plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
             fig.suptitle(site + ' MRR (Matched =' + str(match_dates) + ')')
-            axes[0].set_ylabel("Height (km)")
+            axes[0].set_ylabel("Bin")
 
             plot_mrr_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30))
             plot_mrr_histogram(axes[1], dv_data[0], dv_data[1], "Doppler Velocity", 'Blues', "m s$^{-1}$", (-5, 5))
@@ -323,8 +330,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[1].set_xlabel("Mean D$_e$ (mm)")
             axes[2].set_xlabel("Mean D$_e$ (mm)")
 
-            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 108))
-            plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.05))
+            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 108), True)
+            plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
             plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'magma', "Effective Density (g cm$^{-3}$)", np.arange(0.01, 1.01, 0.005))
 
             plt.tight_layout()
@@ -373,7 +380,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         # Call the process_data function with the appropriate data lists
         process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates)
         process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, match_dates)
-        plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.05), np.arange(0, 6.2, 0.2), match_dates)
+        plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
 
     create_hists_for_site(site, match_dates)
 
