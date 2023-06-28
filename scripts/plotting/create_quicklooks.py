@@ -291,7 +291,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[28, 128])
             ax.set_title(title)
             ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
-            ax.invert_yaxis()
+            # ax.invert_yaxis()
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
 
