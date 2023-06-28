@@ -303,7 +303,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cbar = ax.figure.colorbar(im, ax=ax)
             cbar.ax.set_ylabel('Counts')
 
-        def plot_mrr_figures(site, ze_data, dv_data, sw_data):
+        def plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
             fig.suptitle(site + ' MRR')
             axes[0].set_ylabel("Height (km)")
@@ -313,9 +313,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             plot_mrr_histogram(axes[2], sw_data[0], sw_data[1], "Spectral Width", 'Oranges', "m s$^{-1}$", (0, 0.5))
 
             plt.tight_layout()
-            plt.savefig('../../images/' + site + '_mrr.png')
+            plt.savefig('../../images/' + site + '_mrr_' + str(match_dates) + '.png')
 
-        def plot_pip_figures(site, dsd_data, vvd_data, rho_data):
+        def plot_pip_figures(site, dsd_data, vvd_data, rho_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6))
             fig.suptitle(site + ' PIP')
             axes[0].set_xlabel("Mean D$_e$ (mm)")
@@ -327,23 +327,23 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'plasma', "Effective Density (g cm$^{-3}$)", np.arange(0.01,1.01,0.01))
 
             plt.tight_layout()
-            plt.savefig('../../images/' + site + '_pip.png')
+            plt.savefig('../../images/' + site + '_pip' + str(match_dates) + '.png')
 
-        def process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list):
+        def process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates):
             ze_data = prepare_data(ze_list, mrr_height_list, [-30, np.inf])
             dv_data = prepare_data(dv_list, mrr_height_list, [-30, 30])
             sw_data = prepare_data(sw_list, mrr_height_list, [0, 1])
 
-            plot_mrr_figures(site, ze_data, dv_data, sw_data)
+            plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates)
 
-        def process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list):
+        def process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, match_dates):
             dsd_data = prepare_data(dsd_list, dsd_height_list, [0, np.inf])
             vvd_data = prepare_data(vvd_list, vvd_height_list, [0, np.inf])
             rho_data = prepare_data(rho_list, rho_height_list, [0, np.inf])
 
-            plot_pip_figures(site, dsd_data, vvd_data, rho_data)
+            plot_pip_figures(site, dsd_data, vvd_data, rho_data, match_dates)
 
-        def plot_n0_lambda(site, lam, n0, lam_bins, n0_bins):
+        def plot_n0_lambda(site, lam, n0, lam_bins, n0_bins, match_dates):
             n0_lambda_hist = np.histogram2d(np.ma.log10(lam), np.ma.log10(n0), (lam_bins, n0_bins))
             fig, axes = plt.subplots(1, 3, figsize=(16,6))
             fig.suptitle(site + ' n$_0$ Lambda Summary')
@@ -367,17 +367,22 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[2].set_ylabel("Normalized Counts", size=14)
             axes[2].set_xlim(1, 6)
             plt.tight_layout()
-            plt.savefig('../../images/' + site + '_n0_lambda.png')
+            plt.savefig('../../images/' + site + '_n0_lambda_' + str(match_dates) + '.png')
 
         # Call the process_data function with the appropriate data lists
-        process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list)
-        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list)
-        plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.05), np.arange(0, 6.2, 0.2))
+        process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates)
+        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, match_dates)
+        plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.05), np.arange(0, 6.2, 0.2), match_dates)
 
     create_hists_for_site(site, match_dates)
 
 sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', True)
-# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
-# sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
-# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
-# sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
+sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
+sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', True)
+sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
+sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', True)
+sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
+sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', True)
+sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
+sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', True)
+sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
