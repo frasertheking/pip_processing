@@ -416,7 +416,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             ax.set_xlabel(xlabel)
 
         def plot_pip_histogram(ax, x, y, title, color, xlabel, bins):
-            hist, xedges, yedges = np.histogram2d(x, y, bins=[np.arange(0,26,1), bins])
+            hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
             ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
             ax.set_xlabel(xlabel)
@@ -440,7 +440,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[1].set_xlabel("Mean D$_e$ (mm)")
             axes[2].set_xlabel("Mean D$_e$ (mm)")
 
-            plot_pip_histogram(axes[0], dsd_data[0],  np.ma.log10(dsd_data[1]), "Particle Size Distribution", 'plasma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001,5,54))
+            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'plasma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001,5,54))
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'plasma', "Fall Speed (m s$^{−1}$)", np.arange(0.1,5.1,0.1))
             plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'plasma', "Effective Density (g cm$^{-3}$)", np.arange(0.01,1.01,0.01))
 
