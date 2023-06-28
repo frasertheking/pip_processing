@@ -182,6 +182,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
         else:
             for date in matched_dates:
+                print("aaaaaaaaaaaaaaaaaaaa")
                 ds_mrr = xr.open_dataset(date) 
                 ze = ds_mrr['Ze'].values
                 dv = ds_mrr['W'].values
