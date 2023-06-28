@@ -98,6 +98,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                     condition = np.isin(np.arange(dsd.shape[1]), snow_indices)
                     condition = condition[np.newaxis, :]  # add new dimension to make it broadcastable
+                    print('sponge', condition.shape, dsd.shape)
                     dsd = np.ma.masked_where(condition, dsd)
                     bin_centers = np.ma.masked_where(condition, bin_centers)
 
