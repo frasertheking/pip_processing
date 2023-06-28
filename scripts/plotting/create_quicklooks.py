@@ -407,7 +407,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             
             return data_x, height_y
 
-        def plot_histogram(ax, x, y, title, color, xlabel, xlim):
+        def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[28, 128])
             ax.set_title(title)
             ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
@@ -415,27 +415,56 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
 
-        def plot_figures(site, ze_data, dv_data, sw_data):
+        def plot_pip_histogram(ax, x, y, title, color, xlabel, bins):
+            hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
+            ax.set_title(title)
+            ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
+            ax.invert_yaxis()
+            ax.set_xlabel(xlabel)
+
+        def plot_mrr_figures(site, ze_data, dv_data, sw_data):
             fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
             fig.suptitle(site + ' MRR')
             axes[0].set_ylabel("Height (km)")
 
-            plot_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30))
-            plot_histogram(axes[1], dv_data[0], dv_data[1], "Doppler Velocity", 'Blues', "m s$^{-1}$", (-5, 5))
-            plot_histogram(axes[2], sw_data[0], sw_data[1], "Spectral Width", 'Oranges', "m s$^{-1}$", (0, 0.5))
+            plot_mrr_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30))
+            plot_mrr_histogram(axes[1], dv_data[0], dv_data[1], "Doppler Velocity", 'Blues', "m s$^{-1}$", (-5, 5))
+            plot_mrr_histogram(axes[2], sw_data[0], sw_data[1], "Spectral Width", 'Oranges', "m s$^{-1}$", (0, 0.5))
 
             plt.tight_layout()
             plt.savefig('../../images/' + site + '_mrr.png')
 
-        def process_data(site, ze_list, mrr_height_list, dv_list, sw_list):
+        def plot_pip_figures(site, dsd_data, vvd_data, rho_data):
+            fig, axes = plt.subplots(1, 3, figsize=(16,6))
+            fig.suptitle(site + ' PIP')
+            axes[0].set_xlabel("Mean D$_e$ (mm)")
+            axes[1].set_xlabel("Mean D$_e$ (mm)")
+            axes[2].set_xlabel("Mean D$_e$ (mm)")
+
+            plot_pip_histogram(axes[0], dsd_data[0], dsd_data[1], "Particle Size Distribution", 'plasma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001,5,54))
+            plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'plasma', "Fall Speed (m s$^{−1}$)", np.arange(0.1,5.1,0.1))
+            plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'plasma', "Effective Density (g cm$^{-3}$)", np.arange(0.01,1.01,0.01))
+
+            plt.tight_layout()
+            plt.savefig('../../images/' + site + '_pip.png')
+
+        def process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list):
             ze_data = prepare_data(ze_list, mrr_height_list, [-30, np.inf])
             dv_data = prepare_data(dv_list, mrr_height_list, [-30, 30])
             sw_data = prepare_data(sw_list, mrr_height_list, [0, 1])
 
-            plot_figures(site, ze_data, dv_data, sw_data)
+            plot_mrr_figures(site, ze_data, dv_data, sw_data)
+
+        def process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list):
+            dsd_data = prepare_data(dsd_list, dsd_height_list, [-30, np.inf])
+            vvd_data = prepare_data(vvd_list, vvd_height_list, [-30, 30])
+            rho_data = prepare_data(rho_list, rho_height_list, [0, 1])
+
+            plot_pip_figures(site, dsd_data, vvd_data, rho_data)
 
         # Call the process_data function with the appropriate data lists
-        process_data(site, ze_list, mrr_height_list, dv_list, sw_list)
+        process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list)
+        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list)
 
     create_hists_for_site(site, match_dates)
 
