@@ -484,7 +484,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[2].set_xlabel("$Log_{10}(N_0)$", size=14)
             axes[2].set_ylabel("Normalized Counts", size=14)
             axes[2].set_xlim(1, 6)
-
+            plt.tight_layout()
             plt.savefig('../../images/' + site + '_n0_lambda.png')
 
         # Call the process_data function with the appropriate data lists
