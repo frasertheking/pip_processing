@@ -305,9 +305,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             else:
                 norm = None
 
-            im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], norm=norm)
+            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], norm=norm)
 
             ax.set_ylabel(xlabel)
+            ax.set_xlabel("Mean D$_e$ (mm)")
             cbar = ax.figure.colorbar(im, ax=ax)
             cbar.ax.set_ylabel('Counts')
 
@@ -326,9 +327,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         def plot_pip_figures(site, dsd_data, vvd_data, rho_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6))
             fig.suptitle(site + ' PIP (Matched =' + str(match_dates) + ')')
-            axes[0].set_xlabel("Mean D$_e$ (mm)")
-            axes[1].set_xlabel("Mean D$_e$ (mm)")
-            axes[2].set_xlabel("Mean D$_e$ (mm)")
 
             plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 108), True)
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
