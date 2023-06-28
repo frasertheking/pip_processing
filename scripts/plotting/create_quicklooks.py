@@ -96,6 +96,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dsd = ds_pip['psd'].values
                     bin_centers = ds_pip.bin_centers.values
 
+                    print(bin_centers)
                     print("sponge0", dsd.shape)
                     dsd = dsd[snow_indices, :]
                     print("sponge1", dsd.shape, bin_centers.shape)
