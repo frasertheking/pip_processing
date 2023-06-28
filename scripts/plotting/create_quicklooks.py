@@ -237,165 +237,210 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                 except Exception as e:
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
 
-        print("Ze stats", len(ze_list))
-        print("DSD stats", len(dsd_list))
+        # print("Ze stats", len(ze_list))
+        # print("DSD stats", len(dsd_list))
 
-        ze_ds = np.concatenate(ze_list)
-        dv_ds = np.concatenate(dv_list)
-        sw_ds = np.concatenate(sw_list)
-        mrr_height_ds = np.concatenate(mrr_height_list)
+        # ze_ds = np.concatenate(ze_list)
+        # dv_ds = np.concatenate(dv_list)
+        # sw_ds = np.concatenate(sw_list)
+        # mrr_height_ds = np.concatenate(mrr_height_list)
 
-        dsd_ds = np.concatenate(dsd_list)
-        dsd_height_ds = np.concatenate(dsd_height_list)
-        vvd_ds = np.concatenate(vvd_list)
-        vvd_height_ds = np.concatenate(vvd_height_list)
-        rho_ds = np.concatenate(rho_list)
-        rho_height_ds = np.concatenate(rho_height_list)
+        # dsd_ds = np.concatenate(dsd_list)
+        # dsd_height_ds = np.concatenate(dsd_height_list)
+        # vvd_ds = np.concatenate(vvd_list)
+        # vvd_height_ds = np.concatenate(vvd_height_list)
+        # rho_ds = np.concatenate(rho_list)
+        # rho_height_ds = np.concatenate(rho_height_list)
 
-        ze_x = np.asarray(ze_ds).flatten()
-        ze_y = np.asarray(mrr_height_ds).flatten()
-        ze_x[ze_x<-30] = np.nan
-        mask = ~np.isnan(ze_x)
-        ze_x = ze_x[mask]
-        ze_y = ze_y[mask]
-        ze_hist, ze_xedges, ze_yedges = np.histogram2d(ze_y, ze_x, bins=[28, 128])
+        # ze_x = np.asarray(ze_ds).flatten()
+        # ze_y = np.asarray(mrr_height_ds).flatten()
+        # ze_x[ze_x<-30] = np.nan
+        # mask = ~np.isnan(ze_x)
+        # ze_x = ze_x[mask]
+        # ze_y = ze_y[mask]
+        # ze_hist, ze_xedges, ze_yedges = np.histogram2d(ze_y, ze_x, bins=[28, 128])
 
-        dv_x = np.asarray(dv_ds).flatten()
-        dv_y = np.asarray(mrr_height_ds).flatten()
-        dv_x[dv_x<-30] = np.nan
-        dv_x[dv_x>30] = np.nan
-        mask = ~np.isnan(dv_x)
-        dv_x = dv_x[mask]
-        dv_y = dv_y[mask]
-        dv_hist, dv_xedges, dv_yedges = np.histogram2d(dv_y, dv_x, bins=[28, 128])
+        # dv_x = np.asarray(dv_ds).flatten()
+        # dv_y = np.asarray(mrr_height_ds).flatten()
+        # dv_x[dv_x<-30] = np.nan
+        # dv_x[dv_x>30] = np.nan
+        # mask = ~np.isnan(dv_x)
+        # dv_x = dv_x[mask]
+        # dv_y = dv_y[mask]
+        # dv_hist, dv_xedges, dv_yedges = np.histogram2d(dv_y, dv_x, bins=[28, 128])
 
-        sw_x = np.asarray(sw_ds).flatten()
-        sw_y = np.asarray(mrr_height_ds).flatten()
-        sw_x[sw_x<0] = np.nan
-        sw_x[sw_x>1] = np.nan
-        mask = ~np.isnan(sw_x)
-        sw_x = sw_x[mask]
-        sw_y = sw_y[mask]
-        sw_hist, sw_xedges, sw_yedges = np.histogram2d(sw_y, sw_x, bins=[28, 128])
+        # sw_x = np.asarray(sw_ds).flatten()
+        # sw_y = np.asarray(mrr_height_ds).flatten()
+        # sw_x[sw_x<0] = np.nan
+        # sw_x[sw_x>1] = np.nan
+        # mask = ~np.isnan(sw_x)
+        # sw_x = sw_x[mask]
+        # sw_y = sw_y[mask]
+        # sw_hist, sw_xedges, sw_yedges = np.histogram2d(sw_y, sw_x, bins=[28, 128])
 
-        fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
-        fig.suptitle(site + ' MRR')
-        axes[0].set_title("Reflectivity")
-        axes[0].imshow(ze_hist, origin='lower', cmap='Reds', aspect='auto', extent=[ze_yedges[0], ze_yedges[-1], ze_xedges[0], ze_xedges[-1]])
-        axes[0].invert_yaxis()
-        axes[0].set_xlim((-20, 30))
-        formatter = ticker.FuncFormatter(lambda y, pos: f'{y/10:.1f}')
-        axes[0].yaxis.set_major_formatter(formatter)
-        labels = [item.get_text() for item in axes[0].get_yticklabels()]
-        axes[0].set_yticklabels(labels[::-1])
-        axes[0].set_xlabel("dBZ")
-        axes[0].set_ylabel("Height (km)")
-        axes[1].set_title("Doppler Velocity")
-        axes[1].imshow(dv_hist, origin='lower', cmap='Blues', aspect='auto', extent=[dv_yedges[0], dv_yedges[-1], dv_xedges[0], dv_xedges[-1]])
-        axes[1].invert_yaxis()
-        axes[1].set_xlabel("m s$^{-1}$")
-        axes[1].set_xlim((-5, 5))
-        axes[2].set_title("Spectral Width")
-        axes[2].imshow(sw_hist, origin='lower', cmap='Oranges', aspect='auto', extent=[sw_yedges[0], sw_yedges[-1], sw_xedges[0], sw_xedges[-1]])
-        axes[2].invert_yaxis()
-        axes[2].set_xlabel("m s$^{-1}$")
-        axes[2].set_xlim((0, 0.5))
-        plt.tight_layout()
-        plt.savefig('../../images/' + site + '_mrr.png')
+        # fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
+        # fig.suptitle(site + ' MRR')
+        # axes[0].set_title("Reflectivity")
+        # axes[0].imshow(ze_hist, origin='lower', cmap='Reds', aspect='auto', extent=[ze_yedges[0], ze_yedges[-1], ze_xedges[0], ze_xedges[-1]])
+        # axes[0].invert_yaxis()
+        # axes[0].set_xlim((-20, 30))
+        # formatter = ticker.FuncFormatter(lambda y, pos: f'{y/10:.1f}')
+        # axes[0].yaxis.set_major_formatter(formatter)
+        # labels = [item.get_text() for item in axes[0].get_yticklabels()]
+        # axes[0].set_yticklabels(labels[::-1])
+        # axes[0].set_xlabel("dBZ")
+        # axes[0].set_ylabel("Height (km)")
+        # axes[1].set_title("Doppler Velocity")
+        # axes[1].imshow(dv_hist, origin='lower', cmap='Blues', aspect='auto', extent=[dv_yedges[0], dv_yedges[-1], dv_xedges[0], dv_xedges[-1]])
+        # axes[1].invert_yaxis()
+        # axes[1].set_xlabel("m s$^{-1}$")
+        # axes[1].set_xlim((-5, 5))
+        # axes[2].set_title("Spectral Width")
+        # axes[2].imshow(sw_hist, origin='lower', cmap='Oranges', aspect='auto', extent=[sw_yedges[0], sw_yedges[-1], sw_xedges[0], sw_xedges[-1]])
+        # axes[2].invert_yaxis()
+        # axes[2].set_xlabel("m s$^{-1}$")
+        # axes[2].set_xlim((0, 0.5))
+        # plt.tight_layout()
+        # plt.savefig('../../images/' + site + '_mrr.png')
 
-        ########### N0 Lambda Stuff
-        bin_N0 = np.arange(0, 6.2, 0.2)
-        bin_lambda = np.arange(-1, 1.05, 0.05)
-        AR_N0_lambda_hist = np.histogram2d(np.ma.log10(lambda_array), np.ma.log10(N_0_array), (bin_lambda,bin_N0))
-        plt.figure(dpi=150)
-        plt.pcolormesh(bin_lambda, bin_N0, np.ma.masked_less(AR_N0_lambda_hist[0].T, 10), vmin=0, cmap="viridis")
-        plt.xlim(-0.4,1.0)
-        plt.ylim(0,6)
-        plt.title("PIP AR Snowfall", size=16)
-        plt.ylabel("$Log_{10}(N_{0})$", size=14)
-        plt.xlabel("$Log_{10}(λ)$", size=14)
-        cb = plt.colorbar(label = 'counts', extend="max")
-        cb.set_label(label="Counts", size=14)
-        cb.ax.tick_params(labelsize=14) 
-        plt.grid()
-        plt.savefig('../../images/' + site + '_n0_lambda.png')
+        # ########### N0 Lambda Stuff
+        # bin_N0 = np.arange(0, 6.2, 0.2)
+        # bin_lambda = np.arange(-1, 1.05, 0.05)
+        # AR_N0_lambda_hist = np.histogram2d(np.ma.log10(lambda_array), np.ma.log10(N_0_array), (bin_lambda,bin_N0))
+        # plt.figure(dpi=150)
+        # plt.pcolormesh(bin_lambda, bin_N0, np.ma.masked_less(AR_N0_lambda_hist[0].T, 10), vmin=0, cmap="viridis")
+        # plt.xlim(-0.4,1.0)
+        # plt.ylim(0,6)
+        # plt.title("PIP AR Snowfall", size=16)
+        # plt.ylabel("$Log_{10}(N_{0})$", size=14)
+        # plt.xlabel("$Log_{10}(λ)$", size=14)
+        # cb = plt.colorbar(label = 'counts', extend="max")
+        # cb.set_label(label="Counts", size=14)
+        # cb.ax.tick_params(labelsize=14) 
+        # plt.grid()
+        # plt.savefig('../../images/' + site + '_n0_lambda.png')
 
-        plt.figure(dpi=150)
-        bin_lambda = np.arange(0, 10, 0.2)
-        plt.hist(lambda_array, bins=bin_lambda, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0, label="AR Snowfall")
-        plt.title("PIP Lambda (λ) Histograms", size=20)
-        plt.xlim(0.3, 8)
-        plt.xlabel("Lambda (λ) [$mm^{-1}$]", size=14)
-        plt.ylabel("Normalized Counts", size=14)
-        plt.grid()
-        plt.legend()
-        plt.savefig('../../images/' + site + '_lambda.png')
+        # plt.figure(dpi=150)
+        # bin_lambda = np.arange(0, 10, 0.2)
+        # plt.hist(lambda_array, bins=bin_lambda, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0, label="AR Snowfall")
+        # plt.title("PIP Lambda (λ) Histograms", size=20)
+        # plt.xlim(0.3, 8)
+        # plt.xlabel("Lambda (λ) [$mm^{-1}$]", size=14)
+        # plt.ylabel("Normalized Counts", size=14)
+        # plt.grid()
+        # plt.legend()
+        # plt.savefig('../../images/' + site + '_lambda.png')
 
-        plt.figure(dpi=150)
-        bin_N0 = np.arange(0.0, 6, 0.2)
-        plt.hist(np.ma.log10(N_0_array), bins=bin_N0, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0, label="AR Snowfall")
-        plt.title("PIP $N_0$ Histograms", size=20)
-        plt.xlabel("$Log_{10}(N_0)$", size=14)
-        plt.ylabel("Normalized Counts", size=14)
-        plt.xlim(1, 6)
-        plt.grid()
-        plt.legend()
-        plt.savefig('../../images/' + site + '_n0.png')
+        # plt.figure(dpi=150)
+        # bin_N0 = np.arange(0.0, 6, 0.2)
+        # plt.hist(np.ma.log10(N_0_array), bins=bin_N0, density=True, histtype='step', alpha=0.7, color="red", linewidth=3.0, label="AR Snowfall")
+        # plt.title("PIP $N_0$ Histograms", size=20)
+        # plt.xlabel("$Log_{10}(N_0)$", size=14)
+        # plt.ylabel("Normalized Counts", size=14)
+        # plt.xlim(1, 6)
+        # plt.grid()
+        # plt.legend()
+        # plt.savefig('../../images/' + site + '_n0.png')
 
 
-        bin_DSD = np.linspace(.001,5,54)
-        bin_VVD = np.arange(0.1,5.1,0.1)
-        bin_eden = np.arange(0.01,1.01,0.01)    
-        bin_D = np.arange(0,26,1)
+        # bin_DSD = np.linspace(.001,5,54)
+        # bin_VVD = np.arange(0.1,5.1,0.1)
+        # bin_eden = np.arange(0.01,1.01,0.01)    
+        # bin_D = np.arange(0,26,1)
         
-        dsd_x = np.asarray(dsd_ds).flatten()
-        dsd_y = np.asarray(dsd_height_ds).flatten()
-        dsd_x[dsd_x<=0] = np.nan
-        mask = ~np.isnan(dsd_x)
-        dsd_x = dsd_x[mask]
-        dsd_y = dsd_y[mask]
-        dsd_hist, dsd_xedges, dsd_yedges = np.histogram2d(dsd_y, np.ma.log10(dsd_x), (bin_D, bin_DSD))
+        # dsd_x = np.asarray(dsd_ds).flatten()
+        # dsd_y = np.asarray(dsd_height_ds).flatten()
+        # dsd_x[dsd_x<=0] = np.nan
+        # mask = ~np.isnan(dsd_x)
+        # dsd_x = dsd_x[mask]
+        # dsd_y = dsd_y[mask]
+        # dsd_hist, dsd_xedges, dsd_yedges = np.histogram2d(dsd_y, np.ma.log10(dsd_x), (bin_D, bin_DSD))
 
-        vvd_x = np.asarray(vvd_ds).flatten()
-        vvd_y = np.asarray(vvd_height_ds).flatten()
-        vvd_x[vvd_x<=0] = np.nan
-        mask = ~np.isnan(vvd_x)
-        vvd_x = vvd_x[mask]
-        vvd_y = vvd_y[mask]
-        vvd_hist, vvd_xedges, vvd_yedges = np.histogram2d(vvd_y, vvd_x, (bin_D, bin_VVD))
+        # vvd_x = np.asarray(vvd_ds).flatten()
+        # vvd_y = np.asarray(vvd_height_ds).flatten()
+        # vvd_x[vvd_x<=0] = np.nan
+        # mask = ~np.isnan(vvd_x)
+        # vvd_x = vvd_x[mask]
+        # vvd_y = vvd_y[mask]
+        # vvd_hist, vvd_xedges, vvd_yedges = np.histogram2d(vvd_y, vvd_x, (bin_D, bin_VVD))
         
-        rho_x = np.asarray(rho_ds).flatten()
-        rho_y = np.asarray(rho_height_ds).flatten()
-        rho_x[rho_x<=0] = np.nan
-        mask = ~np.isnan(rho_x)
-        rho_x = rho_x[mask]
-        rho_y = rho_y[mask]
-        rho_hist, rho_xedges, rho_yedges = np.histogram2d(rho_y, rho_x, (bin_D, bin_eden))
+        # rho_x = np.asarray(rho_ds).flatten()
+        # rho_y = np.asarray(rho_height_ds).flatten()
+        # rho_x[rho_x<=0] = np.nan
+        # mask = ~np.isnan(rho_x)
+        # rho_x = rho_x[mask]
+        # rho_y = rho_y[mask]
+        # rho_hist, rho_xedges, rho_yedges = np.histogram2d(rho_y, rho_x, (bin_D, bin_eden))
 
-        fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=False)
-        fig.suptitle(site + ' PIP')
-        axes[0].set_title("Particle Size Distribution")
-        axes[0].imshow(dsd_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[dsd_xedges[0], dsd_xedges[-1], dsd_yedges[0], dsd_yedges[-1]])
-        axes[0].set_xlabel("Mean De (mm)")
-        bin_centers = ds_pip.bin_centers.values
-        ticks_idx = np.linspace(0, 49, 6, dtype=int)
-        axes[1].set_title("Velocity Distribution")
-        axes[1].imshow(vvd_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[vvd_xedges[0], vvd_xedges[-1], vvd_yedges[0], vvd_yedges[-1]])
-        axes[1].set_ylabel("m s$^{−1}$")
-        axes[1].set_xlabel("Mean De (mm)")
-        axes[1].set_yscale('linear')
-        axes[2].set_title("eDensity Distribution")
-        axes[2].imshow(rho_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[rho_xedges[0], rho_xedges[-1], rho_yedges[0], rho_yedges[-1]])
-        axes[2].set_xlabel("g cm$^{-3}$")
-        axes[2].set_xlabel("Mean De (mm)")
-        axes[2].set_yscale('linear')
-        plt.tight_layout()
-        plt.savefig('../../images/' + site + '_pip.png')
+        # fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=False)
+        # fig.suptitle(site + ' PIP')
+        # axes[0].set_title("Particle Size Distribution")
+        # axes[0].imshow(dsd_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[dsd_xedges[0], dsd_xedges[-1], dsd_yedges[0], dsd_yedges[-1]])
+        # axes[0].set_xlabel("Mean De (mm)")
+        # bin_centers = ds_pip.bin_centers.values
+        # ticks_idx = np.linspace(0, 49, 6, dtype=int)
+        # axes[1].set_title("Velocity Distribution")
+        # axes[1].imshow(vvd_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[vvd_xedges[0], vvd_xedges[-1], vvd_yedges[0], vvd_yedges[-1]])
+        # axes[1].set_ylabel("m s$^{−1}$")
+        # axes[1].set_xlabel("Mean De (mm)")
+        # axes[1].set_yscale('linear')
+        # axes[2].set_title("eDensity Distribution")
+        # axes[2].imshow(rho_hist.T, origin='lower', cmap='plasma', aspect='auto', extent=[rho_xedges[0], rho_xedges[-1], rho_yedges[0], rho_yedges[-1]])
+        # axes[2].set_xlabel("g cm$^{-3}$")
+        # axes[2].set_xlabel("Mean De (mm)")
+        # axes[2].set_yscale('linear')
+        # plt.tight_layout()
+        # plt.savefig('../../images/' + site + '_pip.png')
+
+        def prepare_data(data_list, height_list, range):
+            data_ds = np.concatenate(data_list)
+            height_ds = np.concatenate(height_list)
+            data_x = np.asarray(data_ds).flatten()
+            height_y = np.asarray(height_ds).flatten()
+
+            data_x[data_x < range[0]] = np.nan
+            data_x[data_x > range[1]] = np.nan
+
+            mask = ~np.isnan(data_x)
+            data_x = data_x[mask]
+            height_y = height_y[mask]
+            
+            return data_x, height_y
+
+        def plot_histogram(ax, x, y, title, color, xlabel, xlim):
+            hist, xedges, yedges = np.histogram2d(y, x, bins=[28, 128])
+            ax.set_title(title)
+            ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
+            ax.invert_yaxis()
+            ax.set_xlim(xlim)
+            ax.set_xlabel(xlabel)
+
+        def plot_figures(site, ze_data, dv_data, sw_data):
+            fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
+            fig.suptitle(site + ' MRR')
+            axes[0].set_ylabel("Height (km)")
+
+            plot_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30))
+            plot_histogram(axes[1], dv_data[0], dv_data[1], "Doppler Velocity", 'Blues', "m s$^{-1}$", (-5, 5))
+            plot_histogram(axes[2], sw_data[0], sw_data[1], "Spectral Width", 'Oranges', "m s$^{-1}$", (0, 0.5))
+
+            plt.tight_layout()
+            plt.savefig('../../images/' + site + '_mrr.png')
+
+        def process_data(site, ze_list, mrr_height_list, dv_list, sw_list):
+            ze_data = prepare_data(ze_list, mrr_height_list, [-30, np.inf])
+            dv_data = prepare_data(dv_list, mrr_height_list, [-30, 30])
+            sw_data = prepare_data(sw_list, mrr_height_list, [0, 1])
+
+            plot_figures(site, ze_data, dv_data, sw_data)
+
+        # Call the process_data function with the appropriate data lists
+        process_data(site, ze_list, mrr_height_list, dv_list, sw_list)
 
     create_hists_for_site(site, match_dates)
 
 sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
-sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
-sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
-sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
-sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
+# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
+# sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
+# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
+# sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
