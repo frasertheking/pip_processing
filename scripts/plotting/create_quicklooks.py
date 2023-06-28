@@ -68,7 +68,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ze = ds_mrr['Ze'].values
                     dv = ds_mrr['W'].values
                     sw = ds_mrr['spectralWidth'].values
-                    mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
                     matching_files = glob.glob(file_pattern)
@@ -76,9 +75,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ed = ds_pip['ed'].values
                     snow_indices = np.where(ed <= 0.2)[0]
                     
-                    print("sponge", ze.shape)
                     ze = ze[snow_indices, :]
-                    print("sponge", ze.shape)
+                    mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
                     dv = dv[snow_indices, :]
                     sw = sw[snow_indices, :]
 
