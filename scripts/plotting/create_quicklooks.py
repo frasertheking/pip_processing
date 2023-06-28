@@ -59,7 +59,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                 month = date[4:6]
                 day = date[-2:]
                 date = year + month + day
-                
+
                 # MRR
                 try:
                     file_pattern = mrr_path + '/*' + date + '*.nc'
@@ -96,8 +96,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dsd = ds_pip['psd'].values
                     bin_centers = ds_pip.bin_centers.values
 
-                    dsd = np.ma.masked_where(np.isin(np.arange(dsd.shape[1]), snow_indices), dsd)
-                    bin_centers = np.ma.masked_where(np.isin(np.arange(bin_centers.shape[0]), snow_indices), bin_centers)
+                    condition = np.isin(np.arange(dsd.shape[1]), snow_indices)
+                    condition = condition[np.newaxis, :]  # add new dimension to make it broadcastable
+                    dsd = np.ma.masked_where(condition, dsd)
+                    bin_centers = np.ma.masked_where(condition, bin_centers)
 
                     dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
                     dsd_list.append(dsd.T.flatten())
@@ -145,7 +147,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])   
                     vvd = ds_pip['vvd'].values
 
-                    vvd = np.ma.masked_where(np.isin(np.arange(vvd.shape[1]), snow_indices), vvd)
+                    condition = np.isin(np.arange(dsd.shape[1]), snow_indices)
+                    condition = condition[np.newaxis, :]  # add new dimension to make it broadcastable
+                    vvd = np.ma.masked_where(condition, vvd)
 
                     vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
                     vvd_list.append(vvd.T.flatten())
@@ -168,7 +172,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])  
                     rho = ds_pip['rho'].values
 
-                    rho = np.ma.masked_where(np.isin(np.arange(rho.shape[1]), snow_indices), rho)
+                    condition = np.isin(np.arange(dsd.shape[1]), snow_indices)
+                    condition = condition[np.newaxis, :]  # add new dimension to make it broadcastable
+                    rho = np.ma.masked_where(condition, rho)
 
                     rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
                     rho_list.append(rho.T.flatten())
