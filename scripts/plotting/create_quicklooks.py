@@ -305,7 +305,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             else:
                 norm = None
 
-            im = ax.imshow(np.flipud(hist.T), origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[-1], xedges[0]], norm=norm)
+            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
 
             ax.set_ylabel(xlabel)
             cbar = ax.figure.colorbar(im, ax=ax)
