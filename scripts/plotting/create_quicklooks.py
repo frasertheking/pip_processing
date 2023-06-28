@@ -370,7 +370,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
     create_hists_for_site(site, match_dates)
 
-sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
+sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', True)
 # sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
 # sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
 # sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
