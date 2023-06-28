@@ -291,7 +291,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[28, 256])
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
-            im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]])
+            im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], interpolation='none')
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
             cbar = ax.figure.colorbar(im, ax=ax)
@@ -300,13 +300,14 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         def plot_pip_histogram(ax, x, y, title, color, xlabel, bins, log_scale=False):
             hist, xedges, yedges = np.histogram2d(y, x, bins=[np.arange(0,26,1), bins])
             ax.set_title(title)
+            ax.set_facecolor('black')
             hist = 100 * hist / np.sum(hist)
             if log_scale:
                 norm = LogNorm()
             else:
                 norm = None
 
-            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], norm=norm)
+            im = ax.imshow(hist.T, origin='lower', cmap=color, aspect='auto', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], norm=norm, interpolation='none')
 
             ax.set_ylabel(xlabel)
             ax.set_xlabel("Mean D$_e$ (mm)")
@@ -315,7 +316,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
         def plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
-            fig.suptitle(site + ' MRR (Matched =' + str(match_dates) + ')')
+            fig.suptitle(site + ' MRR (Matched = ' + str(match_dates) + ')')
             axes[0].set_ylabel("Bin")
 
             plot_mrr_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30))
@@ -327,7 +328,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
         def plot_pip_figures(site, dsd_data, vvd_data, rho_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(16,6))
-            fig.suptitle(site + ' PIP (Matched =' + str(match_dates) + ')')
+            fig.suptitle(site + ' PIP (Matched = ' + str(match_dates) + ')')
 
             plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), True)
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
