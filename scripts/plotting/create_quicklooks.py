@@ -38,6 +38,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
     print("Total Matched:", len(matched_dates))
 
     def create_hists_for_site(site, match_dates):
+        global mrr_dates
+        global pip_dates
+        global matched_dates
         ze_list = []
         dv_list = []
         sw_list = []
