@@ -26,7 +26,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
     matched_dates = []
     files = glob.glob(os.path.join(mrr_path, '*.nc'))
-    mrr_dates = files
+
+    mrr_dates = []
+    for filename in files:
+        match = re.search(r'\d{8}', filename)
+        if match:
+            mrr_dates.append(match.group())
+
     if not(match_dates):
         matched_dates = files
     else:
