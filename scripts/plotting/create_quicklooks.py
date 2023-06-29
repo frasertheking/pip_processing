@@ -33,6 +33,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         if match:
             mrr_dates.append(match.group())
 
+    print(mrr_dates)
+
     if not(match_dates):
         matched_dates = files
     else:
