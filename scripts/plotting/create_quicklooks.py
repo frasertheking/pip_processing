@@ -367,7 +367,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             fig.suptitle(site + ' n$_0$ Lambda Summary')
 
             hist = 100 * n0_lambda_hist[0].T / np.sum(n0_lambda_hist[0].T)
-            pcm = axes[0].pcolormesh(lam_bins, n0_bins, np.ma.masked_less(hist, 1), cmap="magma", norm=LogNorm(vmin=1))
+            pcm = axes[0].pcolormesh(lam_bins, n0_bins, hist, cmap="magma", norm=LogNorm(vmin=hist.min(), vmax=hist.max()))
             axes[0].set_facecolor('black')
             axes[0].set_xlim(-0.4, 0.5)
             axes[0].set_ylim(0, 5)
