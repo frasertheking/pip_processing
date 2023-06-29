@@ -34,6 +34,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             mrr_dates.append(match.group())
 
     print(mrr_dates)
+    print(pip_dates)
 
     if not(match_dates):
         matched_dates = files
@@ -56,7 +57,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         # met_date_data = np.full(len(met_dates), 2)
 
         fig, ax = plt.subplots(figsize=(15, 3))
-        plt.title(site + ' Data Temporal Coverage and Overlap')
+        plt.title(site + ' Data Temporal Coverage (matched $n=' + str(len(matched_dates)) + '$ days)')
         plt.scatter(m_dates, m_date_data, marker='|', s=250, color='black')
         plt.scatter(mrr_dates, mrr_date_data, marker='|', s=250, color='red')
         plt.scatter(pip_dates, pip_date_data, marker='|', s=250, color='blue')
