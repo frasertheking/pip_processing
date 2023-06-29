@@ -52,6 +52,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         N_0_array = []
         lambda_array = []
 
+        total_snowing_minutes = 0
+
         if match_dates:
             for date in matched_dates:
                 print("\nWorking on", date)
@@ -74,6 +76,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
                     snow_indices = np.where(ed <= 0.2)[0]
+                    total_snowing_minutes += len(snow_indices)
                     
                     ze = ze[snow_indices, :]
                     mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
@@ -315,8 +318,11 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cbar.ax.set_ylabel('Counts (%)')
 
         def plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates):
-            fig, axes = plt.subplots(1, 3, figsize=(16,6), sharey=True)
-            fig.suptitle(site + ' MRR (Matched = ' + str(match_dates) + ')')
+            fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
+            if match_dates:
+                fig.suptitle(site + ' MRR (Data Matched to PIP)')
+            else:
+                fig.suptitle(site + ' MRR all data')
             axes[0].set_ylabel("Bin")
 
             plot_mrr_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30))
@@ -326,9 +332,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             plt.tight_layout()
             plt.savefig('../../images/' + site + '_mrr_' + str(match_dates) + '.png')
 
-        def plot_pip_figures(site, dsd_data, vvd_data, rho_data, match_dates):
-            fig, axes = plt.subplots(1, 3, figsize=(16,6))
-            fig.suptitle(site + ' PIP (Matched = ' + str(match_dates) + ')')
+        def plot_pip_figures(site, dsd_data, vvd_data, rho_data, total_snowing_minutes, match_dates):
+            fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+            if match_dates:
+                fig.suptitle(site + ' PIP (Data Matched to MRR) : # Snow Mins. = ' + str(total_snowing_minutes))
+            else:
+                fig.suptitle(site + ' PIP all data')
+
 
             plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), True)
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
@@ -344,21 +354,23 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
             plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates)
 
-        def process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, match_dates):
+        def process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, match_dates):
             dsd_data = prepare_data(dsd_list, dsd_height_list, [0, np.inf])
             vvd_data = prepare_data(vvd_list, vvd_height_list, [0, np.inf])
             rho_data = prepare_data(rho_list, rho_height_list, [0, np.inf])
 
-            plot_pip_figures(site, dsd_data, vvd_data, rho_data, match_dates)
+            plot_pip_figures(site, dsd_data, vvd_data, rho_data, total_snowing_minutes, match_dates)
 
         def plot_n0_lambda(site, lam, n0, lam_bins, n0_bins, match_dates):
             n0_lambda_hist = np.histogram2d(np.ma.log10(lam), np.ma.log10(n0), (lam_bins, n0_bins))
-            fig, axes = plt.subplots(1, 3, figsize=(16,6))
+            fig, axes = plt.subplots(1, 3, figsize=(18, 6))
             fig.suptitle(site + ' n$_0$ Lambda Summary')
 
-            pcm = axes[0].pcolormesh(lam_bins, n0_bins, np.ma.masked_less(n0_lambda_hist[0].T, 10), vmin=0, cmap="viridis")
-            axes[0].set_xlim(-0.4, 1.0)
-            axes[0].set_ylim(0, 6)
+            hist = 100 * n0_lambda_hist[0].T / np.sum(n0_lambda_hist[0].T)
+            pcm = axes[0].pcolormesh(lam_bins, n0_bins, np.ma.masked_less(hist, 1), vmin=0.01, cmap="magma", norm=LogNorm())
+            axes[0].set_facecolor('black')
+            axes[0].set_xlim(-0.4, 0.5)
+            axes[0].set_ylim(0, 5)
             axes[0].set_ylabel("$Log_{10}(N_{0})$")
             axes[0].set_xlabel("$Log_{10}(λ)$")
 
@@ -366,20 +378,20 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cb.set_label(label="Counts", size=14)
 
             axes[1].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color="red", linewidth=3.0)
-            axes[1].set_xlim(0.3, 8)
+            axes[1].set_xlim(0.1, 5)
             axes[1].set_xlabel("Lambda (λ) ($mm^{-1}$)", size=14)
             axes[1].set_ylabel("Normalized Counts", size=14)
 
             axes[2].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=1, color="blue", linewidth=3.0)
             axes[2].set_xlabel("$Log_{10}(N_0)$", size=14)
             axes[2].set_ylabel("Normalized Counts", size=14)
-            axes[2].set_xlim(1, 6)
+            axes[2].set_xlim(1, 5)
             plt.tight_layout()
             plt.savefig('../../images/' + site + '_n0_lambda_' + str(match_dates) + '.png')
 
         # Call the process_data function with the appropriate data lists
         process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates)
-        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, match_dates)
+        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, match_dates)
         plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
 
     create_hists_for_site(site, match_dates)
