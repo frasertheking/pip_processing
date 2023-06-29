@@ -34,13 +34,33 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             if len([f for f in files if date in os.path.basename(f)]) > 0:
                 matched_dates.append(date)
 
-    print(matched_dates)
     print("Total Matched:", len(matched_dates))
 
+    if match_dates:
+        m_dates = pd.to_datetime(matched_dates, format='%Y%m%d')
+        mrr_dates = pd.to_datetime(mrr_dates, format='%Y%m%d')
+        pip_dates = pd.to_datetime(pip_dates, format='%Y%m%d')
+        # met_dates = pd.to_datetime(met_dates, format='%Y%m%d')
+
+        m_date_data = np.full(len(matched_dates), 0)
+        mrr_date_data = np.full(len(mrr_dates), 1)
+        pip_date_data = np.full(len(pip_dates), 2)
+        # met_date_data = np.full(len(met_dates), 2)
+
+        fig, ax = plt.subplots(figsize=(12, 2))
+        plt.scatter(m_dates, m_date_data, marker='|', s=250, color='black')
+        plt.scatter(mrr_dates, mrr_date_data, marker='|', s=250, color='red')
+        plt.scatter(pip_dates, pip_date_data, marker='|', s=250, color='blue')
+        # plt.scatter(met_dates, met_date_data, marker='|', s=250, color='red')
+        plt.xlabel('Dates')
+        plt.ylabel('Data Availability')
+        ax.set_ylim((-1, 4))
+        ax.set_yticks([0, 1, 2, 3])
+        ax.set_yticklabels(['All', 'MRR', 'PIP'])
+        plt.title('Dataset Common Dates')
+        plt.savefig('../../' + site + '_matched_data.png')
+
     def create_hists_for_site(site, match_dates):
-        global mrr_dates
-        global pip_dates
-        global matched_dates
         ze_list = []
         dv_list = []
         sw_list = []
@@ -59,31 +79,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         total_snowing_minutes = 0
 
         if match_dates:
-
-            # First print matched items
-            m_dates = pd.to_datetime(matched_dates, format='%Y%m%d')
-            mrr_dates = pd.to_datetime(mrr_dates, format='%Y%m%d')
-            pip_dates = pd.to_datetime(pip_dates, format='%Y%m%d')
-            # met_dates = pd.to_datetime(met_dates, format='%Y%m%d')
-
-            m_date_data = np.full(len(matched_dates), 0)
-            mrr_date_data = np.full(len(mrr_dates), 1)
-            pip_date_data = np.full(len(pip_dates), 2)
-            # met_date_data = np.full(len(met_dates), 2)
-
-            fig, ax = plt.subplots(figsize=(12, 2))
-            plt.scatter(m_dates, m_date_data, marker='|', s=250, color='black')
-            plt.scatter(mrr_dates, mrr_date_data, marker='|', s=250, color='red')
-            plt.scatter(pip_dates, pip_date_data, marker='|', s=250, color='blue')
-            # plt.scatter(met_dates, met_date_data, marker='|', s=250, color='red')
-            plt.xlabel('Dates')
-            plt.ylabel('Data Availability')
-            ax.set_ylim((-1, 4))
-            ax.set_yticks([0, 1, 2, 3])
-            ax.set_yticklabels(['All', 'MRR', 'PIP'])
-            plt.title('Dataset Common Dates')
-            plt.savefig('../../' + site + '_matched_data.png')
-
             for date in matched_dates:
                 print("\nWorking on", date)
                 year = date[:4]
