@@ -33,9 +33,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         if match:
             mrr_dates.append(match.group())
 
-    print(mrr_dates)
-    print(pip_dates)
-
     if not(match_dates):
         matched_dates = files
     else:
@@ -441,3 +438,5 @@ sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/
 sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
 sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', True)
 sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
+sanity_check('KO1', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO1/', True)
+sanity_check('KO1', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO1/', False)
