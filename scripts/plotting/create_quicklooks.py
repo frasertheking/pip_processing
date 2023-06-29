@@ -55,7 +55,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         pip_date_data = np.full(len(pip_dates), 2)
         # met_date_data = np.full(len(met_dates), 2)
 
-        fig, ax = plt.subplots(figsize=(12, 2))
+        fig, ax = plt.subplots(figsize=(15, 3))
+        plt.title(site + ' Data Temporal Coverage and Overlap')
         plt.scatter(m_dates, m_date_data, marker='|', s=250, color='black')
         plt.scatter(mrr_dates, mrr_date_data, marker='|', s=250, color='red')
         plt.scatter(pip_dates, pip_date_data, marker='|', s=250, color='blue')
@@ -66,7 +67,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         ax.set_yticks([0, 1, 2])
         ax.set_yticklabels(['All', 'MRR', 'PIP'])
         plt.title('Dataset Common Dates')
-        plt.savefig('../../' + site + '_matched_data.png')
+        plt.tight_layout()
+        plt.savefig('../../images/' + site + '_matched_data.png')
 
     def create_hists_for_site(site, match_dates):
         ze_list = []
