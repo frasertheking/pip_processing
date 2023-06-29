@@ -69,6 +69,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         plt.title('Dataset Common Dates')
         plt.tight_layout()
         plt.savefig('../../images/' + site + '_matched_data.png')
+        return
 
     def create_hists_for_site(site, match_dates):
         ze_list = []
