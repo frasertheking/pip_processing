@@ -26,6 +26,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
     matched_dates = []
     files = glob.glob(os.path.join(mrr_path, '*.nc'))
+    mrr_dates = files
     if not(match_dates):
         matched_dates = files
     else:
@@ -55,6 +56,31 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         total_snowing_minutes = 0
 
         if match_dates:
+
+            # First print matched items
+            m_dates = pd.to_datetime(matched_dates, format='%Y%m%d')
+            mrr_dates = pd.to_datetime(mrr_dates, format='%Y%m%d')
+            pip_dates = pd.to_datetime(pip_dates, format='%Y%m%d')
+            # met_dates = pd.to_datetime(met_dates, format='%Y%m%d')
+
+            m_date_data = np.full(len(matched_dates), 0)
+            mrr_date_data = np.full(len(mrr_dates), 1)
+            pip_date_data = np.full(len(pip_dates), 2)
+            # met_date_data = np.full(len(met_dates), 2)
+
+            fig, ax = plt.subplots(figsize=(12, 2))
+            plt.scatter(m_dates, m_date_data, marker='|', s=250, color='black')
+            plt.scatter(mrr_dates, mrr_date_data, marker='|', s=250, color='red')
+            plt.scatter(pip_dates, pip_date_data, marker='|', s=250, color='blue')
+            # plt.scatter(met_dates, met_date_data, marker='|', s=250, color='red')
+            plt.xlabel('Dates')
+            plt.ylabel('Data Availability')
+            ax.set_ylim((-1, 4))
+            ax.set_yticks([0, 1, 2, 3])
+            ax.set_yticklabels(['All', 'MRR', 'PIP'])
+            plt.title('Dataset Common Dates')
+            plt.savefig('../../' + site + '_matched_data.png')
+
             for date in matched_dates:
                 print("\nWorking on", date)
                 year = date[:4]
