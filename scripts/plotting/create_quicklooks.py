@@ -66,10 +66,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         ax.set_ylim((-1, 3))
         ax.set_yticks([0, 1, 2])
         ax.set_yticklabels(['All', 'MRR', 'PIP'])
-        plt.title('Dataset Common Dates')
         plt.tight_layout()
         plt.savefig('../../images/' + site + '_matched_data.png')
-        return
 
     def create_hists_for_site(site, match_dates):
         ze_list = []
@@ -426,9 +424,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             plt.savefig('../../images/' + site + '_n0_lambda_' + str(match_dates) + '.png')
 
         # Call the process_data function with the appropriate data lists
-        process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates)
-        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, match_dates)
-        plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
+        # process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates)
+        # process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, match_dates)
+        # plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
 
     create_hists_for_site(site, match_dates)
 
