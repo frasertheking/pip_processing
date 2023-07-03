@@ -98,9 +98,31 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     file_pattern = mrr_path + '/*' + date + '*.nc'
                     matching_files = glob.glob(file_pattern)
                     ds_mrr = xr.open_dataset(matching_files[0]) 
-                    ze = ds_mrr['Ze'].values
-                    dv = ds_mrr['W'].values
-                    sw = ds_mrr['spectralWidth'].values
+
+                    ze = -1
+                    dv = -1
+                    sw = -1
+                    if site == 'NSA':
+                        stn = ds_mrr['signal_to_noise_ratio_copol'].values
+                        ze = ds_mrr['reflectivity_copol'].values
+                        dv = ds_mrr['mean_doppler_velocity_copol'].values
+                        sw = ds_mrr['spectral_width_copol'].values
+
+                        mask = np.where(stn > -20, 1, 0)
+
+                        # Apply the mask to the other arrays
+                        ze_masked = np.where(mask, ze, np.nan)
+                        dv_masked = np.where(mask, dv, np.nan)
+                        sw_masked = np.where(mask, sw, np.nan)
+
+                        # Clip the arrays to only look at the bottom 98 rows
+                        ze = ze_masked[-98:]
+                        dv = dv_masked[-98:]
+                        sw = sw_masked[-98:]
+                    else:
+                        ze = ds_mrr['Ze'].values
+                        dv = ds_mrr['W'].values
+                        sw = ds_mrr['spectralWidth'].values
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
                     matching_files = glob.glob(file_pattern)
@@ -407,7 +429,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[0].set_xlabel("$Log_{10}(λ)$")
 
             cb = fig.colorbar(pcm, ax=axes[0], extend="max")
-            cb.set_label(label="Counts", size=14)
+            cb.set_label(label="Counts (%)", size=14)
 
             axes[1].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color="red", linewidth=3.0)
             axes[1].set_xlim(0.1, 5)
@@ -428,15 +450,18 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
     create_hists_for_site(site, match_dates)
 
-sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', True)
-sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
-sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', True)
-sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
-sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', True)
-sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
-sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', True)
-sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
-sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', True)
-sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
+sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', True)
+sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', False)
+
+# sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', True)
+# sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
+# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', True)
+# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
+# sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', True)
+# sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
+# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', True)
+# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
+# sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', True)
+# sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
 # sanity_check('KO1', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO1/', True)
 # sanity_check('KO1', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO1/', False)
