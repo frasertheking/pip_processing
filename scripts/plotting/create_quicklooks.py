@@ -368,12 +368,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             
             return data_x, height_y
 
-        def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim):
-            bins = [28, 256]
-            print(title)
-            if 'NSA' in title:
-                print("here")
-                bins = [98, 256]
+        def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim, bins):
             hist, xedges, yedges = np.histogram2d(y, x, bins=bins)
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
@@ -408,9 +403,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                 fig.suptitle(site + ' MRR all data')
             axes[0].set_ylabel("Bin")
 
-            plot_mrr_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30))
-            plot_mrr_histogram(axes[1], dv_data[0], dv_data[1], "Doppler Velocity", 'Blues', "m s$^{-1}$", (-5, 5))
-            plot_mrr_histogram(axes[2], sw_data[0], sw_data[1], "Spectral Width", 'Oranges', "m s$^{-1}$", (0, 0.5))
+            bins = [28, 256]
+            if site == 'NSA':
+                bins = [98, 256]
+
+            plot_mrr_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30), bins)
+            plot_mrr_histogram(axes[1], dv_data[0], dv_data[1], "Doppler Velocity", 'Blues', "m s$^{-1}$", (-5, 5), bins)
+            plot_mrr_histogram(axes[2], sw_data[0], sw_data[1], "Spectral Width", 'Oranges', "m s$^{-1}$", (0, 0.5), bins)
 
             plt.tight_layout()
             plt.savefig('../../images/' + site + '_mrr_' + str(match_dates) + '.png')
