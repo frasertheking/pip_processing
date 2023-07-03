@@ -105,14 +105,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         matching_files = glob.glob(file_pattern)
                         ds_mrr = xr.open_dataset(matching_files[0]) 
 
-                        stn = ds_mrr['signal_to_noise_ratio_copol'].values
-                        ze = ds_mrr['reflectivity_copol'].values
-                        dv = ds_mrr['mean_doppler_velocity_copol'].values
-                        sw = ds_mrr['spectral_width_copol'].values
-                        stn = stn.resample(time='1min').mean()
-                        ze = ze.resample(time='1min').mean()
-                        dv = dv.resample(time='1min').mean()
-                        sw = sw.resample(time='1min').mean()
+                        stn = ds_mrr['signal_to_noise_ratio_copol'].resample(time='1min').mean().values
+                        ze = ds_mrr['reflectivity_copol'].resample(time='1min').mean().values
+                        dv = ds_mrr['mean_doppler_velocity_copol'].resample(time='1min').mean().values
+                        sw = ds_mrr['spectral_width_copol'].resample(time='1min').mean().values
 
                         mask = np.where(stn > -20, 1, 0)
 
