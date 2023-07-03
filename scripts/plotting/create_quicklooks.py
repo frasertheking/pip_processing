@@ -370,6 +370,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim):
             bins = [28, 256]
+            print(title)
             if 'NSA' in title:
                 print("here")
                 bins = [98, 256]
