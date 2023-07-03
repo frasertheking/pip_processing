@@ -112,15 +112,19 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                         mask = np.where(stn > -20, 1, 0)
 
+                        print("sponge0")
+
                         # Apply the mask to the other arrays
                         ze_masked = np.where(mask, ze, np.nan)
                         dv_masked = np.where(mask, dv, np.nan)
                         sw_masked = np.where(mask, sw, np.nan)
+                        print("sponge1")
 
                         # Clip the arrays to only look at the bottom 98 rows
                         ze = ze_masked[-98:]
                         dv = dv_masked[-98:]
                         sw = sw_masked[-98:]
+                        print("sponge2")
                     else:
                         ze = ds_mrr['Ze'].values
                         dv = ds_mrr['W'].values
