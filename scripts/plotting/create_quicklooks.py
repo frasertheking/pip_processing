@@ -105,11 +105,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dv = -1
                     sw = -1
                     if site == 'NSA':
+                        print("sponge00")
                         stn = ds_mrr['signal_to_noise_ratio_copol'].values
                         ze = ds_mrr['reflectivity_copol'].values
                         dv = ds_mrr['mean_doppler_velocity_copol'].values
                         sw = ds_mrr['spectral_width_copol'].values
 
+                        print("sponge01")
                         mask = np.where(stn > -20, 1, 0)
 
                         print("sponge0")
