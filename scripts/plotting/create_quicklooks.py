@@ -117,12 +117,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         dv_masked = np.where(mask, dv, np.nan)
                         sw_masked = np.where(mask, sw, np.nan)
 
-                        print(ze_masked.shape)
-
                         # Clip the arrays to only look at the bottom 98 rows
                         ze = ze_masked[:,:98]
                         dv = dv_masked[:,:98]
                         sw = sw_masked[:,:98]
+                        ze = ze.resample(time='1min').mean()
+                        ze = dv.resample(time='1min').mean()
+                        ze = sw.resample(time='1min').mean()
                         print("sponge2", ze.shape)
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
