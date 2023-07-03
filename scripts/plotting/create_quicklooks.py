@@ -18,7 +18,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
     print("\n\n\nPerforming sanity check on", site)
 
     pip_dates = []
-    for year in range(2015, 2023):
+    for year in range(2018, 2021):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
         print(pip_path_temp)
         for file in glob.glob(pip_path_temp):
@@ -86,6 +86,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         lambda_array = []
 
         total_snowing_minutes = 0
+        total_precip_minutes = 0
 
         if match_dates:
             for date in matched_dates:
@@ -130,8 +131,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(ed <= 0.2)[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
+                    precip_indices = np.where(ed>0)[0]
                     total_snowing_minutes += len(snow_indices)
+                    total_precip_minutes += len(precip_indices)
                     
                     ze = ze[snow_indices, :]
                     mrr_height = np.repeat(np.arange(1, ze.shape[1]+1), ze.shape[0])
@@ -154,7 +157,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(ed <= 0.2)[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
                     matching_files = glob.glob(file_pattern)
@@ -203,7 +206,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(ed <= 0.2)[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
                     matching_files = glob.glob(file_pattern)
@@ -226,7 +229,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(ed <= 0.2)[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
 
                     file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'
                     matching_files = glob.glob(file_pattern)
@@ -364,7 +367,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             return data_x, height_y
 
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim):
-            hist, xedges, yedges = np.histogram2d(y, x, bins=[28, 256])
+            bins = [28, 256]
+            if 'NSA' in title:
+                bins = [98, 256]
+            hist, xedges, yedges = np.histogram2d(y, x, bins=bins)
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], interpolation='none')
@@ -405,10 +411,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             plt.tight_layout()
             plt.savefig('../../images/' + site + '_mrr_' + str(match_dates) + '.png')
 
-        def plot_pip_figures(site, dsd_data, vvd_data, rho_data, total_snowing_minutes, match_dates):
+        def plot_pip_figures(site, dsd_data, vvd_data, rho_data, total_snowing_minutes, total_precip_minutes, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(18, 6))
             if match_dates:
-                fig.suptitle(site + ' PIP (Data Matched to MRR) : # Snow Mins. = ' + str(total_snowing_minutes))
+                fig.suptitle(site + ' PIP (Data Matched to MRR) : # Snow Mins. = (' + str(total_snowing_minutes) + "/" + str(total_precip_minutes) + ')')
             else:
                 fig.suptitle(site + ' PIP all data')
 
@@ -427,12 +433,12 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
             plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates)
 
-        def process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, match_dates):
+        def process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, total_precip_minutes, match_dates):
             dsd_data = prepare_data(dsd_list, dsd_height_list, [0, np.inf])
             vvd_data = prepare_data(vvd_list, vvd_height_list, [0, np.inf])
             rho_data = prepare_data(rho_list, rho_height_list, [0, np.inf])
 
-            plot_pip_figures(site, dsd_data, vvd_data, rho_data, total_snowing_minutes, match_dates)
+            plot_pip_figures(site, dsd_data, vvd_data, rho_data, total_snowing_minutes, total_precip_minutes, match_dates)
 
         def plot_n0_lambda(site, lam, n0, lam_bins, n0_bins, match_dates):
             n0_lambda_hist = np.histogram2d(np.ma.log10(lam), np.ma.log10(n0), (lam_bins, n0_bins))
@@ -465,13 +471,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
         # Call the process_data function with the appropriate data lists
         process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates)
-        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, match_dates)
+        process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, total_precip_minutes, match_dates)
         plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
 
     create_hists_for_site(site, match_dates)
 
 sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', True)
-sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', False)
+# sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', False)
 
 # sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', True)
 # sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
