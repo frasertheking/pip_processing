@@ -18,7 +18,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
     print("\n\n\nPerforming sanity check on", site)
 
     pip_dates = []
-    for year in range(2018, 2021):
+    for year in range(2015, 2023):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
         print(pip_path_temp)
         for file in glob.glob(pip_path_temp):
@@ -246,6 +246,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
                 except Exception as e:
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
+        
+                break
         else:
             for date in matched_dates:
                 ze = -1
@@ -369,6 +371,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim):
             bins = [28, 256]
             if 'NSA' in title:
+                print("here")
                 bins = [98, 256]
             hist, xedges, yedges = np.histogram2d(y, x, bins=bins)
             ax.set_title(title)
