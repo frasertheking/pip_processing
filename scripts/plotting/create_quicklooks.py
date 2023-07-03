@@ -97,14 +97,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                 # MRR
                 try:
-                    file_pattern = mrr_path + '/*' + date + '*.nc'
-                    matching_files = glob.glob(file_pattern)
-                    ds_mrr = xr.open_dataset(matching_files[0]) 
-
                     ze = -1
                     dv = -1
                     sw = -1
                     if site == 'NSA':
+                        file_pattern = mrr_path + '/*' + date + '*.cdf'
+                        matching_files = glob.glob(file_pattern)
+                        ds_mrr = xr.open_dataset(matching_files[0]) 
                         print("sponge00")
                         stn = ds_mrr['signal_to_noise_ratio_copol'].values
                         ze = ds_mrr['reflectivity_copol'].values
@@ -128,6 +127,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         sw = sw_masked[-98:]
                         print("sponge2")
                     else:
+                        file_pattern = mrr_path + '/*' + date + '*.nc'
+                        matching_files = glob.glob(file_pattern)
+                        ds_mrr = xr.open_dataset(matching_files[0]) 
                         ze = ds_mrr['Ze'].values
                         dv = ds_mrr['W'].values
                         sw = ds_mrr['spectralWidth'].values
