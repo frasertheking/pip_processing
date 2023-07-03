@@ -368,9 +368,16 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim, bins):
             hist, xedges, yedges = np.histogram2d(y, x, bins=bins)
+
+            y_indices = np.digitize(x, xedges)
+            averages = [y[y_indices == i].mean() for i in range(1, len(xedges))]
+
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], interpolation='none')
+            
+            ax.plot(xedges[:-1] + np.diff(xedges)/2, averages, color='black', linestyle='--', linewidth=3)
+
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
             cbar = ax.figure.colorbar(im, ax=ax)
@@ -419,7 +426,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             else:
                 fig.suptitle(site + ' PIP all data')
 
-            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), True)
+            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), False)
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
             plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'magma', "Effective Density (g cm$^{-3}$)", np.arange(0.01, 1.01, 0.005))
 
@@ -446,10 +453,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             fig.suptitle(site + ' n$_0$ Lambda Summary')
 
             hist = 100 * n0_lambda_hist[0].T / np.sum(n0_lambda_hist[0].T)
-            print(hist.min(), hist.max())
-            pcm = axes[0].pcolormesh(lam_bins, n0_bins, hist, cmap="magma", norm=LogNorm(vmin=0.01, vmax=hist.max()))
+            pcm = axes[0].pcolormesh(lam_bins, n0_bins, hist, cmap="viridis", norm=LogNorm(vmin=0.01, vmax=hist.max()))
             axes[0].set_facecolor('black')
-            axes[0].set_xlim(-0.4, 0.5)
+            axes[0].set_xlim(-0.4, 0.2)
             axes[0].set_ylim(0, 5)
             axes[0].set_ylabel("$Log_{10}(N_{0})$")
             axes[0].set_xlabel("$Log_{10}(λ)$")
@@ -458,7 +464,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             cb.set_label(label="Counts (%)", size=14)
 
             axes[1].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color="red", linewidth=3.0)
-            axes[1].set_xlim(0.1, 5)
+            axes[1].set_xlim(0.1, 2)
             axes[1].set_xlabel("Lambda (λ) ($mm^{-1}$)", size=14)
             axes[1].set_ylabel("Normalized Counts", size=14)
 
@@ -488,5 +494,3 @@ sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/
 # sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
 sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', True)
 # sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
-sanity_check('KO1', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO1/', True)
-# sanity_check('KO1', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO1/', False)
