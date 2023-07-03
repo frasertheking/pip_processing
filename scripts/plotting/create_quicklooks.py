@@ -109,6 +109,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         ze = ds_mrr['reflectivity_copol'].values
                         dv = ds_mrr['mean_doppler_velocity_copol'].values
                         sw = ds_mrr['spectral_width_copol'].values
+                        stn = stn.resample(time='1min').mean()
+                        ze = ze.resample(time='1min').mean()
+                        dv = dv.resample(time='1min').mean()
+                        sw = sw.resample(time='1min').mean()
 
                         mask = np.where(stn > -20, 1, 0)
 
@@ -121,9 +125,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         ze = ze_masked[:,:98]
                         dv = dv_masked[:,:98]
                         sw = sw_masked[:,:98]
-                        ze = ze.resample(time='1min').mean()
-                        ze = dv.resample(time='1min').mean()
-                        ze = sw.resample(time='1min').mean()
                         print("sponge2", ze.shape)
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
