@@ -142,6 +142,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     total_snowing_minutes += len(snow_indices)
                     
                     ze = ze[snow_indices, :]
+                    print('asd', (ze.shape[0]+1), np.arange(1, ze.shape[0]+1).shape)
                     mrr_height = np.repeat(np.arange(1, ze.shape[0]+1), ze.shape[0])
                     print("mrr_height", mrr_height.shape)
                     dv = dv[snow_indices, :]
