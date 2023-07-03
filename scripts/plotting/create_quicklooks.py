@@ -26,7 +26,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
     matched_dates = []
     files = glob.glob(os.path.join(mrr_path, '*.nc'))
-    print(files)
+    if site == 'NSA':
+        files = glob.glob(os.path.join(mrr_path, '*.cdf'))
 
     mrr_dates = []
     for filename in files:
