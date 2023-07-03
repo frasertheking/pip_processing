@@ -100,7 +100,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     ze = -1
                     dv = -1
                     sw = -1
-                    range_gates = -1
                     if site == 'NSA':
                         file_pattern = mrr_path + '/*' + date + '*.cdf'
                         matching_files = glob.glob(file_pattern)
@@ -124,7 +123,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         ze = ze_masked[:98]
                         dv = dv_masked[:98]
                         sw = sw_masked[:98]
-                        range_gates = 98
                         print("sponge2", ze.shape)
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
@@ -133,7 +131,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         ze = ds_mrr['Ze'].values
                         dv = ds_mrr['W'].values
                         sw = ds_mrr['spectralWidth'].values
-                        range_gates = 32
 
                     print('asd123')
 
@@ -145,7 +142,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     total_snowing_minutes += len(snow_indices)
                     
                     ze = ze[snow_indices, :]
-                    mrr_height = np.repeat(np.arange(1, range_gates), ze.shape[0])
+                    mrr_height = np.repeat(np.arange(1, ze.shape[0]-1), ze.shape[0])
+                    print("mrr_height", mrr_height.shape)
                     dv = dv[snow_indices, :]
                     sw = sw[snow_indices, :]
 
