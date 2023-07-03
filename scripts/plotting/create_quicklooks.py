@@ -246,8 +246,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
                 except Exception as e:
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
-        
-                break
         else:
             for date in matched_dates:
                 ze = -1
@@ -420,7 +418,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                 fig.suptitle(site + ' PIP (Data Matched to MRR) : # Snow Mins. = (' + str(total_snowing_minutes) + "/" + str(total_precip_minutes) + ')')
             else:
                 fig.suptitle(site + ' PIP all data')
-
 
             plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), True)
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
