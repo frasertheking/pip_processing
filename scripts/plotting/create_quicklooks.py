@@ -126,6 +126,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         dv = ds_mrr['W'].values
                         sw = ds_mrr['spectralWidth'].values
 
+                    print('asd123')
+
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
