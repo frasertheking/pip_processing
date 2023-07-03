@@ -120,9 +120,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         print(ze_masked.shape)
 
                         # Clip the arrays to only look at the bottom 98 rows
-                        ze = ze_masked[:98]
-                        dv = dv_masked[:98]
-                        sw = sw_masked[:98]
+                        ze = ze_masked[:,:98]
+                        dv = dv_masked[:,:98]
+                        sw = sw_masked[:,:98]
                         print("sponge2", ze.shape)
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
