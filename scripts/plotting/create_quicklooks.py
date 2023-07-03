@@ -104,27 +104,25 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         file_pattern = mrr_path + '/*' + date + '*.cdf'
                         matching_files = glob.glob(file_pattern)
                         ds_mrr = xr.open_dataset(matching_files[0]) 
-                        print("sponge00")
+
                         stn = ds_mrr['signal_to_noise_ratio_copol'].values
                         ze = ds_mrr['reflectivity_copol'].values
                         dv = ds_mrr['mean_doppler_velocity_copol'].values
                         sw = ds_mrr['spectral_width_copol'].values
 
-                        print("sponge01")
                         mask = np.where(stn > -20, 1, 0)
-
-                        print("sponge0")
 
                         # Apply the mask to the other arrays
                         ze_masked = np.where(mask, ze, np.nan)
                         dv_masked = np.where(mask, dv, np.nan)
                         sw_masked = np.where(mask, sw, np.nan)
-                        print("sponge1")
+
+                        print(ze_masked.shape)
 
                         # Clip the arrays to only look at the bottom 98 rows
-                        ze = ze_masked[-98:]
-                        dv = dv_masked[-98:]
-                        sw = sw_masked[-98:]
+                        ze = ze_masked[:98]
+                        dv = dv_masked[:98]
+                        sw = sw_masked[:98]
                         print("sponge2")
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
