@@ -130,8 +130,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         dv = ds_mrr['W'].values
                         sw = ds_mrr['spectralWidth'].values
 
-                    print('asd123')
-
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
@@ -141,7 +139,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     
                     ze = ze[snow_indices, :]
                     print('asd', (ze.shape[0]+1), np.arange(1, ze.shape[0]+1).shape)
-                    mrr_height = np.repeat(np.arange(1, ze.shape[0]+1), ze.shape[0])
+                    mrr_height = np.repeat(np.arange(1, ze.shape[1]+1), ze.shape[0])
                     print("mrr_height", mrr_height.shape)
                     dv = dv[snow_indices, :]
                     sw = sw[snow_indices, :]
