@@ -111,17 +111,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         sw = ds_mrr['spectral_width_copol'].resample(time='1min').mean().values
 
                         mask = np.where(stn > -20, 1, 0)
-
-                        # Apply the mask to the other arrays
                         ze_masked = np.where(mask, ze, np.nan)
                         dv_masked = np.where(mask, dv, np.nan)
                         sw_masked = np.where(mask, sw, np.nan)
 
-                        # Clip the arrays to only look at the bottom 98 rows
                         ze = ze_masked[:,:98]
                         dv = dv_masked[:,:98]
                         sw = sw_masked[:,:98]
-                        print("sponge2", ze.shape)
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
                         matching_files = glob.glob(file_pattern)
@@ -138,9 +134,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     total_snowing_minutes += len(snow_indices)
                     
                     ze = ze[snow_indices, :]
-                    print('asd', (ze.shape[0]+1), np.arange(1, ze.shape[0]+1).shape)
                     mrr_height = np.repeat(np.arange(1, ze.shape[1]+1), ze.shape[0])
-                    print("mrr_height", mrr_height.shape)
                     dv = dv[snow_indices, :]
                     sw = sw[snow_indices, :]
 
@@ -251,17 +245,35 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(f"No file found at {pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'}")
         else:
             for date in matched_dates:
-                ds_mrr = xr.open_dataset(date) 
-                ze = ds_mrr['Ze'].values
-                dv = ds_mrr['W'].values
-                sw = ds_mrr['spectralWidth'].values
-                mrr_height = np.repeat(np.arange(1, 32), ze.shape[0])
-
+                ze = -1
+                dv = -1
+                sw = -1
+                if site == 'NSA':
+                    ds_mrr = xr.open_dataset(date) 
+                    stn = ds_mrr['signal_to_noise_ratio_copol'].resample(time='1min').mean().values
+                    ze = ds_mrr['reflectivity_copol'].resample(time='1min').mean().values
+                    dv = ds_mrr['mean_doppler_velocity_copol'].resample(time='1min').mean().values
+                    sw = ds_mrr['spectral_width_copol'].resample(time='1min').mean().values
+                    mask = np.where(stn > -20, 1, 0)
+                    ze_masked = np.where(mask, ze, np.nan)
+                    dv_masked = np.where(mask, dv, np.nan)
+                    sw_masked = np.where(mask, sw, np.nan)
+                    ze = ze_masked[:,:98]
+                    dv = dv_masked[:,:98]
+                    sw = sw_masked[:,:98]
+                else:
+                    ds_mrr = xr.open_dataset(date) 
+                    ze = ds_mrr['Ze'].values
+                    dv = ds_mrr['W'].values
+                    sw = ds_mrr['spectralWidth'].values
+    
+                mrr_height = np.repeat(np.arange(1, ze.shape[1]+1), ze.shape[0])
                 ze_list.append(ze.T.flatten())
                 dv_list.append(dv.T.flatten())
                 sw_list.append(sw.T.flatten())
                 mrr_height_list.append(mrr_height)
                 print("MRRs Loaded!")
+
             for date in pip_dates:
                 year = date[:4]
                 month = date[4:6]
