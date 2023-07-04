@@ -141,6 +141,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dv = dv[snow_indices, :]
                     sw = sw[snow_indices, :]
 
+                    print('lol', ze.shape, np.nanmean(ze, axis=1))
+
                     ze_list.append(ze.T.flatten())
                     dv_list.append(dv.T.flatten())
                     sw_list.append(sw.T.flatten())
@@ -368,16 +370,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim, bins):
             hist, xedges, yedges = np.histogram2d(y, x, bins=bins)
-
-            x_indices = np.digitize(x, xedges)
-            averages = [np.nanmean(y[x_indices == i]) for i in range(1, len(yedges))]
-            print(averages)
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], interpolation='none')
-            
-            ax.plot(averages, yedges[:-1] + np.diff(yedges)/2, color='black', linestyle='--', linewidth=3)  # Plot in the middle of each bin
-
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
             cbar = ax.figure.colorbar(im, ax=ax)
