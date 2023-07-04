@@ -177,6 +177,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     bin_centers = ds_pip.bin_centers.values
 
                     dsd = dsd[snow_indices, :]
+                    print("dsd sponge", np.nanmean(dsd, axis=1).shape)
                     avg_dsd.append(np.nanmean(dsd, axis=1))
 
                     dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
