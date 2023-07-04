@@ -369,14 +369,14 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         def plot_mrr_histogram(ax, x, y, title, color, xlabel, xlim, bins):
             hist, xedges, yedges = np.histogram2d(y, x, bins=bins)
 
-            y_indices = np.digitize(y, yedges)
-            averages = [np.nanmean(x[y_indices == i]) for i in range(1, len(yedges))]
+            x_indices = np.digitize(x, xedges)
+            averages = [np.nanmean(y[x_indices == i]) for i in range(1, len(xedges))]
             print(averages)
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], interpolation='none')
             
-            ax.plot(averages, yedges[:-1] + np.diff(yedges)/2, color='red', linestyle='-', linewidth=1)  # Plot in the middle of each bin
+            ax.plot(xedges[:-1] + np.diff(xedges)/2, averages, color='red', linestyle='-', linewidth=1)  # Plot in the middle of each bin
 
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
