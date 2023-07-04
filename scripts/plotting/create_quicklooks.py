@@ -85,6 +85,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         N_0_array = []
         lambda_array = []
 
+        avg_ze = []
+        avg_dv = []
+        avg_sw = []
+
         total_snowing_minutes = 0
         total_precip_minutes = 0
 
@@ -141,7 +145,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dv = dv[snow_indices, :]
                     sw = sw[snow_indices, :]
 
-                    print('lol', ze.shape, np.nanmean(ze, axis=0).shape)
+                    avg_ze.append(np.nanmean(ze, axis=0))
+                    avg_dv.append(np.nanmean(dv, axis=0))
+                    avg_sw.append(np.nanmean(sw, axis=0))
 
                     ze_list.append(ze.T.flatten())
                     dv_list.append(dv.T.flatten())
@@ -477,6 +483,11 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         process_mrr_data(site, ze_list, mrr_height_list, dv_list, sw_list, match_dates)
         process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, total_precip_minutes, match_dates)
         plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
+
+        print("SPONGE", np.nanmean(avg_ze, axis=0).shape, np.nanmean(avg_ze, axis=1).shape)
+        np.save(np.nanmean(avg_ze, axis=0), '../../data/processed/' + site + 'avg_ze.npy')
+        np.save(np.nanmean(avg_dv, axis=0), '../../data/processed/' + site + 'avg_dv.npy')
+        np.save(np.nanmean(avg_sw, axis=0), '../../data/processed/' + site + 'avg_sw.npy')
 
     create_hists_for_site(site, match_dates)
 
