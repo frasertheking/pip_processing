@@ -370,7 +370,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             hist, xedges, yedges = np.histogram2d(y, x, bins=bins)
 
             y_indices = np.digitize(y, yedges)
-            averages = [x[y_indices == i].mean() for i in range(1, len(yedges))]
+            averages = [np.nanmean(x[y_indices == i]) for i in range(1, len(yedges))]
             print(averages)
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
