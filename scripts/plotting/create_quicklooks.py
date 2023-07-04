@@ -466,7 +466,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[0].set_ylim(0, 5)
             axes[0].set_ylabel("$Log_{10}(N_{0})$")
             axes[0].set_xlabel("$Log_{10}(λ)$")
-            axes[0].set_title('$N_{0}-λ$ Relation')
+            axes[0].set_title('$N_{0}-λ$ Relationship')
 
             cb = fig.colorbar(pcm, ax=axes[0], extend="max")
             cb.set_label(label="Counts (%)", size=14)
@@ -480,7 +480,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             axes[2].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=1, color="blue", linewidth=3.0)
             axes[2].set_xlabel("$Log_{10}(N_0)$", size=14)
             axes[2].set_ylabel("Normalized Counts", size=14)
-            axes[1].set_title('$N_{0}$ Distribution')
+            axes[2].set_title('$N_{0}$ Distribution')
             axes[2].set_xlim(1, 5)
             plt.tight_layout()
             plt.savefig('../../images/' + site + '_n0_lambda_' + str(match_dates) + '.png')
