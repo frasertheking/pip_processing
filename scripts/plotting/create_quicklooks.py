@@ -141,7 +141,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     dv = dv[snow_indices, :]
                     sw = sw[snow_indices, :]
 
-                    print('lol', ze.shape, np.nanmean(ze, axis=1).shape)
+                    print('lol', ze.shape, np.nanmean(ze, axis=0).shape)
 
                     ze_list.append(ze.T.flatten())
                     dv_list.append(dv.T.flatten())
