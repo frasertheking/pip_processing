@@ -371,7 +371,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
             y_indices = np.digitize(y, yedges)
             averages = [x[y_indices == i].mean() for i in range(1, len(yedges))]
-
+            print(averages)
             ax.set_title(title)
             hist = 100 * hist / np.sum(hist)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], interpolation='none')
@@ -485,15 +485,16 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
     create_hists_for_site(site, match_dates)
 
-sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', True)
-# sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', False)
+# sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', True)
 sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', True)
-# sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
-sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', True)
-# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
-sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', True)
-# sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
-sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', True)
-# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
-sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', True)
+# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', True)
+# sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', True)
+# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', True)
+# sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', True)
+
 # sanity_check('KO2', '/data2/fking/s03/converted/', '/data2/fking/s03/data/ICE_POP/MRR/KO2/', False)
+# sanity_check('KIS', '/data2/fking/s03/converted/', '/data/HiLaMS/KIR/MRR/NetCDF/', False)
+# sanity_check('HAUK', '/data2/fking/s03/converted/', '/data/HiLaMS/HAUK/MRR/NetCDF/', False)
+# sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', False)
+# sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', False)
+# sanity_check('MQT', '/data/LakeEffect/PIP/Netcdf_Converted/', '/data/LakeEffect/MRR/NetCDF_DN/', False)
