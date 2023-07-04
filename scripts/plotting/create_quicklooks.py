@@ -491,8 +491,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
 
         print(np.nanmean(avg_ze, axis=0))
-        print(np.nanmean(avg_dsd, axis=1))
-        print(np.nanmean(avg_dsd, axis=1).shape)
+        print(np.nanmean(avg_dsd, axis=0))
+        print(np.nanmean(avg_dsd, axis=0).shape)
 
         np.save('../../data/processed/' + site + 'avg_ze.npy', np.nanmean(avg_ze, axis=0))
         np.save('../../data/processed/' + site + 'avg_dv.npy', np.nanmean(avg_dv, axis=0))
