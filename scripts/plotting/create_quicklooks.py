@@ -88,6 +88,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         avg_ze = []
         avg_dv = []
         avg_sw = []
+        avg_dsd = []
+        avg_vvd = []
+        avg_rho = []
 
         total_snowing_minutes = 0
         total_precip_minutes = 0
@@ -174,6 +177,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     bin_centers = ds_pip.bin_centers.values
 
                     dsd = dsd[snow_indices, :]
+                    avg_dsd.append(np.nanmean(dsd, axis=0))
 
                     dsd_height = np.repeat(np.arange(1, 132), dsd.shape[0])
                     dsd_list.append(dsd.T.flatten())
@@ -222,6 +226,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     vvd = ds_pip['vvd'].values
 
                     vvd = vvd[snow_indices, :]
+                    avg_vvd.append(np.nanmean(vvd, axis=0))
 
                     vvd_height = np.repeat(np.arange(1, 132), vvd.shape[0])
                     vvd_list.append(vvd.T.flatten())
@@ -245,6 +250,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     rho = ds_pip['rho'].values
 
                     rho = rho[snow_indices, :]
+                    avg_rho.append(np.nanmean(rho, axis=0))
 
                     rho_height = np.repeat(np.arange(1, 132), rho.shape[0])
                     rho_list.append(rho.T.flatten())
@@ -484,10 +490,12 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         process_pip_data(site, dsd_list, dsd_height_list, vvd_list, vvd_height_list, rho_list, rho_height_list, total_snowing_minutes, total_precip_minutes, match_dates)
         plot_n0_lambda(site, lambda_array, N_0_array, np.arange(-1, 1.05, 0.005), np.arange(0, 6.2, 0.1), match_dates)
 
-        print("SPONGE", np.nanmean(avg_ze, axis=0).shape, np.nanmean(avg_ze, axis=1).shape)
-        np.save(np.nanmean(avg_ze, axis=0), '../../data/processed/' + site + 'avg_ze.npy')
-        np.save(np.nanmean(avg_dv, axis=0), '../../data/processed/' + site + 'avg_dv.npy')
-        np.save(np.nanmean(avg_sw, axis=0), '../../data/processed/' + site + 'avg_sw.npy')
+        np.save('../../data/processed/' + site + 'avg_ze.npy', np.nanmean(avg_ze, axis=0))
+        np.save('../../data/processed/' + site + 'avg_dv.npy', np.nanmean(avg_dv, axis=0))
+        np.save('../../data/processed/' + site + 'avg_sw.npy', np.nanmean(avg_sw, axis=0))
+        np.save('../../data/processed/' + site + 'avg_dsd.npy', np.nanmean(avg_dsd, axis=0))
+        np.save('../../data/processed/' + site + 'avg_vvd.npy', np.nanmean(avg_vvd, axis=0))
+        np.save('../../data/processed/' + site + 'avg_rho.npy', np.nanmean(avg_rho, axis=0))
 
     create_hists_for_site(site, match_dates)
 
