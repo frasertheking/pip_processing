@@ -376,7 +376,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             hist = 100 * hist / np.sum(hist)
             im = ax.imshow(hist, origin='lower', cmap=color, aspect='auto', extent=[yedges[0], yedges[-1], xedges[0], xedges[-1]], interpolation='none')
             
-            ax.plot(xedges[:-1] + np.diff(xedges)/2, averages, color='red', linestyle='-', linewidth=1)  # Plot in the middle of each bin
+            ax.plot(averages, xedges[:-1] + np.diff(xedges)/2, color='black', linestyle='--', linewidth=3)  # Plot in the middle of each bin
 
             ax.set_xlim(xlim)
             ax.set_xlabel(xlabel)
