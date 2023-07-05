@@ -3,12 +3,11 @@ from matplotlib import pyplot as plt
 import cartopy.crs as ccrs
 from skimage.io import imread
 
-site_lats = [46.532, 44.908, 61.845, 69.058, 59.81, 67.84, 47.97, 37.665]
-site_lons = [-87.548, -84.719, 24.287, -152.863, 7.21, 20.41, -123.58, 128.7]
-names = ['MQT', 'APX', 'FIN', 'NSA', 'HAUK', 'KIR', 'OLYMPEx', 'ICE-POP']
+site_lats = [46.532, 44.908, 61.845, 69.058, 59.81, 67.84, 37.665]
+site_lons = [-87.548, -84.719, 24.287, -152.863, 7.21, 20.41, 128.7]
+names = ['MQT', 'APX', 'FIN', 'NSA', 'HAUK', 'KIR', 'ICE-POP']
 
-colors = ['black', 'r', 'g', 'b', 'orange', 'c', 'm', 'y']  # colors for each site
-markers = ['o', '^', 's', 'P', '*', 'X', 'D', 'v']  # markers for each site
+colors = ['black', 'r', 'g', 'b', 'orange', 'c', 'm']  # colors for each site
 
 plt.figure(figsize=(40, 40))
 ax = plt.axes(projection=ccrs.LambertConformal(cutoff=30))

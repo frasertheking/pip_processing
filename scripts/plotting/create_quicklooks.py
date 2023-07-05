@@ -50,6 +50,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         pip_dates = pd.to_datetime(pip_dates, format='%Y%m%d')
         # met_dates = pd.to_datetime(met_dates, format='%Y%m%d')
 
+        if site == 'NSA':
+            mrr_dates = mrr_dates[mrr_dates >= '2018-01-01']
+
         m_date_data = np.full(len(matched_dates), 0)
         mrr_date_data = np.full(len(mrr_dates), 1)
         pip_date_data = np.full(len(pip_dates), 2)
