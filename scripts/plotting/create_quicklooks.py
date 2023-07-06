@@ -10,9 +10,12 @@ import warnings
 from matplotlib.colors import LogNorm
 from datetime import datetime, timedelta
 from matplotlib.colors import LogNorm
+from scipy.stats import gaussian_kde
 from scipy.optimize import curve_fit
 warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
+
+ED_CUTOFF = 0.4
 
 def sanity_check(site, pip_path, mrr_path, match_dates):
     print("\n\n\nPerforming sanity check on", site)
@@ -141,7 +144,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=ED_CUTOFF))[0]
                     precip_indices = np.where(ed>0)[0]
                     total_snowing_minutes += len(snow_indices)
                     total_precip_minutes += len(precip_indices)
@@ -171,7 +174,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=ED_CUTOFF))[0]
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/*' + date + '*_dsd.nc'
                     matching_files = glob.glob(file_pattern)
@@ -221,7 +224,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=ED_CUTOFF))[0]
 
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/*' + date + '*_vvd_A.nc'
                     matching_files = glob.glob(file_pattern)
@@ -245,7 +248,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     matching_files = glob.glob(file_pattern)
                     ds_pip = xr.open_dataset(matching_files[0])   
                     ed = ds_pip['ed'].values
-                    snow_indices = np.where(np.logical_and(ed>0, ed<=0.2))[0]
+                    snow_indices = np.where(np.logical_and(ed>0, ed<=ED_CUTOFF))[0]
 
                     file_pattern =  pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'
                     matching_files = glob.glob(file_pattern)
@@ -409,6 +412,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             ax.set_xlabel("Mean D$_e$ (mm)")
             cbar = ax.figure.colorbar(im, ax=ax)
             cbar.ax.set_ylabel('Counts (%)')
+
 
         def plot_mrr_figures(site, ze_data, dv_data, sw_data, match_dates):
             fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
