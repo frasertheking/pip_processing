@@ -135,18 +135,12 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     elif site == 'FIN':
                         file_pattern = mrr_path + '/*' + date + '*.nc'
                         matching_files = glob.glob(file_pattern)
-                        ds_mrr = xr.open_dataset(matching_files[0]) 
-                        df_mrr = ds_mrr.to_dataframe().reset_index().set_index('time')
+                        ds_mrr = xr.open_dataset(matching_files[0], chunks={'time': 'auto'}) 
 
                         print("sponge1")
-
-                        df_h = df_mrr.resample("1min").mean()  
-                        vals = [xr.DataArray(data=df_h[c], dims=['time'], coords={'time':df_h.index}, attrs=ds_mrr[c].attrs) for c in df_h.columns]
-                        ds_h = xr.Dataset(dict(zip(df_h.columns,vals)), attrs=ds_mrr.attrs)
-
-                        ze = ds_h['Zh'].values
-                        dv = ds_h['v'].values
-                        sw = ds_h['width'].values
+                        ze = ds_mrr['Zh'].resample(time='1min').mean().values
+                        dv = ds_mrr['v'].resample(time='1min').mean().values
+                        sw = ds_mrr['width'].resample(time='1min').mean().values
 
                         print("sponge2")
                         ze = ze[:,:115]
