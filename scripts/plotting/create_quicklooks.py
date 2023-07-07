@@ -136,10 +136,11 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         file_pattern = mrr_path + '/*' + date + '*.nc'
                         matching_files = glob.glob(file_pattern)
                         ds_mrr = xr.open_dataset(matching_files[0]) 
+                        df_mrr = ds_mrr.to_dataframe().reset_index().set_index('time')
 
                         print("sponge1")
 
-                        df_h = ds_mrr.to_dataframe().resample("1min").mean()  # what we want (quickly), but in Pandas form
+                        df_h = df_mrr.resample("1min").mean()  
                         vals = [xr.DataArray(data=df_h[c], dims=['time'], coords={'time':df_h.index}, attrs=ds_mrr[c].attrs) for c in df_h.columns]
                         ds_h = xr.Dataset(dict(zip(df_h.columns,vals)), attrs=ds_mrr.attrs)
 
