@@ -141,9 +141,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         dv = ds_mrr['v'].resample(time='1min').mean().values
                         sw = ds_mrr['width'].resample(time='1min').mean().values
 
-                        ze = ze_masked[:,:115]
-                        dv = dv_masked[:,:115]
-                        sw = sw_masked[:,:115]
+                        ze = ze[:,:115]
+                        dv = dv[:,:115]
+                        sw = sw[:,:115]
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
                         matching_files = glob.glob(file_pattern)
