@@ -440,7 +440,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             else:
                 fig.suptitle(site + ' PIP all data')
 
-            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'magma', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), True)
+            plot_pip_histogram(axes[0], np.ma.log10(dsd_data[0]), dsd_data[1], "Particle Size Distribution", 'turbo', "Log$_{10}$ PSD (m$^{-3}$ mm$^{-1}$)", np.linspace(.001, 5, 256), True)
             plot_pip_histogram(axes[1], vvd_data[0], vvd_data[1], "Velocity Distribution", 'magma', "Fall Speed (m s$^{−1}$)", np.arange(0.1, 5.1, 0.005))
             plot_pip_histogram(axes[2], rho_data[0], rho_data[1], "eDensity Distribution", 'magma', "Effective Density (g cm$^{-3}$)", np.arange(0.01, 1.01, 0.005))
 
