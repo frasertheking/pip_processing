@@ -35,8 +35,8 @@ for i,var in enumerate(vars):
 
         if i >= 3:
             plt.plot(np.arange(0.1, 26.2, 0.2), data, color=colors[j], linewidth=8, label=site)
-            # plt.gca().set_xscale('log')
-            plt.xlim((0.5, 26.2))
+            plt.gca().set_xscale('log')
+            # plt.xlim((0.5, 26.2))
             if i == 3:
                 plt.gca().set_yscale('log')
         else:
