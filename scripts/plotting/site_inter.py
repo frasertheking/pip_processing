@@ -9,7 +9,7 @@ vars = ['ze', 'dv', 'sw', 'dsd', 'vvd', 'rho']
 colors = ['r', 'orange', 'c', 'm', 'black', 'b']
 titles = ['Refl.', 'Dopp. Vel.', 'Spec. Width', 'PSD', 'VVD', 'eD']
 units = ['Avg. Reflectivity (dBZ)', 'Avg. Doppler Velocity (m s$^{-1}$)', 'Avg. Spectral Width (m s$^{-1}$)', 'Avg. Log PSD (m$^{-3}$ mm$^{-1}$)', 'Avg. Fall Speed (m s$^{-1}$)', 'Avg. Effective Density (g cm$^{-3}$)']
-refs = ['Vertical Bin', 'Vertical Bin', 'Vertical Bin', 'Log D$_e$ (mm)', 'Log D$_e$ (mm)', 'Log D$_e$ (mm)']
+refs = ['Vertical Bin', 'Vertical Bin', 'Vertical Bin', 'D$_e$ (mm)', 'Log D$_e$ (mm)', 'Log D$_e$ (mm)']
 
 for i,var in enumerate(vars):
     fig, ax = plt.subplots(figsize=(15,15))
