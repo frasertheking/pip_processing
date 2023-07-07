@@ -137,13 +137,17 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                         matching_files = glob.glob(file_pattern)
                         ds_mrr = xr.open_dataset(matching_files[0]) 
 
+                        print("sponge1")
+
                         ze = ds_mrr['Zh'].resample(time='1min').mean().values
                         dv = ds_mrr['v'].resample(time='1min').mean().values
                         sw = ds_mrr['width'].resample(time='1min').mean().values
 
+                        print("sponge2")
                         ze = ze[:,:115]
                         dv = dv[:,:115]
                         sw = sw[:,:115]
+                        print("sponge3")
                     else:
                         file_pattern = mrr_path + '/*' + date + '*.nc'
                         matching_files = glob.glob(file_pattern)
