@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from matplotlib.colors import LogNorm
 from scipy.stats import gaussian_kde
 from scipy.optimize import curve_fit
+from dask.distributed import Client
 warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
@@ -135,7 +136,10 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     elif site == 'FIN':
                         file_pattern = mrr_path + '/*' + date + '*.nc'
                         matching_files = glob.glob(file_pattern)
-                        ds_mrr = xr.open_dataset(matching_files[0], chunks={'time': 'auto'}) 
+                        # ds_mrr = xr.open_dataset(matching_files[0], chunks={'time': 'auto'}) 
+
+                        client = Client()  # This will use all available cores on your machine
+                        ds_mrr = xr.open_dataset(matching_files[0], chunks={'time': 'auto'})
 
                         print("sponge1")
                         ze = ds_mrr['Zh'].resample(time='1min').mean().values
