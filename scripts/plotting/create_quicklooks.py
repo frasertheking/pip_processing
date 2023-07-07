@@ -139,9 +139,13 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                         print("sponge1")
 
-                        ze = ds_mrr['Zh'].resample(time='1min').mean().values
-                        dv = ds_mrr['v'].resample(time='1min').mean().values
-                        sw = ds_mrr['width'].resample(time='1min').mean().values
+                        df_h = ds_mrr.to_dataframe().resample("1min").mean()  # what we want (quickly), but in Pandas form
+                        vals = [xr.DataArray(data=df_h[c], dims=['time'], coords={'time':df_h.index}, attrs=ds_mrr[c].attrs) for c in df_h.columns]
+                        ds_h = xr.Dataset(dict(zip(df_h.columns,vals)), attrs=ds_mrr.attrs)
+
+                        ze = ds_h['Zh'].values
+                        dv = ds_h['v'].values
+                        sw = ds_h['width'].values
 
                         print("sponge2")
                         ze = ze[:,:115]
