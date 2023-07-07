@@ -529,7 +529,8 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
     create_hists_for_site(site, match_dates)
 
-sanity_check('FIN', '/data2/fking/s03/converted/', '/data2/fking/s03/data/Finland/', True)
+if __name__ == '__main__':
+    sanity_check('FIN', '/data2/fking/s03/converted/', '/data2/fking/s03/data/Finland/', True)
 
 # sanity_check('NSA', '/data2/fking/s03/converted/', '/data/jshates/northslope/KAZR/a1/', True)
 # sanity_check('APX', '/data2/fking/s03/converted/', '/data/APX/MRR/NetCDF', True)
