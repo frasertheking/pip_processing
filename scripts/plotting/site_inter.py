@@ -47,4 +47,30 @@ for i,var in enumerate(vars):
     plt.tight_layout()
     plt.savefig('../../images/' + var + '.png')
     # sys.exit()
-        
+
+def plot_n0_lambda():
+    lam_bins = np.arange(-1, 1.05, 0.005)
+    n0_bins = np.arange(0, 6.2, 0.1)
+
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    fig.suptitle('n$_0$ Dist. Comparisons')
+    for j, site in enumerate(sites):
+        lam = np.load('../../data/processed/' + site + '_lam.npy')
+        n0 = np.load('../../data/processed/' + site + '_n0.npy')
+        axes[0].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
+        axes[1].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
+
+    axes[0].set_xlim(0.1, 2)
+    axes[0].set_xlabel("Lambda (λ) ($mm^{-1}$)")
+    axes[0].set_ylabel("Normalized Counts")
+    axes[0].set_title('Lambda Distribution')
+    axes[1].set_xlabel("$Log_{10}(N_0)$")
+    axes[1].set_ylabel("Normalized Counts")
+    axes[1].set_title('$N_{0}$ Distribution')
+    axes[1].set_xlim(1, 5)
+
+    plt.tight_layout()
+    plt.savefig('../../images/n0_lambda_comparisons.png')
+
+plot_n0_lambda()
+            
