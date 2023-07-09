@@ -441,6 +441,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             if site == 'NSA':
                 bins = [97, 256]
 
+            if site == 'FIN':
+                bins = [114, 256]
+
             plot_mrr_histogram(axes[0], ze_data[0], ze_data[1], "Reflectivity", 'Reds', "dBZ", (-20, 30), bins)
             plot_mrr_histogram(axes[1], dv_data[0], dv_data[1], "Doppler Velocity", 'Blues', "m s$^{-1}$", (-5, 5), bins)
             plot_mrr_histogram(axes[2], sw_data[0], sw_data[1], "Spectral Width", 'Oranges', "m s$^{-1}$", (0, 0.5), bins)
