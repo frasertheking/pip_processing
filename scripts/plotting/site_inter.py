@@ -58,8 +58,6 @@ def plot_n0_lambda():
     for j, site in enumerate(sites):
         lam = np.load('../../data/processed/' + site + '_lam.npy')
         n0 = np.load('../../data/processed/' + site + '_n0.npy')
-        # axes[0].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
-        # axes[1].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
         sns.kdeplot(lam, ax=axes[0], color=colors[j], linewidth=5.0, label=site)
         sns.kdeplot(np.ma.log10(n0), ax=axes[1], color=colors[j], linewidth=5.0, label=site)
 
@@ -72,7 +70,7 @@ def plot_n0_lambda():
     axes[1].set_title('$N_{0}$ Distribution')
     axes[1].set_xlim(0, 5)
 
-    plt.legend(loc='upper center', bbox_to_anchor=(0, -0.1), fancybox=True, shadow=True, ncol=7)
+    fig.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=7)
     plt.tight_layout()
     plt.savefig('../../images/n0_lambda_comparisons.png')
 
