@@ -26,7 +26,7 @@ for i,var in enumerate(vars):
         print('Loading', 'processed/' + site + '_avg_' + var + '.npy')
         data = np.load('../../data/processed/' + site + '_avg_' + var + '.npy')
 
-        if site == 'NSA' and i < 3:
+        if (site == 'NSA' or site == 'FIN') and i < 3:
             f = interpolate.interp1d(np.arange(len(data)), data, kind='linear')
             new_indices = np.linspace(0, len(data)-1, 31)
             data = f(new_indices)
