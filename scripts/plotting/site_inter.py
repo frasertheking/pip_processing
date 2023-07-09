@@ -69,9 +69,6 @@ def plot_n0_lambda():
     axes[1].set_ylabel("Normalized Counts")
     axes[1].set_title('$N_{0}$ Distribution')
     axes[1].set_xlim(0, 5)
-
-    axes[0].legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=7)
-    axes[1].legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=7)
     plt.tight_layout()
     plt.savefig('../../images/n0_lambda_comparisons.png')
 
