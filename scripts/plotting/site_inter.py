@@ -1,6 +1,7 @@
 import sys,os
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy import interpolate
 plt.rcParams.update({'font.size': 20})
@@ -58,8 +59,10 @@ def plot_n0_lambda():
     for j, site in enumerate(sites):
         lam = np.load('../../data/processed/' + site + '_lam.npy')
         n0 = np.load('../../data/processed/' + site + '_n0.npy')
-        axes[0].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
-        axes[1].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
+        # axes[0].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
+        # axes[1].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
+        sns.kdeplot(lam, ax=axes[0], color=colors[j], linewidth=3.0, label=site)
+        sns.kdeplot(n0, ax=axes[1], color=colors[j], linewidth=3.0, label=site)
 
     axes[0].set_xlim(0.1, 1.1)
     axes[0].set_xlabel("Lambda (λ) ($mm^{-1}$)")
