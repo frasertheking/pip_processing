@@ -64,14 +64,14 @@ def plot_n0_lambda():
         sns.kdeplot(lam, ax=axes[0], color=colors[j], linewidth=3.0, label=site)
         sns.kdeplot(np.ma.log10(n0), ax=axes[1], color=colors[j], linewidth=3.0, label=site)
 
-    # axes[0].set_xlim(0.1, 1.1)
+    axes[0].set_xlim(0.1, 2)
     axes[0].set_xlabel("Lambda (λ) ($mm^{-1}$)")
     axes[0].set_ylabel("Normalized Counts")
     axes[0].set_title('Lambda Distribution')
     axes[1].set_xlabel("$Log_{10}(N_0)$")
     axes[1].set_ylabel("Normalized Counts")
     axes[1].set_title('$N_{0}$ Distribution')
-    # axes[1].set_xlim(0.1, 5)
+    axes[1].set_xlim(0, 5)
 
     plt.tight_layout()
     plt.savefig('../../images/n0_lambda_comparisons.png')
