@@ -54,7 +54,7 @@ def plot_n0_lambda():
     lam_bins = np.arange(-1, 1.05, 0.1)
     n0_bins = np.arange(0, 6.2, 0.1)
 
-    fig, axes = plt.subplots(1, 2, figsize=(18, 10))
+    fig, axes = plt.subplots(1, 2, figsize=(22, 10))
     for j, site in enumerate(sites):
         lam = np.load('../../data/processed/' + site + '_lam.npy')
         n0 = np.load('../../data/processed/' + site + '_n0.npy')
