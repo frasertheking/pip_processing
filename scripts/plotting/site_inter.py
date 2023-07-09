@@ -35,15 +35,15 @@ for i,var in enumerate(vars):
 
         if i >= 3:
             plt.plot(np.arange(0.1, 26.2, 0.2), data, color=colors[j], linewidth=8, label=site)
-            # plt.gca().set_xscale('log')
+            plt.gca().set_xscale('log')
             if i == 3:
-                # plt.gca().set_yscale('log')
+                plt.gca().set_yscale('log')
                 plt.xlim((0.5, 26.2))
         else:
             plt.plot(data, np.arange(len(data)), color=colors[j], linewidth=8, label=site)
 
 
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.065), fancybox=True, shadow=True, ncol=6)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.065), fancybox=True, shadow=True, ncol=7)
     plt.tight_layout()
     plt.savefig('../../images/' + var + '.png')
     # sys.exit()
