@@ -49,23 +49,17 @@ for i,var in enumerate(vars):
     plt.savefig('../../images/' + var + '.png')
     # sys.exit()
 
-def plot_n0_lambda(window_size=5):
-    lam_bins = np.arange(-1, 1.05, 0.005)
-    n0_bins = np.arange(0, 6.2, 0.005)
+def plot_n0_lambda():
+    lam_bins = np.arange(-1, 1.05, 0.1)
+    n0_bins = np.arange(0, 6.2, 0.1)
 
     fig, axes = plt.subplots(1, 2, figsize=(18, 10))
     fig.suptitle('n$_0$ Dist. Comparisons')
     for j, site in enumerate(sites):
         lam = np.load('../../data/processed/' + site + '_lam.npy')
         n0 = np.load('../../data/processed/' + site + '_n0.npy')
-        
-        # Compute the rolling mean for each data set
-        lam_rolling = pd.Series(lam).rolling(window=window_size).mean()
-        n0_rolling = pd.Series(np.ma.log10(n0)).rolling(window=window_size).mean()
-
-        # Replace the raw data with the rolling mean data
-        axes[0].hist(lam_rolling, bins=lam_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
-        axes[1].hist(n0_rolling, bins=n0_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
+        axes[0].hist(lam, bins=lam_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
+        axes[1].hist(np.ma.log10(n0), bins=n0_bins, density=True, histtype='step', alpha=1, color=colors[j], linewidth=3.0, label=site)
 
     axes[0].set_xlim(0.1, 1.1)
     axes[0].set_xlabel("Lambda (λ) ($mm^{-1}$)")
