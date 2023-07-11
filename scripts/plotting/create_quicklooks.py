@@ -13,6 +13,7 @@ from matplotlib.colors import LogNorm
 from scipy.stats import gaussian_kde
 from scipy.optimize import curve_fit
 from dask.distributed import Client
+from extract_inputs import calc_various_psd_inputs
 warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
@@ -183,6 +184,9 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                 except Exception as e:
                     print(e)
 
+                # Extract PIP PSD parameters
+                calc_various_psd_inputs(date)
+
                 # PIP
                 try:
                     file_pattern = pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/*' + date + '*_P_Minute.nc'
@@ -208,7 +212,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                     # Loop over each minute
                     for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
-                        running_avg = np.mean(dsd[i:i+15, :], axis=0)
+                        running_avg = np.nanmean(dsd[i:i+15, :], axis=0)
                         valid_indices = ~np.isnan(running_avg)
                         running_avg = running_avg[valid_indices]
                         valid_bin_centers = bin_centers[valid_indices]
@@ -332,7 +336,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
 
                     # Loop over each minute
                     for i in range(dsd.shape[0] - 14): # Subtract 14 to ensure we can get a 15-min running average for every point
-                        running_avg = np.mean(dsd[i:i+15, :], axis=0)
+                        running_avg = np.nanmean(dsd[i:i+15, :], axis=0)
                         valid_indices = ~np.isnan(running_avg)
                         running_avg = running_avg[valid_indices]
                         valid_bin_centers = bin_centers[valid_indices]
