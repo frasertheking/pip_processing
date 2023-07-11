@@ -1,30 +1,35 @@
-import sys,os
+import sys,os,glob
 import xarray as xr
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-def calc_various_psd_inputs(date, site):
+def calc_various_psd_inputs(path, date, site):
     print("Working on " + date)
-    psd_path = '../../data/PIP/2019_MQT/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc'
-    ed_path = '../../data/PIP/2019_MQT/netCDF/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc'
-    vvd_path = '../../data/PIP/2019_MQT/netCDF/velocity_distributions/006' + date + '2350_01_vvd_A.nc'
-    sr_path = '../../data/PIP/2019_MQT/netCDF/edensity_lwe_rate/006' + date + '2350_01_P_Minute.nc'
 
     try:
-        ds_psd = xr.open_dataset(psd_path)   
+        psd_fp = path + 'particle_size_distributions/*' + date + '*_dsd.nc'
+        ed_fp = path + 'edensity_distributions/*' + date + '*_P_Minute.nc'
+        vvd_fp = path + 'velocity_distributions/*' + date + '*_vvd_A.nc'
+        sr_fp = path + 'edensity_lwe_rate/*' + date + '*_P_Minute.nc'
+        psd_match = glob.glob(psd_fp)
+        ed_match = glob.glob(ed_fp)
+        vvd_match = glob.glob(vvd_fp)
+        sr_match = glob.glob(sr_fp)
+
+        ds_psd = xr.open_dataset(psd_match[0])   
         psd = ds_psd['psd'].values
         bin_centers = ds_psd.bin_centers.values
 
-        ds_ed = xr.open_dataset(ed_path)   
+        ds_ed = xr.open_dataset(ed_match[0])   
         rho = ds_ed['rho'].values
 
-        ds_sr = xr.open_dataset(sr_path)   
+        ds_sr = xr.open_dataset(sr_match[0])   
         ed = ds_sr['ed'].values
         sr = ds_sr['nrr'].values
 
-        ds_vvd = xr.open_dataset(vvd_path)   
+        ds_vvd = xr.open_dataset(vvd_match[0])   
         vvd = ds_vvd['vvd'].values
 
         N_0_array = []

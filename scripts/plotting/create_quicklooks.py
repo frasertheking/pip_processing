@@ -185,7 +185,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(e)
 
                 # Extract PIP PSD parameters
-                calc_various_psd_inputs(date, site)
+                calc_various_psd_inputs(pip_path + str(year) + '_' + site + '/netCDF/', date, site)
 
                 # PIP
                 try:
