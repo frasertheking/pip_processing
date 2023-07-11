@@ -11,6 +11,7 @@ files = glob.glob('../../data/processed/psd_inputs/*.csv')
 
 # Iterate over all files
 for file in files:
+    print("On file", file)
     # Read csv file into a pandas dataframe
     df = pd.read_csv(file, header=0)
 
