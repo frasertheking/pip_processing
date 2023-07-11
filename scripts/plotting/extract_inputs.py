@@ -88,7 +88,7 @@ def calc_various_psd_inputs(path, date, site):
                     lambda_array.append(np.nan)
 
         df = pd.DataFrame(data={'n0': N_0_array,  'D0': mmd_array, 'Nt': total_particle_array, 'VVD': avg_vvd_array, 'Sr': avg_sr_array,  'eD': avg_ed_array, 'lambda': lambda_array})
-        df.to_csv('../../data/processed/psd_inputs/' site + '_' + date + '.csv')
+        df.to_csv('../../data/processed/psd_inputs/' + site + '_' + date + '.csv')
         print("Saved " + date + ' to ' + '../../data/processed/psd_inputs/' + site + '_' + date + '.csv')
 
     except Exception as e:
