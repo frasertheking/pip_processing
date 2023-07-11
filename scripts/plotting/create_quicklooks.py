@@ -185,7 +185,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
                     print(e)
 
                 # Extract PIP PSD parameters
-                calc_various_psd_inputs(date)
+                calc_various_psd_inputs(date, site)
 
                 # PIP
                 try:

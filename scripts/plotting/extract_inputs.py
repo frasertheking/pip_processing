@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-def calc_various_psd_inputs(date):
+def calc_various_psd_inputs(date, site):
     print("Working on " + date)
     psd_path = '../../data/PIP/2019_MQT/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc'
     ed_path = '../../data/PIP/2019_MQT/netCDF/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc'
@@ -82,7 +82,7 @@ def calc_various_psd_inputs(date):
 
     df = pd.DataFrame(data={'n0': N_0_array,  'D0': mmd_array, 'Nt': total_particle_array, 'VVD': avg_vvd_array, 'Sr': avg_sr_array,  'eD': avg_ed_array, 'lambda': lambda_array})
     df.to_csv('../../data/processed/psd_inputs/' + date + '.csv')
-    print("Saved " + date + ' to ' + '../../data/processed/psd_inputs/' + date + '.csv')
+    print("Saved " + date + ' to ' + '../../data/processed/psd_inputs/' + site + '_' + date + '.csv')
 
 calc_various_psd_inputs('20190213')
 
