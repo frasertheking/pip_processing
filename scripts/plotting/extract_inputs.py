@@ -32,6 +32,8 @@ def calc_various_psd_inputs(path, date, site):
         ds_vvd = xr.open_dataset(vvd_match[0])   
         vvd = ds_vvd['vvd'].values
 
+        print("all loaded")
+
         N_0_array = []
         lambda_array = []
         total_particle_array = []
