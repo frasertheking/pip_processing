@@ -18,21 +18,23 @@ def calc_various_psd_inputs(path, date, site):
         vvd_match = glob.glob(vvd_fp)
         sr_match = glob.glob(sr_fp)
 
-        ds_psd = xr.open_dataset(psd_match[0])   
+        ds_psd = xr.open_dataset(psd_match[0])
+        print('PSD Loaded')
         psd = ds_psd['psd'].values
         bin_centers = ds_psd.bin_centers.values
 
         ds_ed = xr.open_dataset(ed_match[0])   
+        print('ED Loaded')
         rho = ds_ed['rho'].values
 
         ds_sr = xr.open_dataset(sr_match[0])   
+        print('SR Loaded')
         ed = ds_sr['ed'].values
         sr = ds_sr['nrr'].values
 
         ds_vvd = xr.open_dataset(vvd_match[0])   
+        print('VVD Loaded')
         vvd = ds_vvd['vvd'].values
-
-        print("all loaded")
 
         N_0_array = []
         lambda_array = []
