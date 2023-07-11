@@ -10,7 +10,7 @@ def calc_various_psd_inputs(path, date, site):
 
     try:
         psd_fp = path + 'particle_size_distributions/*' + date + '*_dsd.nc'
-        ed_fp = path + 'edensity_distributions/*' + date + '*_P_Minute.nc'
+        ed_fp = path + 'edensity_distributions/*' + date + '*_rho_Plots_D_minute.nc'
         vvd_fp = path + 'velocity_distributions/*' + date + '*_vvd_A.nc'
         sr_fp = path + 'edensity_lwe_rate/*' + date + '*_P_Minute.nc'
         psd_match = glob.glob(psd_fp)
