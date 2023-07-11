@@ -84,7 +84,7 @@ def calc_various_psd_inputs(date, site):
     df.to_csv('../../data/processed/psd_inputs/' + date + '.csv')
     print("Saved " + date + ' to ' + '../../data/processed/psd_inputs/' + site + '_' + date + '.csv')
 
-calc_various_psd_inputs('20190213')
+# calc_various_psd_inputs('20190213')
 
 
 #### PLOTTING
