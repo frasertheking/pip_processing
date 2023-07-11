@@ -26,63 +26,64 @@ def calc_various_psd_inputs(date, site):
 
         ds_vvd = xr.open_dataset(vvd_path)   
         vvd = ds_vvd['vvd'].values
+
+        N_0_array = []
+        lambda_array = []
+        total_particle_array = []
+        avg_ed_array = []
+        avg_sr_array = []
+        avg_vvd_array = []
+        mmd_array = []
+
+        func = lambda t, a, b: a * np.exp(-b*t)
+
+        for i in range(psd.shape[0] - 14):
+            avg_vvd_array.append(np.nanmean(vvd[i:i+15, :], axis=(0,1)))
+            avg_ed_array.append(np.nanmean(ed[i:i+15]))
+            avg_sr_array.append(np.nanmean(sr[i:i+15]))
+
+            running_avg = np.nanmean(psd[i:i+15, :], axis=0)
+            valid_indices = ~np.isnan(running_avg)
+
+            running_avg = running_avg[valid_indices]
+            valid_bin_centers = bin_centers[valid_indices]
+
+            total_particles = np.nansum(psd[i:i+15, :], axis=(0, 1))
+            total_particle_array.append(total_particles)
+
+            mass_dist = rho[i:i+15, valid_indices] * psd[i:i+15, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
+            mass_dist_sum = np.nansum(mass_dist, axis=0)
+            
+            if mass_dist_sum.size != 0:
+                cum_mass_dist = np.cumsum(mass_dist_sum)
+                mmd = np.interp(0.5 * cum_mass_dist[-1], cum_mass_dist, valid_bin_centers)
+            
+                if mmd > 25 and (np.all(cum_mass_dist==0)):
+                    mmd = 0
+
+                mmd_array.append(mmd)
+            else:
+                mmd_array.append(np.nan)
+
+            try:
+                popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
+                if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
+                    N_0_array.append(popt[0])
+                    lambda_array.append(popt[1])
+                else:
+                    N_0_array.append(np.nan)
+                    lambda_array.append(np.nan)
+                    
+            except Exception as e:
+                    N_0_array.append(np.nan)
+                    lambda_array.append(np.nan)
+
+        df = pd.DataFrame(data={'n0': N_0_array,  'D0': mmd_array, 'Nt': total_particle_array, 'VVD': avg_vvd_array, 'Sr': avg_sr_array,  'eD': avg_ed_array, 'lambda': lambda_array})
+        df.to_csv('../../data/processed/psd_inputs/' + date + '.csv')
+        print("Saved " + date + ' to ' + '../../data/processed/psd_inputs/' + site + '_' + date + '.csv')
+
     except Exception as e:
         print(e)
-
-    N_0_array = []
-    lambda_array = []
-    total_particle_array = []
-    avg_ed_array = []
-    avg_sr_array = []
-    avg_vvd_array = []
-    mmd_array = []
-
-    func = lambda t, a, b: a * np.exp(-b*t)
-
-    for i in range(psd.shape[0] - 14):
-        avg_vvd_array.append(np.nanmean(vvd[i:i+15, :], axis=(0,1)))
-        avg_ed_array.append(np.nanmean(ed[i:i+15]))
-        avg_sr_array.append(np.nanmean(sr[i:i+15]))
-
-        running_avg = np.nanmean(psd[i:i+15, :], axis=0)
-        valid_indices = ~np.isnan(running_avg)
-
-        running_avg = running_avg[valid_indices]
-        valid_bin_centers = bin_centers[valid_indices]
-
-        total_particles = np.nansum(psd[i:i+15, :], axis=(0, 1))
-        total_particle_array.append(total_particles)
-
-        mass_dist = rho[i:i+15, valid_indices] * psd[i:i+15, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
-        mass_dist_sum = np.nansum(mass_dist, axis=0)
-        
-        if mass_dist_sum.size != 0:
-            cum_mass_dist = np.cumsum(mass_dist_sum)
-            mmd = np.interp(0.5 * cum_mass_dist[-1], cum_mass_dist, valid_bin_centers)
-        
-            if mmd > 25 and (np.all(cum_mass_dist==0)):
-                mmd = 0
-
-            mmd_array.append(mmd)
-        else:
-            mmd_array.append(np.nan)
-
-        try:
-            popt, pcov = curve_fit(func, valid_bin_centers, running_avg, p0 = [1e4, 2], maxfev=600)
-            if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
-                N_0_array.append(popt[0])
-                lambda_array.append(popt[1])
-            else:
-                N_0_array.append(np.nan)
-                lambda_array.append(np.nan)
-                
-        except Exception as e:
-                N_0_array.append(np.nan)
-                lambda_array.append(np.nan)
-
-    df = pd.DataFrame(data={'n0': N_0_array,  'D0': mmd_array, 'Nt': total_particle_array, 'VVD': avg_vvd_array, 'Sr': avg_sr_array,  'eD': avg_ed_array, 'lambda': lambda_array})
-    df.to_csv('../../data/processed/psd_inputs/' + date + '.csv')
-    print("Saved " + date + ' to ' + '../../data/processed/psd_inputs/' + site + '_' + date + '.csv')
 
 # calc_various_psd_inputs('20190213')
 
