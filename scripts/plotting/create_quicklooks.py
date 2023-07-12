@@ -58,7 +58,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         if site == 'NSA':
             mrr_dates = mrr_dates[mrr_dates >= '2018-01-01']
 
-        print(m_dates)
+        pd.DataFrame(data={'dates': m_dates}).to_csv(site + '_matched_dates.csv')
         return
 
         m_date_data = np.full(len(matched_dates), 0)
