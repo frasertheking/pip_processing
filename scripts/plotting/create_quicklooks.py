@@ -27,6 +27,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         pip_path_temp = os.path.join(pip_path, f"{year}_{site}", "netCDF", "edensity_distributions", "*.nc")
         print(pip_path_temp)
         for file in glob.glob(pip_path_temp):
+            print(file)
             pip_dates.append(file[-37:-29])
 
     print(pip_dates)
