@@ -29,6 +29,7 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
         for file in glob.glob(pip_path_temp):
             pip_dates.append(file[-37:-29])
 
+
     matched_dates = []
     files = glob.glob(os.path.join(mrr_path, '*.nc'))
     if site == 'NSA':
@@ -47,8 +48,6 @@ def sanity_check(site, pip_path, mrr_path, match_dates):
             if len([f for f in files if date in os.path.basename(f)]) > 0:
                 matched_dates.append(date)
 
-    pd.DataFrame(data={'dates': matched_dates}).to_csv('finland_matched.csv')
-    return
     print("Total Matched:", len(matched_dates))
 
     if match_dates:

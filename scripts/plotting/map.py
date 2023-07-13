@@ -37,7 +37,12 @@ def plot_timeline():
 
     for i, site in enumerate(names):
         df = pd.read_csv('/Users/fraserking/Development/pip_processing/data/other/' + site + '_matched_dates.csv')
-        df['date'] = pd.to_datetime(df['dates'])
+
+        if site == 'FIN':
+            df['date'] = pd.to_datetime(df['dates'], format='%Y%m%d')
+        else:
+            df['date'] = pd.to_datetime(df['dates'])
+        
         df = df[df['date'] <= pd.to_datetime('2023-01-01')]
 
         m_date_data = np.full(len(df), i)
