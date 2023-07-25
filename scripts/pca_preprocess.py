@@ -116,6 +116,7 @@ def calc_various_pca_inputs(site):
 
     matched_dates = []
     for date in mrr_ds_dates:
+        print(date, file_dict[date])
         if len(file_dict[date]) == 4:
             matched_dates.append(date)
 
