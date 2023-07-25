@@ -133,6 +133,7 @@ def calc_various_pca_inputs(site):
     number_of_files = 0
     for matched_date in matched_dates:
         print("Working on day", matched_date)
+        matched_date='20160816'
         year = int(matched_date[:4])
         month = int(matched_date[4:6])
         day = int(matched_date[-2:])
