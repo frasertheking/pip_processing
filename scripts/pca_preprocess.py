@@ -144,11 +144,15 @@ def calc_various_pca_inputs(site):
         ds_mrr_day = xr.open_dataset(mrr_path + 'MRR_NWS_MQT_' + matched_date + '_snow.nc')
 
         # Load PIP data
-        ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/006' + matched_date + '2350_01_P_Minute.nc')
-        ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + matched_date + '2350_01_rho_Plots_D_minute.nc')
-        ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + matched_date + '2350_01_vvd_A.nc')
-        ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + matched_date + '2350_01_dsd.nc')
-
+        try:
+            ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/006' + matched_date + '2350_01_P_Minute.nc')
+            ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + matched_date + '2350_01_rho_Plots_D_minute.nc')
+            ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + matched_date + '2350_01_vvd_A.nc')
+            ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + matched_date + '2350_01_dsd.nc')
+        except RuntimeError:
+            print("Could not open PIP file, likely ended before 2350")
+            continue
+        
         dsd_values = ds_particle_size_distributions['psd'].values
         edd_values = ds_edensity_distributions['rho'].values
         vvd_values = ds_velocity_distributions['vvd'].values
