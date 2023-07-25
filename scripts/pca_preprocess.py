@@ -78,7 +78,7 @@ def calc_various_pca_inputs(site):
         date = '20150101'
         print(date)
         print(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'))
-        files = glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)
+        files = list(set(glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)))
         print(files)
         print(len(files))
         if len(files) == 4:
