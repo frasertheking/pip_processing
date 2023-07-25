@@ -77,6 +77,7 @@ def calc_various_pca_inputs(site):
     print(os.path.join(pip_path, '**', '**', '*.nc'))
     for date in mrr_dates:
         files = glob.glob(os.path.join(pip_path, '**', '**', '*.nc'), recursive=True)
+        print(files)
         print(len(files))
         if len(files) == 4:
             matched_dates.append(date)
