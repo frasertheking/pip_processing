@@ -73,23 +73,9 @@ def calc_various_pca_inputs(site):
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
         pip_dates.append(file[-37:-29])
 
-    matched_dates = []
-    for date in mrr_dates:
-        date = '20150101'
-        print(date)
-        print(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'))
-        files = list(set(glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)))
-        print(files)
-        print(len(files))
-        if len(files) == 4:
-            matched_dates.append(date)
-
-    print('sponge0', len(mrr_dates), len(pip_dates))
-
     mrr_ds_dates = []
     count = 0
     for date in mrr_dates:
-        print(count, date)
         count += 1
         year = int(date[:4])
         month = int(date[4:6])
@@ -98,11 +84,10 @@ def calc_various_pca_inputs(site):
         
         if len(ds.time.values) > 0:
             mrr_ds_dates.append(date)
+            break
             
-    print('sponge1', len(mrr_ds_dates))
-
     met_dates = []
-    base_date = datetime.strptime('20190101', '%Y%m%d')
+    base_date = datetime.strptime('20150101', '%Y%m%d')
     for i in range(365):
         new_date = base_date + timedelta(days=i)
         year = new_date.year
@@ -113,15 +98,15 @@ def calc_various_pca_inputs(site):
         if len(ds.time.values) > 0:
             met_dates.append(str(year) + str(month) + str(day))
 
-    print('sponge2', len(met_dates))
-
     matched_dates = []
     for date in mrr_ds_dates:
-        files = glob.glob(os.path.join(pip_path, '**', '**', '*.nc'), recursive=True)
-        print(len(files))
+        files = list(set(glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)))
         if len(files) == 4:
             matched_dates.append(date)
-            
+
+    df = pd.DataFrame(data={'matched': matched_dates})
+    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv')
+
     print("MRR:", len(mrr_dates), "MET:", len(met_dates), "PIP:", len(pip_dates))
     print("Matched:", len(matched_dates))
     print(matched_dates)
