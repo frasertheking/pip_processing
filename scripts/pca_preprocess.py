@@ -150,7 +150,7 @@ def calc_various_pca_inputs(site):
             ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + matched_date + '2350_01_rho_Plots_D_minute.nc')
             ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + matched_date + '2350_01_vvd_A.nc')
             ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + matched_date + '2350_01_dsd.nc')
-        except RuntimeError:
+        except FileNotFoundError:
             print("Could not open PIP file, likely ended before 2350")
             continue
         
