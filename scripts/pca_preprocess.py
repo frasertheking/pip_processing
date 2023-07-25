@@ -108,14 +108,11 @@ def calc_various_pca_inputs(site):
     # Generate a dictionary with all files
     file_dict = defaultdict(list)
     for filepath in glob.glob(os.path.join(pip_path, '**', '**', '**', '*.nc'), recursive=True):
-        # Assuming the date is in the filename, extract it
+        if 'particle_tables' in filepath:
+            continue
         filename = os.path.basename(filepath)
         date = filename[3:11]
-        print(filepath, date)
         file_dict[date].append(filepath)
-
-    print(list(file_dict.keys())[:10])
-    print(mrr_ds_dates[:10])
 
     matched_dates = []
     for date in mrr_ds_dates:
