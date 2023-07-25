@@ -313,7 +313,7 @@ def plot_corr(df, size=12):
     plt.tight_layout()
     plt.savefig('/data2/fking/s03/images/corr.png')
 
-    sns_plot = sns.pairplot(df, kind="hist", height=5)
+    sns_plot = sns.pairplot(df, kind="hist", height=3)
     # sns_plot.map_lower(sns.kdeplot, levels=5, color=".2")
     sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
