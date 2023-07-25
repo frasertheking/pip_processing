@@ -246,7 +246,7 @@ def calc_various_pca_inputs(site):
             total_particle_array.append(np.nansum(dsd_values[i:i+5, :], axis=(0, 1)))
 
             # Calculate mean mass diameter over the 5-minute interval
-            if edd_values[i:i+5, valid_indices].shape == dsd_values[i:i+5, valid_indices]:
+            if edd_values[i:i+5, valid_indices].shape == dsd_values[i:i+5, valid_indices].shape:
                 mass_dist = edd_values[i:i+5, valid_indices] * dsd_values[i:i+5, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
                 mass_weighted_diameter = np.sum(mass_dist * valid_bin_centers) / np.sum(mass_dist)
                 mwd_array.append(mass_weighted_diameter)
@@ -315,9 +315,7 @@ def plot_corr(df, size=12):
 
 def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '.csv')
-    print(df)
     df = df.dropna()
-    print(df)
     df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
     df = df[(df['Wd'] >= 0)]
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
@@ -333,6 +331,6 @@ def load_and_plot_pca_for_site(site):
 
 if __name__ == '__main__':
     
-    # calc_various_pca_inputs('MQT')
+    calc_various_pca_inputs('MQT')
     load_and_plot_pca_for_site('MQT')
 
