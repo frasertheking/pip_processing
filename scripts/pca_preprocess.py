@@ -107,7 +107,8 @@ def calc_various_pca_inputs(site):
 
     # Generate a dictionary with all files
     file_dict = defaultdict(list)
-    for filepath in glob.glob(os.path.join(pip_path, '**', '*.nc'), recursive=True):
+    for filepath in glob.glob(os.path.join(pip_path, '**', '**', '**', '*.nc'), recursive=True):
+        print(filepath)
         # Assuming the date is in the filename, extract it
         filename = os.path.basename(filepath)
         date = filename[3:11]
