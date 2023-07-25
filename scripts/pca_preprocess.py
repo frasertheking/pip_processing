@@ -293,5 +293,44 @@ def calc_various_pca_inputs(site):
                             'u': press_array, 'Wd': wd_array})
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '.csv')
 
-calc_various_pca_inputs('MQT')
+def plot_corr(df, size=12):
+    # Calculate correlations
+    corr = df.corr()
+    
+    # Calculate the correlation sum
+    corr_sum = corr.sum().sort_values(ascending=False)
+    
+    # Reorder the dataframe according to the correlation sum
+    corr = corr.loc[corr_sum.index, corr_sum.index]
+
+    # Create a DataFrame correlation plot
+    fig, ax = plt.subplots(figsize=(size, size))
+    plt.title("PSD Variable Correlation Matrix")
+    h = ax.matshow(corr, cmap='bwr', vmin=-1, vmax=1)
+    fig.colorbar(h, ax=ax, label='Correlation')  # Use fig.colorbar() to make the colorbar the same height as the plot
+    plt.xticks(range(len(corr.columns)), corr.columns, rotation=90)
+    plt.yticks(range(len(corr.columns)), corr.columns)
+    plt.tight_layout()
+    plt.show()
+
+def load_and_plot_pca_for_site(site):
+    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '.csv')
+    df = df.dropna()
+    df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
+    df = df[(df['Wd'] >= 0)]
+    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    df['Log10_n0'] = df['n0'].apply(np.log)
+    df['Log10_lambda'] = df['lambda'].apply(np.log)
+    df['Log10_Ed'] = df['Ed'].apply(np.log)
+    df['Log10_D0'] = df['D0'].apply(np.log)
+    df['Log10_Sr'] = df['Sr'].apply(np.log)
+    df['Log10_Nt'] = df['Nt'].apply(np.log)
+    df.drop(columns=['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr'], inplace=True)
+    plot_corr(df)
+    print(df)
+
+if __name__ == '__main__':
+    
+    # calc_various_pca_inputs('MQT')
+    load_and_plot_pca_for_site('MQT')
 
