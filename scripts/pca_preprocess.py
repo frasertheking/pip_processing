@@ -86,45 +86,30 @@ def calc_various_pca_inputs(site):
     #     month = int(date[4:6])
     #     day = int(date[-2:])
     #     ds = ds_met.sel(time=(ds_met['time'].dt.year==year) & (ds_met['time'].dt.month==month) & (ds_met['time'].dt.day==day))
-        
     #     if len(ds.time.values) > 0:
     #         mrr_ds_dates.append(date)
-            
     # df = pd.DataFrame(data={'mrr_ds_dates': mrr_ds_dates})
     # df.to_csv('/data2/fking/s03/data/processed/pca_inputs/mrr_ds_dates.csv')
+    # df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/mrr_ds_dates.csv')
+    # mrr_ds_dates = df['mrr_ds_dates'].tolist()
 
-
-    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/mrr_ds_dates.csv')
-    mrr_ds_dates = df['mrr_ds_dates'].tolist()
-
-    print('sponge0', len(mrr_ds_dates))
-
+    # file_dict = defaultdict(list)
+    # for filepath in glob.glob(os.path.join(pip_path, '**', '**', '**', '*.nc'), recursive=True):
+    #     if 'particle_tables' in filepath:
+    #         continue
+    #     filename = os.path.basename(filepath)
+    #     date = filename[3:11]
+    #     file_dict[date].append(filepath)
     # matched_dates = []
     # for date in mrr_ds_dates:
-    #     files = list(set(glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)))
-    #     if len(files) == 4:
+    #     print(date, list(set(file_dict[str(date)])))
+    #     if len(list(set(file_dict[str(date)]))) == 4:
     #         matched_dates.append(date)
+    # df = pd.DataFrame(data={'matched': matched_dates})
+    # df.to_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv')
 
-    # Generate a dictionary with all files
-    file_dict = defaultdict(list)
-    for filepath in glob.glob(os.path.join(pip_path, '**', '**', '**', '*.nc'), recursive=True):
-        if 'particle_tables' in filepath:
-            continue
-        filename = os.path.basename(filepath)
-        date = filename[3:11]
-        file_dict[date].append(filepath)
-
-    matched_dates = []
-    for date in mrr_ds_dates:
-        print(date, list(set(file_dict[str(date)])))
-        if len(list(set(file_dict[str(date)]))) == 4:
-            matched_dates.append(date)
-
-    df = pd.DataFrame(data={'matched': matched_dates})
-    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv')
-
-    # df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv')
-    # matched_dates = df['matched_dates'].tolist()
+    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv', dtype={'matched_dates': str})
+    matched_dates = df['matched_dates'].tolist()
 
     print("Matched:", len(matched_dates))
     print(matched_dates)
