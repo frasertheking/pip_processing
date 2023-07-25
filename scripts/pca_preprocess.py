@@ -73,6 +73,14 @@ def calc_various_pca_inputs(site):
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
         pip_dates.append(file[-37:-29])
 
+    matched_dates = []
+    print(os.path.join(pip_path, '**', '**', '*.nc'))
+    for date in mrr_dates:
+        files = glob.glob(os.path.join(pip_path, '**', '**', '*.nc'), recursive=True)
+        print(len(files))
+        if len(files) == 4:
+            matched_dates.append(date)
+
     print('sponge0', len(mrr_dates), len(pip_dates))
 
     mrr_ds_dates = []
