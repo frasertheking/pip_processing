@@ -73,6 +73,8 @@ def calc_various_pca_inputs(site):
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
         pip_dates.append(file[-37:-29])
 
+    print('sponge0', len(mrr_dates), len(pip_dates))
+
     mrr_ds_dates = []
     for date in mrr_dates:
         year = int(date[:4])
@@ -83,6 +85,8 @@ def calc_various_pca_inputs(site):
         if len(ds.time.values) > 0:
             mrr_ds_dates.append(date)
             
+    print('sponge1', len(mrr_ds_dates))
+
     met_dates = []
     base_date = datetime.strptime('20190101', '%Y%m%d')
     for i in range(365):
@@ -94,6 +98,8 @@ def calc_various_pca_inputs(site):
         
         if len(ds.time.values) > 0:
             met_dates.append(str(year) + str(month) + str(day))
+
+    print('sponge2', len(met_dates))
 
     matched_dates = []
     for date in mrr_ds_dates:
