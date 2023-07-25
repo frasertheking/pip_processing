@@ -311,7 +311,11 @@ def plot_corr(df, size=12):
     plt.xticks(range(len(corr.columns)), corr.columns, rotation=90)
     plt.yticks(range(len(corr.columns)), corr.columns)
     plt.tight_layout()
-    plt.show()
+    plt.savefig('/data2/fking/s03/images/corr.png')
+
+    sns_plot = sns.pairplot(df, kind="hist", height=5)
+    # sns_plot.map_lower(sns.kdeplot, levels=5, color=".2")
+    sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
 def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '.csv')
@@ -331,6 +335,6 @@ def load_and_plot_pca_for_site(site):
 
 if __name__ == '__main__':
     
-    calc_various_pca_inputs('MQT')
+    # calc_various_pca_inputs('MQT')
     load_and_plot_pca_for_site('MQT')
 
