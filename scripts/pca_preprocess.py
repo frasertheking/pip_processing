@@ -112,7 +112,7 @@ def calc_various_pca_inputs(site):
         filename = os.path.basename(filepath)
         date = filename[3:11]
         print(filepath, date)
-        file_dict[date].append(filepath)
+        file_dict[str(date)].append(filepath)
 
     print(list(file_dict.keys())[:10])
     print(mrr_ds_dates[:10])
