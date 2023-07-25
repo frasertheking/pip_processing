@@ -114,6 +114,9 @@ def calc_various_pca_inputs(site):
         print(filepath, date)
         file_dict[date].append(filepath)
 
+    print(list(file_dict.keys())[:10])
+    print(mrr_ds_dates[:10])
+
     matched_dates = []
     for date in mrr_ds_dates:
         print(date, file_dict[date])
