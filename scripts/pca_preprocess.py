@@ -316,6 +316,7 @@ def plot_corr(df, size=12):
 def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '.csv')
     df = df.dropna()
+    print(df)
     df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
     df = df[(df['Wd'] >= 0)]
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
