@@ -108,8 +108,8 @@ def calc_various_pca_inputs(site):
     # df = pd.DataFrame(data={'matched': matched_dates})
     # df.to_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv')
 
-    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv', dtype={'matched_dates': str})
-    matched_dates = df['matched_dates'].tolist()
+    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv', dtype={'matched': str})
+    matched_dates = df['matched'].tolist()
 
     print("Matched:", len(matched_dates))
     print(matched_dates)
