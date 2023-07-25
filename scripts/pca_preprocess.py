@@ -63,11 +63,17 @@ def calc_various_pca_inputs(site):
     ds_met = xr.open_dataset(met_path + '2013-2020_' + site + '.nc')
     times = np.asarray((ds_met['UTC Time'].values / NANO_FACTOR), dtype=int)
     utc_time = pd.to_datetime(times, unit='s', origin='unix')
-    ds_met = ds_met.assign_coords(time = utc_time)
+    utc_time = utc_time.tz_localize('UTC')
+    est_time = utc_time.tz_convert('US/Eastern')
+    ds_met = ds_met.assign_coords(time=est_time)
+    ds_met['time'] = ds_met['time'].astype('datetime64[ns]')
 
     mrr_dates = []
     for file in list(glob.glob(mrr_path + '*.nc')):                                       
         mrr_dates.append(file[-16:-8])
+
+    print(mrr_dates)
+    return
         
     pip_dates = []
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
@@ -80,7 +86,7 @@ def calc_various_pca_inputs(site):
         year = int(date[:4])
         month = int(date[4:6])
         day = int(date[-2:])
-        ds = ds_met.sel(time=(ds_met['time.year']==year) & (ds_met['time.month']==month) & (ds_met['time.day']==day))
+        ds = ds_met.sel(time=(ds_met['time'].dt.year==year) & (ds_met['time'].dt.month==month) & (ds_met['time'].dt.day==day))
         
         if len(ds.time.values) > 0:
             mrr_ds_dates.append(date)
@@ -92,7 +98,7 @@ def calc_various_pca_inputs(site):
         year = new_date.year
         month = new_date.month
         day = new_date.day
-        ds = ds_met.sel(time=(ds_met['time.year']==year) & (ds_met['time.month']==month) & (ds_met['time.day']==day))
+        ds = ds_met.sel(time=(ds_met['time'].dt.year==year) & (ds_met['time'].dt.month==month) & (ds_met['time'].dt.day==day))
         
         if len(ds.time.values) > 0:
             met_dates.append(str(year) + str(month) + str(day))
