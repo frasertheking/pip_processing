@@ -76,7 +76,10 @@ def calc_various_pca_inputs(site):
     print('sponge0', len(mrr_dates), len(pip_dates))
 
     mrr_ds_dates = []
+    count = 0
     for date in mrr_dates:
+        print(count, date)
+        count += 1
         year = int(date[:4])
         month = int(date[4:6])
         day = int(date[-2:])
