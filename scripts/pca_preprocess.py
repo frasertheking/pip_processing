@@ -84,7 +84,6 @@ def calc_various_pca_inputs(site):
         
         if len(ds.time.values) > 0:
             mrr_ds_dates.append(date)
-            break
             
     met_dates = []
     base_date = datetime.strptime('20150101', '%Y%m%d')
