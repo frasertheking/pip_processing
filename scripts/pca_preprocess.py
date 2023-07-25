@@ -241,9 +241,12 @@ def calc_various_pca_inputs(site):
             total_particle_array.append(np.nansum(dsd_values[i:i+5, :], axis=(0, 1)))
 
             # Calculate mean mass diameter over the 5-minute interval
-            mass_dist = edd_values[i:i+5, valid_indices] * dsd_values[i:i+5, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
-            mass_weighted_diameter = np.sum(mass_dist * valid_bin_centers) / np.sum(mass_dist)
-            mwd_array.append(mass_weighted_diameter)
+            if edd_values[i:i+5, valid_indices].shape == dsd_values[i:i+5, valid_indices]:
+                mass_dist = edd_values[i:i+5, valid_indices] * dsd_values[i:i+5, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
+                mass_weighted_diameter = np.sum(mass_dist * valid_bin_centers) / np.sum(mass_dist)
+                mwd_array.append(mass_weighted_diameter)
+            else:
+                mwd_array.append(np.nan)
 
             # Calculate N0 and Lambda
             try:
