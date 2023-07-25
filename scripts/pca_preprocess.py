@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import warnings
 
+from collections import defaultdict
 from datetime import datetime, timedelta
 from scipy.optimize import curve_fit
 warnings.filterwarnings("ignore")
@@ -77,31 +78,52 @@ def calc_various_pca_inputs(site):
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
         pip_dates.append(file[-37:-29])
 
-    mrr_ds_dates = []
-    count = 0
-    for date in mrr_dates:
-        count += 1
-        year = int(date[:4])
-        month = int(date[4:6])
-        day = int(date[-2:])
-        ds = ds_met.sel(time=(ds_met['time'].dt.year==year) & (ds_met['time'].dt.month==month) & (ds_met['time'].dt.day==day))
+    # mrr_ds_dates = []
+    # count = 0
+    # for date in mrr_dates:
+    #     count += 1
+    #     year = int(date[:4])
+    #     month = int(date[4:6])
+    #     day = int(date[-2:])
+    #     ds = ds_met.sel(time=(ds_met['time'].dt.year==year) & (ds_met['time'].dt.month==month) & (ds_met['time'].dt.day==day))
         
-        if len(ds.time.values) > 0:
-            mrr_ds_dates.append(date)
+    #     if len(ds.time.values) > 0:
+    #         mrr_ds_dates.append(date)
             
-    df = pd.DataFrame(data={'mrr_ds_dates': mrr_ds_dates})
-    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/mrr_ds_dates.csv')
+    # df = pd.DataFrame(data={'mrr_ds_dates': mrr_ds_dates})
+    # df.to_csv('/data2/fking/s03/data/processed/pca_inputs/mrr_ds_dates.csv')
+
+
+    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/mrr_ds_dates.csv')
+    mrr_ds_dates = df['mrr_ds_dates'].tolist()
+
+    print('sponge0', len(mrr_ds_dates))
+
+    # matched_dates = []
+    # for date in mrr_ds_dates:
+    #     files = list(set(glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)))
+    #     if len(files) == 4:
+    #         matched_dates.append(date)
+
+    # Generate a dictionary with all files
+    file_dict = defaultdict(list)
+    for filepath in glob.glob(os.path.join(pip_path, '**', '*.nc'), recursive=True):
+        # Assuming the date is in the filename, extract it
+        filename = os.path.basename(filepath)
+        date = filename[3:11]
+        file_dict[date].append(filepath)
 
     matched_dates = []
     for date in mrr_ds_dates:
-        files = list(set(glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)))
-        if len(files) == 4:
+        if len(file_dict[date]) == 4:
             matched_dates.append(date)
 
     df = pd.DataFrame(data={'matched': matched_dates})
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv')
 
-    print("MRR:", len(mrr_dates), "MET:", len(met_dates), "PIP:", len(pip_dates))
+    # df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/matched_dates.csv')
+    # matched_dates = df['matched_dates'].tolist()
+
     print("Matched:", len(matched_dates))
     print(matched_dates)
 
@@ -129,16 +151,16 @@ def calc_various_pca_inputs(site):
         day = int(matched_date[-2:])
 
         # Load MET data
-        ds_met_day = ds_met.sel(time=(ds_met['time.year']==year) & (ds_met['time.month']==month) & (ds_met['time.day']==day))
+        ds_met_day = ds_met.sel(time=(ds_met['time'].dt.year==year) & (ds_met['time'].dt.month==month) & (ds_met['time'].dt.day==day))
 
         # Load MRR data
         ds_mrr_day = xr.open_dataset(mrr_path + 'MRR_NWS_MQT_' + matched_date + '_snow.nc')
 
         # Load PIP data
-        ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/edensity_lwe_rate/006' + matched_date + '2350_01_P_Minute.nc')
-        ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/edensity_distributions/006' + matched_date + '2350_01_rho_Plots_D_minute.nc')
-        ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/velocity_distributions/006' + matched_date + '2350_01_vvd_A.nc')
-        ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/particle_size_distributions/006' + matched_date + '2350_01_dsd.nc')
+        ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/006' + matched_date + '2350_01_P_Minute.nc')
+        ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + matched_date + '2350_01_rho_Plots_D_minute.nc')
+        ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + matched_date + '2350_01_vvd_A.nc')
+        ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + matched_date + '2350_01_dsd.nc')
 
         dsd_values = ds_particle_size_distributions['psd'].values
         edd_values = ds_edensity_distributions['rho'].values
