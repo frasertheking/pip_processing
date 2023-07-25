@@ -313,7 +313,7 @@ def plot_corr(df, size=12):
     plt.tight_layout()
     plt.savefig('/data2/fking/s03/images/corr.png')
 
-    sns_plot = sns.pairplot(df, kind="hist", height=3)
+    sns_plot = sns.pairplot(df, kind="hist", height=5)
     # sns_plot.map_lower(sns.kdeplot, levels=5, color=".2")
     sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
@@ -322,6 +322,7 @@ def load_and_plot_pca_for_site(site):
     df = df.dropna()
     df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
     df = df[(df['Wd'] >= 0)]
+    df = df[(df['t'] >= -500)]
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     df['Log10_n0'] = df['n0'].apply(np.log)
     df['Log10_lambda'] = df['lambda'].apply(np.log)
