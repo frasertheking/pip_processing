@@ -72,15 +72,10 @@ def calc_various_pca_inputs(site):
     for file in list(glob.glob(mrr_path + '*.nc')):                                       
         mrr_dates.append(file[-16:-8])
 
-    print(mrr_dates)
         
     pip_dates = []
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
         pip_dates.append(file[-37:-29])
-
-    print("\n\n")
-    print(pip_dates)
-    return
 
     mrr_ds_dates = []
     count = 0
@@ -94,17 +89,8 @@ def calc_various_pca_inputs(site):
         if len(ds.time.values) > 0:
             mrr_ds_dates.append(date)
             
-    met_dates = []
-    base_date = datetime.strptime('20150101', '%Y%m%d')
-    for i in range(365):
-        new_date = base_date + timedelta(days=i)
-        year = new_date.year
-        month = new_date.month
-        day = new_date.day
-        ds = ds_met.sel(time=(ds_met['time'].dt.year==year) & (ds_met['time'].dt.month==month) & (ds_met['time'].dt.day==day))
-        
-        if len(ds.time.values) > 0:
-            met_dates.append(str(year) + str(month) + str(day))
+    df = pd.DataFrame(data={'mrr_ds_dates': mrr_ds_dates})
+    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/mrr_ds_dates.csv')
 
     matched_dates = []
     for date in mrr_ds_dates:
