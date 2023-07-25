@@ -74,9 +74,9 @@ def calc_various_pca_inputs(site):
         pip_dates.append(file[-37:-29])
 
     matched_dates = []
-    print(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'))
     for date in mrr_dates:
         print(date)
+        print(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'))
         files = glob.glob(os.path.join(pip_path, '**', '**', '**', '*' + date + '*.nc'), recursive=True)
         print(files)
         print(len(files))
