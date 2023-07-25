@@ -112,7 +112,7 @@ def calc_various_pca_inputs(site):
         filename = os.path.basename(filepath)
         date = filename[3:11]
         print(filepath, date)
-        file_dict[str(date)].append(filepath)
+        file_dict[date].append(filepath)
 
     print(list(file_dict.keys())[:10])
     print(mrr_ds_dates[:10])
@@ -120,7 +120,7 @@ def calc_various_pca_inputs(site):
     matched_dates = []
     for date in mrr_ds_dates:
         print(date, file_dict[date])
-        if len(file_dict[date]) == 4:
+        if len(file_dict[str(date)]) == 4:
             matched_dates.append(date)
 
     df = pd.DataFrame(data={'matched': matched_dates})
