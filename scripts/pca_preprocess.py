@@ -73,11 +73,14 @@ def calc_various_pca_inputs(site):
         mrr_dates.append(file[-16:-8])
 
     print(mrr_dates)
-    return
         
     pip_dates = []
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
         pip_dates.append(file[-37:-29])
+
+    print("\n\n")
+    print(pip_dates)
+    return
 
     mrr_ds_dates = []
     count = 0
