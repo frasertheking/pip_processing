@@ -198,8 +198,8 @@ def plot_corr(df, size=12):
 
     df = df[(df['Log10_n0'] >= 0)]
     df = df[(df['Log10_lambda'] <= 1)]
-    df = df[(df['Log10_Rho'] >= -10)]
-    sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, corner=True)
+    df = df[(df['Log10_Rho'] >= -4)]
+    sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, palette=['blue', 'red'], corner=True)
     # sns_plot.map_lower(sns.kdeplot, levels=3, color=".2")
     sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
