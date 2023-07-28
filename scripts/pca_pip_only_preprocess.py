@@ -212,6 +212,7 @@ def load_and_plot_pca_for_site(site):
     df['Log10_Sr'] = df['Sr'].apply(np.log)
     df['Log10_Nt'] = df['Nt'].apply(np.log)
     df.drop(columns=['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho'], inplace=True)
+    print(df)
     plot_corr(df)
     print(df)
 
