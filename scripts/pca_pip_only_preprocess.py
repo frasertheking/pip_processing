@@ -170,12 +170,14 @@ def calc_various_pca_inputs(site):
                             'Rho': avg_rho_array, 'lambda': lambda_array})
     
     df = df.dropna()
-    df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
+    df = df[(df['Ed'] >= 0)]
+    df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
     # Calculate correlations
-    corr = df.corr()
+    corr_df = df.drop(columns=['type'], inplace=True)
+    corr = corr_df.corr()
     
     # Calculate the correlation sum
     corr_sum = corr.sum().sort_values(ascending=False)
@@ -193,8 +195,8 @@ def plot_corr(df, size=12):
     plt.tight_layout()
     plt.savefig('/data2/fking/s03/images/corr.png')
 
-    sns_plot = sns.pairplot(df, kind="hist", height=5)
-    # sns_plot.map_lower(sns.kdeplot, levels=5, color=".2")
+    sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, corner=True)
+    sns_plot.map_lower(sns.kdeplot, levels=3, color=".2")
     sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
 def load_and_plot_pca_for_site(site):
@@ -213,6 +215,6 @@ def load_and_plot_pca_for_site(site):
     print(df)
 
 if __name__ == '__main__':
-    # calc_various_pca_inputs('MQT')
+    calc_various_pca_inputs('MQT')
     load_and_plot_pca_for_site('MQT')
 
