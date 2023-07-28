@@ -171,8 +171,6 @@ def calc_various_pca_inputs(site):
     
     df = df.dropna()
     df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
-    df = df[(df['Wd'] >= 0)]
-    df = df[(df['t'] >= -500)]
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
