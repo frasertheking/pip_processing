@@ -196,23 +196,26 @@ def plot_corr(df, size=12):
     plt.tight_layout()
     plt.savefig('/data2/fking/s03/images/corr.png')
 
+    df = df[(df['Log10_n0'] >= 0)]
+    df = df[(df['Log10_lambda'] <= 1)]
+    df = df[(df['Log10_rho'] >= -10)]
     sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, corner=True)
-    sns_plot.map_lower(sns.kdeplot, levels=3, color=".2")
+    # sns_plot.map_lower(sns.kdeplot, levels=3, color=".2")
     sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
 def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-    # df['Log10_n0'] = df['n0'].apply(np.log)
-    # df['Log10_lambda'] = df['lambda'].apply(np.log)
-    # df['Log10_Ed'] = df['Ed'].apply(np.log)
-    # df['Log10_Fs'] = df['Fs'].apply(np.log)
-    # df['Log10_Rho'] = df['Rho'].apply(np.log)
-    # df['Log10_D0'] = df['D0'].apply(np.log)
-    # df['Log10_Sr'] = df['Sr'].apply(np.log)
-    # df['Log10_Nt'] = df['Nt'].apply(np.log)
-    # df.drop(columns=['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho'], inplace=True)
-    print(df)
+    df['Log10_n0'] = df['n0'].apply(np.log)
+    df['Log10_lambda'] = df['lambda'].apply(np.log)
+    df['Log10_Ed'] = df['Ed'].apply(np.log)
+    df['Log10_Fs'] = df['Fs'].apply(np.log)
+    df['Log10_Rho'] = df['Rho'].apply(np.log)
+    df['Log10_D0'] = df['D0'].apply(np.log)
+    df['Log10_Sr'] = df['Sr'].apply(np.log)
+    df['Log10_Nt'] = df['Nt'].apply(np.log)
+    df.drop(columns=['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho'], inplace=True)
+    print(df.describe())
     plot_corr(df)
     print(df)
 
