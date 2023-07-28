@@ -168,6 +168,11 @@ def calc_various_pca_inputs(site):
     df = pd.DataFrame(data={'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
                             'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
                             'Rho': avg_rho_array, 'lambda': lambda_array})
+    
+    df = df.dropna()
+    df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
+    df = df[(df['Wd'] >= 0)]
+    df = df[(df['t'] >= -500)]
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
@@ -196,10 +201,6 @@ def plot_corr(df, size=12):
 
 def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '.csv')
-    df = df.dropna()
-    df = df[(df['Ed'] >= 0) & (df['Ed'] <= 4)]
-    df = df[(df['Wd'] >= 0)]
-    df = df[(df['t'] >= -500)]
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     df['Log10_n0'] = df['n0'].apply(np.log)
     df['Log10_lambda'] = df['lambda'].apply(np.log)
@@ -213,5 +214,5 @@ def load_and_plot_pca_for_site(site):
 
 if __name__ == '__main__':
     calc_various_pca_inputs('MQT')
-    # load_and_plot_pca_for_site('MQT')
+    load_and_plot_pca_for_site('MQT')
 
