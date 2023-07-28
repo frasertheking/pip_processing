@@ -176,7 +176,7 @@ def calc_various_pca_inputs(site):
 
 def plot_corr(df, size=12):
     # Calculate correlations
-    corr_df = df.drop(columns=['type'], inplace=True)
+    corr_df = df.drop(columns=['type'])
     print(corr_df)
     corr = corr_df.corr()
     
