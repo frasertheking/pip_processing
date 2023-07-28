@@ -198,7 +198,7 @@ def plot_corr(df, size=12):
     sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
 def load_and_plot_pca_for_site(site):
-    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '.csv')
+    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     df['Log10_n0'] = df['n0'].apply(np.log)
     df['Log10_lambda'] = df['lambda'].apply(np.log)
@@ -211,6 +211,6 @@ def load_and_plot_pca_for_site(site):
     print(df)
 
 if __name__ == '__main__':
-    calc_various_pca_inputs('MQT')
+    # calc_various_pca_inputs('MQT')
     load_and_plot_pca_for_site('MQT')
 
