@@ -177,6 +177,7 @@ def calc_various_pca_inputs(site):
 def plot_corr(df, size=12):
     # Calculate correlations
     corr_df = df.drop(columns=['type'], inplace=True)
+    print(corr_df)
     corr = corr_df.corr()
     
     # Calculate the correlation sum
@@ -215,6 +216,6 @@ def load_and_plot_pca_for_site(site):
     print(df)
 
 if __name__ == '__main__':
-    calc_various_pca_inputs('MQT')
+    # calc_various_pca_inputs('MQT')
     load_and_plot_pca_for_site('MQT')
 
