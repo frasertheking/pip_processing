@@ -176,14 +176,15 @@ def calc_various_pca_inputs(site):
                             'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
                             'Rho': avg_rho_array, 'lambda': lambda_array})
     
-    df = df.dropna()
-    df = df[(df['Ed'] >= 0)]
+    df = df[(df['Ed'] >= 0) and (df['Ed'] <= 1)]
+    df = df[(df['lambda'] <= 2)]
     df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
     # Calculate correlations
     corr_df = df.drop(columns=['type'])
+    corr_df = corr_df.dropna()
     print(corr_df)
     corr = corr_df.corr()
     
@@ -218,10 +219,6 @@ def plot_timeseries(site):
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     df['time'] = pd.to_datetime(df['time'])
 
-    df = df[(df['lambda'] <= 2)]
-    df = df[(df['n0'] <= 5000)]
-    df = df[(df['Ed'] <= 1)]
-
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
 
@@ -255,7 +252,7 @@ def load_and_plot_pca_for_site(site):
     print(df)
 
 if __name__ == '__main__':
-    # calc_various_pca_inputs('MQT')
+    calc_various_pca_inputs('MQT')
     # load_and_plot_pca_for_site('MQT')
-    plot_timeseries('MQT')
+    # plot_timeseries('MQT')
 
