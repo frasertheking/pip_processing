@@ -224,7 +224,7 @@ def plot_timeseries(site):
     units = ['', 'm-3 mm-1', 'mm-1', 'g cm-3', 'mm', 'mm hr-1', 'm s-1', 'g cm-3']
     df_rolling = df[cols].rolling(window=1500).mean()
 
-    fig, axs = plt.subplots(2, 4, figsize=(16, 10))
+    fig, axs = plt.subplots(4, 2, figsize=(16, 10))
 
     for i, ax in enumerate(axs.flatten()):
         col = cols[i]
