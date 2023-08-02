@@ -224,10 +224,13 @@ def plot_timeseries(site):
 
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
+
+    df_rolling = df[cols].rolling(window=1000).mean()
+
     fig, axs = plt.subplots(len(cols), 1, figsize=(10, 5*len(cols)))
 
     for ax, col in zip(axs, cols):
-        df[col].plot(ax=ax)
+        df_rolling[col].plot(ax=ax)
         ax.set_ylabel(col)
         ax.set_xlabel('Time')
 
