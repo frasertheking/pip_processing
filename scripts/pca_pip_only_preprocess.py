@@ -221,14 +221,17 @@ def plot_timeseries(site):
 
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
+    units = ['', 'm-3 mm-1', 'mm-1', 'g cm-3', 'mm', 'mm hr-1', 'm s-1', 'g cm-3']
     df_rolling = df[cols].rolling(window=1500).mean()
 
-    fig, axs = plt.subplots(len(cols), 1, figsize=(10, 5*len(cols)))
+    fig, axs = plt.subplots(2, 4, figsize=(16, 10))
 
-    for ax, col in zip(axs, cols):
+    for i, ax in enumerate(axs.flatten()):
+        col = cols[i]
         df_rolling[col].plot(ax=ax)
-        ax.set_ylabel(col)
+        ax.set_ylabel(col + '(' + units[i] + ')')
         ax.set_xlabel('Time')
+
 
     plt.tight_layout()
     plt.savefig('/data2/fking/s03/images/timeseries.png')
