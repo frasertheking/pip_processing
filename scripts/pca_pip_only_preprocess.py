@@ -218,7 +218,11 @@ def plot_timeseries(site):
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
 
+    print(df)
+
     df_rolling = df[cols].rolling(window=1000).mean()
+
+    print(df_rolling)
 
     fig, axs = plt.subplots(len(cols), 1, figsize=(10, 5*len(cols)))
 
