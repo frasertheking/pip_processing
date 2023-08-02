@@ -221,7 +221,7 @@ def plot_timeseries(site):
 
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
-    units = ['', 'm-3 mm-1', 'mm-1', 'g cm-3', 'mm', 'mm hr-1', 'm s-1', 'g cm-3']
+    units = ['#', 'm-3 mm-1', 'mm-1', 'g cm-3', 'mm', 'mm hr-1', 'm s-1', 'g cm-3']
     df_rolling = df[cols].rolling(window=1500).mean()
 
     fig, axs = plt.subplots(4, 2, figsize=(20, 10), sharex=True)
@@ -232,7 +232,6 @@ def plot_timeseries(site):
         ax.set_title(col)
         ax.set_ylabel(col + ' (' + units[i] + ')')
         ax.set_xlabel('Time')
-
 
     plt.tight_layout()
     plt.savefig('/data2/fking/s03/images/timeseries.png')
@@ -262,6 +261,6 @@ def load_and_plot_pca_for_site(site):
 
 if __name__ == '__main__':
     # calc_various_pca_inputs('MQT')
-    # load_and_plot_pca_for_site('MQT')
     plot_timeseries('MQT')
+    load_and_plot_pca_for_site('MQT')
 
