@@ -176,15 +176,11 @@ def calc_various_pca_inputs(site):
                             'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
                             'Rho': avg_rho_array, 'lambda': lambda_array})
     
-    df = df[(df['Ed'] >= 0) and (df['Ed'] <= 1)]
-    df = df[(df['lambda'] <= 2)]
-    df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
     # Calculate correlations
     corr_df = df.drop(columns=['type'])
-    corr_df = corr_df.dropna()
     print(corr_df)
     corr = corr_df.corr()
     
@@ -238,6 +234,11 @@ def plot_timeseries(site):
 def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    df = df.dropna()
+    df = df[(df['Ed'] >= 0) and (df['Ed'] <= 1)]
+    df = df[(df['lambda'] <= 2)]
+    df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
+
     df['Log10_n0'] = df['n0'].apply(np.log10)
     df['Log10_lambda'] = df['lambda'].apply(np.log10)
     df['Log10_Ed'] = df['Ed'].apply(np.log10)
