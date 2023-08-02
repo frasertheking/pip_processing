@@ -213,21 +213,19 @@ def plot_corr(df, size=12):
 def plot_timeseries(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    df = df.dropna()
+    df = df[(df['Ed'] >= 0) and (df['Ed'] <= 1)]
+    df = df[(df['lambda'] <= 2)]
     df['time'] = pd.to_datetime(df['time'])
 
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
-
-    print(df)
-
-    # df_rolling = df[cols].rolling(window=1000, min_periods=1).mean()
-
-    # print(df_rolling)
+    df_rolling = df[cols].rolling(window=1500).mean()
 
     fig, axs = plt.subplots(len(cols), 1, figsize=(10, 5*len(cols)))
 
     for ax, col in zip(axs, cols):
-        df[col].plot(ax=ax)
+        df_rolling[col].plot(ax=ax)
         ax.set_ylabel(col)
         ax.set_xlabel('Time')
 
