@@ -221,7 +221,6 @@ def plot_timeseries(site):
     df = df[(df['lambda'] <= 2)]
     df = df[(df['n0'] <= 5000)]
     df = df[(df['Ed'] <= 1)]
-    df = df[(df['Log10_Ed'] <= 0.5)]
 
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
