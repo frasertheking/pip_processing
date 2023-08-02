@@ -259,8 +259,34 @@ def load_and_plot_pca_for_site(site):
     plot_corr(df)
     print(df)
 
+def load_raw_values_and_save_standardized_version(site):
+    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
+    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    df = df.dropna()
+    df = df[(df['Ed'] >= 0)]
+    df = df[(df['Ed'] <= 1)]
+    df = df[(df['lambda'] <= 2)]
+    df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
+
+    log_cols = ['Log10_n0', 'Log10_lambda', 'Log10_Ed', 'Log10_Fs', 'Log10_Rho', 'Log10_D0', 'Log10_Sr', 'Log10_Nt']
+    raw_cols = ['n0', 'lambda', 'Ed', 'Fs', 'Rho', 'D0', 'Sr', 'Nt']
+    
+    for raw_col, log_col in zip(raw_cols, log_cols):
+        df[log_col] = df[raw_col].apply(np.log10)
+        
+    df.drop(columns=raw_cols, inplace=True)
+    
+    # Standardize each column
+    for col in df.columns:
+        if col != 'type':  # we do not standardize the 'type' column as it is categorical
+            df[col] = (df[col] - df[col].mean()) / df[col].std()
+
+    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/standardized_' + site + '_pip.csv', index=False)
+
+
 if __name__ == '__main__':
     # calc_various_pca_inputs('MQT')
-    plot_timeseries('MQT')
-    load_and_plot_pca_for_site('MQT')
+    # plot_timeseries('MQT')
+    # load_and_plot_pca_for_site('MQT')
+    load_raw_values_and_save_standardized_version('MQT')
 
