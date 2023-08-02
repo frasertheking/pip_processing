@@ -276,7 +276,7 @@ def load_raw_values_and_save_standardized_version(site):
         df[log_col] = df[raw_col].apply(np.log10)
         
     df.drop(columns=raw_cols, inplace=True)
-    df.drop(columns=['type', 'Log10_Ed', 'Log10_Sr'], inplace='True')
+    df.drop(columns=['type', 'Log10_Ed', 'Log10_Sr'], inplace=True)
     
     # Standardize each column
     for col in df.columns:
