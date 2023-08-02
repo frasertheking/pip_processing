@@ -68,6 +68,7 @@ def calc_various_pca_inputs(site):
     avg_sr_array = []
     avg_vvd_array = []
     mwd_array = []
+    times = []
 
     number_of_files = 0
     for date in pip_dates:
@@ -101,10 +102,13 @@ def calc_various_pca_inputs(site):
         ########## PIP CALCULATIONS
         func = lambda t, a, b: a * np.exp(-b*t)
 
+        # Initialize the datetime object at the start of the day
+        current_time = datetime.datetime(year, month, day, 0, 0)
+
         # Loop over each 5-minute block
         count = 0
         for i in range(0, dsd_values.shape[0], 5):
-            if i >= 1415:
+            if i >= 1435:
                 continue
 
             count += 1
@@ -112,6 +116,9 @@ def calc_various_pca_inputs(site):
             valid_indices = ~np.isnan(block_avg)
             block_avg = block_avg[valid_indices]
             valid_bin_centers = bin_centers[valid_indices]
+
+            times.append(current_time.strftime("%Y-%m-%d %H:%M:%S"))
+            current_time += datetime.timedelta(minutes=5)
 
             if block_avg.size == 0:
                 N_0_array.append(np.nan)
@@ -222,6 +229,6 @@ def load_and_plot_pca_for_site(site):
     print(df)
 
 if __name__ == '__main__':
-    # calc_various_pca_inputs('MQT')
-    load_and_plot_pca_for_site('MQT')
+    calc_various_pca_inputs('MQT')
+    # load_and_plot_pca_for_site('MQT')
 
