@@ -253,7 +253,7 @@ def load_and_plot_pca_for_site(site):
     print(df)
 
 if __name__ == '__main__':
-    calc_various_pca_inputs('MQT')
+    # calc_various_pca_inputs('MQT')
     # load_and_plot_pca_for_site('MQT')
-    # plot_timeseries('MQT')
+    plot_timeseries('MQT')
 
