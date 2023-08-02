@@ -103,7 +103,7 @@ def calc_various_pca_inputs(site):
         func = lambda t, a, b: a * np.exp(-b*t)
 
         # Initialize the datetime object at the start of the day
-        current_time = datetime.datetime(year, month, day, 0, 0)
+        current_time = datetime(year, month, day, 0, 0)
 
         # Loop over each 5-minute block
         count = 0
