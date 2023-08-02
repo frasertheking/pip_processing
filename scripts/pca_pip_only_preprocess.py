@@ -118,7 +118,7 @@ def calc_various_pca_inputs(site):
             valid_bin_centers = bin_centers[valid_indices]
 
             times.append(current_time.strftime("%Y-%m-%d %H:%M:%S"))
-            current_time += datetime.timedelta(minutes=5)
+            current_time += timedelta(minutes=5)
 
             if block_avg.size == 0:
                 N_0_array.append(np.nan)
