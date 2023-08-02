@@ -213,8 +213,9 @@ def plot_corr(df, size=12):
 def plot_timeseries(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-    df = df.dropna()
-    df = df[(df['Ed'] >= 0) and (df['Ed'] <= 1)]
+    df = df.dropna() 
+    df = df[(df['Ed'] >= 0)]
+    df = df[(df['Ed'] <= 1)]
     df = df[(df['lambda'] <= 2)]
     df['time'] = pd.to_datetime(df['time'])
 
@@ -237,7 +238,8 @@ def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     df = df.dropna()
-    df = df[(df['Ed'] >= 0) and (df['Ed'] <= 1)]
+    df = df[(df['Ed'] >= 0)]
+    df = df[(df['Ed'] <= 1)]
     df = df[(df['lambda'] <= 2)]
     df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
 
