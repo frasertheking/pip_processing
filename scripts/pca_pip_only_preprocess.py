@@ -220,7 +220,7 @@ def plot_timeseries(site):
 
     print(df)
 
-    df_rolling = df[cols].rolling(window=1000).mean()
+    df_rolling = df[cols].rolling(window=1000, min_periods=1).mean()
 
     print(df_rolling)
 
