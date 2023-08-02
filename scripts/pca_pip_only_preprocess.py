@@ -224,12 +224,13 @@ def plot_timeseries(site):
     units = ['', 'm-3 mm-1', 'mm-1', 'g cm-3', 'mm', 'mm hr-1', 'm s-1', 'g cm-3']
     df_rolling = df[cols].rolling(window=1500).mean()
 
-    fig, axs = plt.subplots(4, 2, figsize=(16, 10))
+    fig, axs = plt.subplots(4, 2, figsize=(20, 10), sharex=True)
 
     for i, ax in enumerate(axs.flatten()):
         col = cols[i]
-        df_rolling[col].plot(ax=ax)
-        ax.set_ylabel(col + '(' + units[i] + ')')
+        df_rolling[col].plot(ax=ax, color='black', linewidth=2)
+        ax.set_title(col)
+        ax.set_ylabel(col + ' (' + units[i] + ')')
         ax.set_xlabel('Time')
 
 
