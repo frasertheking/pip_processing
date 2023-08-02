@@ -212,6 +212,25 @@ def plot_corr(df, size=12):
     sns_plot.map_lower(sns.kdeplot, levels=4, color=".2")
     sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
+
+def plot_timeseries(site):
+    df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
+    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    df['time'] = pd.to_datetime(df['time'])
+
+    df.set_index('time', inplace=True)
+    cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
+    fig, axs = plt.subplots(len(cols), 1, figsize=(10, 5*len(cols)))
+
+    for ax, col in zip(axs, cols):
+        df[col].plot(ax=ax)
+        ax.set_ylabel(col)
+        ax.set_xlabel('Time')
+
+    plt.tight_layout()
+    plt.savefig('/data2/fking/s03/images/timeseries.png')
+
+
 def load_and_plot_pca_for_site(site):
     df = pd.read_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
@@ -229,6 +248,7 @@ def load_and_plot_pca_for_site(site):
     print(df)
 
 if __name__ == '__main__':
-    calc_various_pca_inputs('MQT')
+    # calc_various_pca_inputs('MQT')
     # load_and_plot_pca_for_site('MQT')
+    plot_timeseries('MQT')
 
