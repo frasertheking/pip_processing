@@ -172,7 +172,7 @@ def calc_various_pca_inputs(site):
         number_of_files += 1
 
 
-    df = pd.DataFrame(data={'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
+    df = pd.DataFrame(data={'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
                             'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
                             'Rho': avg_rho_array, 'lambda': lambda_array})
     
