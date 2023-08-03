@@ -281,7 +281,7 @@ def load_raw_values_and_save_standardized_version(site):
     # Standardize each column
     for col in df.columns:
         if col != 'type' and col != 'time':  # we do not standardize the 'type' column as it is categorical
-            df[col] = (df[col] - df[col].mean()) / df[col].std()
+            df['std_'+col] = (df[col] - df[col].mean()) / df[col].std()
 
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/standardized_' + site + '_pip.csv', index=False)
 
