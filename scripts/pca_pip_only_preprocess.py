@@ -266,24 +266,17 @@ def load_raw_values_and_save_standardized_version(site):
     df = df[(df['Ed'] >= 0)]
     df = df[(df['Ed'] <= 1)]
     df = df[(df['lambda'] <= 2)]
-    df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
-    df = df[(df['type'] == 'snow')]
-
-    log_cols = ['Log10_n0', 'Log10_lambda', 'Log10_Ed', 'Log10_Fs', 'Log10_Rho', 'Log10_D0', 'Log10_Sr', 'Log10_Nt']
-    raw_cols = ['n0', 'lambda', 'Ed', 'Fs', 'Rho', 'D0', 'Sr', 'Nt']
     
-    for raw_col, log_col in zip(raw_cols, log_cols):
-        df[log_col] = df[raw_col].apply(np.log10)
+    df['Log10_n0'] = df['n0'].apply(np.log10)
+    df['Log10_lambda'] = df['lambda'].apply(np.log10)
         
-    df.drop(columns=raw_cols, inplace=True)
-    df.drop(columns=['type', 'Log10_Ed', 'Log10_Sr'], inplace=True)
+    df.drop(columns=['type', 'n0', 'lambda'], inplace=True)
     
     # Standardize each column
-    for col in df.columns:
-        if col != 'type' and col != 'time':  # we do not standardize the 'type' column as it is categorical
-            df['std_'+col] = (df[col] - df[col].mean()) / df[col].std()
+    for col in ['Log10_n0', 'Log10_lambda', 'Ed', 'Fs', 'Rho', 'D0', 'Sr', 'Nt']:
+        df['std_'+col] = (df[col] - df[col].mean()) / df[col].std()
 
-    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/standardized_' + site + '_pip.csv', index=False)
+    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/final_' + site + '_pip.csv', index=False)
 
 
 if __name__ == '__main__':
