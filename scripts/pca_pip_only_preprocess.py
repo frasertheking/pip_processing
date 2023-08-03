@@ -200,14 +200,14 @@ def plot_corr(df, size=12):
     plt.tight_layout()
     plt.savefig('/data2/fking/s03/images/corr.png')
 
-    df = df[(df['Log10_n0'] >= 0)]
-    df = df[(df['Log10_lambda'] <= 1)]
-    df = df[(df['Log10_Rho'] >= -4)]
-    df = df[(df['Log10_Ed'] >= -2)]
-    df = df[(df['Log10_Ed'] <= 0.5)]
-    sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, palette=['blue', 'red'], corner=True)
-    sns_plot.map_lower(sns.kdeplot, levels=4, color=".2")
-    sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
+    # df = df[(df['Log10_n0'] >= 0)]
+    # df = df[(df['Log10_lambda'] <= 1)]
+    # df = df[(df['Log10_Rho'] >= -4)]
+    # df = df[(df['Log10_Ed'] >= -2)]
+    # df = df[(df['Log10_Ed'] <= 0.5)]
+    # sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, palette=['blue', 'red'], corner=True)
+    # sns_plot.map_lower(sns.kdeplot, levels=4, color=".2")
+    # sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
 
 def plot_timeseries(site):
@@ -248,13 +248,13 @@ def load_and_plot_pca_for_site(site):
 
     df['Log10_n0'] = df['n0'].apply(np.log10)
     df['Log10_lambda'] = df['lambda'].apply(np.log10)
-    df['Log10_Ed'] = df['Ed'].apply(np.log10)
-    df['Log10_Fs'] = df['Fs'].apply(np.log10)
-    df['Log10_Rho'] = df['Rho'].apply(np.log10)
-    df['Log10_D0'] = df['D0'].apply(np.log10)
-    df['Log10_Sr'] = df['Sr'].apply(np.log10)
-    df['Log10_Nt'] = df['Nt'].apply(np.log10)
-    df.drop(columns=['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho'], inplace=True)
+    # df['Log10_Ed'] = df['Ed'].apply(np.log10)
+    # df['Log10_Fs'] = df['Fs'].apply(np.log10)
+    # df['Log10_Rho'] = df['Rho'].apply(np.log10)
+    # df['Log10_D0'] = df['D0'].apply(np.log10)
+    # df['Log10_Sr'] = df['Sr'].apply(np.log10)
+    # df['Log10_Nt'] = df['Nt'].apply(np.log10)
+    df.drop(columns=['n0', 'lambda'], inplace=True)
     print(df.describe())
     plot_corr(df)
     print(df)
@@ -282,6 +282,6 @@ def load_raw_values_and_save_standardized_version(site):
 if __name__ == '__main__':
     # calc_various_pca_inputs('MQT')
     # plot_timeseries('MQT')
-    # load_and_plot_pca_for_site('MQT')
+    load_and_plot_pca_for_site('MQT')
     load_raw_values_and_save_standardized_version('MQT')
 
