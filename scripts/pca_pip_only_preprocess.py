@@ -137,7 +137,7 @@ def calc_various_pca_inputs(site):
             # Calculate the average eDensity of the 5-minute interval
             avg_ed_array.append(np.nanmean(ed_values[i:i+5]))
 
-            fig, ax = plt.subplots(figsizew=(12,12))
+            fig, ax = plt.subplots(figsize=(12,12))
             plt.plot(np.arange(len(ed_values[i:i+5])), ed_values[i:i+5])
             plt.savefig('test.png')
             sys.exit()
