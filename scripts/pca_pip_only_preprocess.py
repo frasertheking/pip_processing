@@ -145,6 +145,7 @@ def calc_various_pca_inputs(site):
             fig, ax = plt.subplots(figsize=(12,12))
             plt.plot(np.arange(len(edd_values[i:i+5])), edd_values[i:i+5])
             print(edd_values[i:i+5])
+            print(np.nanmean(edd_values[i:i+5]))
             plt.savefig('test_edd.png')
 
             sys.exit()
