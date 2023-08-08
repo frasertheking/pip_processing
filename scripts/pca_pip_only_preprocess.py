@@ -1,4 +1,4 @@
-import glob, os
+import glob, os, sys
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -137,6 +137,11 @@ def calc_various_pca_inputs(site):
             # Calculate the average eDensity of the 5-minute interval
             avg_ed_array.append(np.nanmean(ed_values[i:i+5]))
 
+            fig, ax = plt.subplots(figsizew=(12,12))
+            plt.plot(np.arange(len(ed_values[i:i+5])), ed_values[i:i+5])
+            plt.savefig('test.png')
+            sys.exit()
+
             # Calculate the average eDensity of the 5-minute interval
             avg_rho_array.append(np.nanmean(edd_values[i:i+5]))
 
@@ -172,11 +177,11 @@ def calc_various_pca_inputs(site):
         number_of_files += 1
 
 
-    df = pd.DataFrame(data={'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
-                            'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
-                            'Rho': avg_rho_array, 'lambda': lambda_array})
+    # df = pd.DataFrame(data={'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
+    #                         'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
+    #                         'Rho': avg_rho_array, 'lambda': lambda_array})
     
-    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
+    # df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
     # Calculate correlations
@@ -280,8 +285,8 @@ def load_raw_values_and_save_standardized_version(site):
 
 
 if __name__ == '__main__':
-    # calc_various_pca_inputs('MQT')
+    calc_various_pca_inputs('MQT')
     # plot_timeseries('MQT')
-    load_and_plot_pca_for_site('MQT')
-    load_raw_values_and_save_standardized_version('MQT')
+    # load_and_plot_pca_for_site('MQT')
+    # load_raw_values_and_save_standardized_version('MQT')
 
