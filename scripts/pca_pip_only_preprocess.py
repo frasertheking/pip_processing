@@ -276,7 +276,7 @@ def load_raw_values_and_save_standardized_version(site):
     df.drop(columns=['n0', 'lambda', 'Nt'], inplace=True)
     
     # Standardize each column
-    for col in ['Log10_n0', 'Log10_lambda', 'Ed', 'Fs', 'Rho', 'D0', 'Sr', 'Log_Nt']:
+    for col in ['Log10_n0', 'Log10_lambda', 'Ed', 'Fs', 'Rho', 'D0', 'Sr', 'Log10_Nt']:
         df['std_'+col] = (df[col] - df[col].mean()) / df[col].std()
 
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/final_' + site + '_pip.csv', index=False)
