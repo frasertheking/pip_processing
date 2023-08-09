@@ -178,7 +178,7 @@ def calc_various_pca_inputs(site):
                             'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
                             'Rho': avg_rho_array, 'lambda': lambda_array})
     
-    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip_fixed.csv')
+    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
     # Calculate correlations
@@ -207,9 +207,9 @@ def plot_corr(df, size=12):
     # df = df[(df['Log10_Rho'] >= -4)]
     # df = df[(df['Log10_Ed'] >= -2)]
     # df = df[(df['Log10_Ed'] <= 0.5)]
-    # sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, palette=['blue', 'red'], corner=True)
-    # sns_plot.map_lower(sns.kdeplot, levels=4, color=".2")
-    # sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
+    sns_plot = sns.pairplot(df, kind="hist", diag_kind="kde", hue='type', height=5, palette=['blue', 'red'], corner=True)
+    sns_plot.map_lower(sns.kdeplot, levels=4, color=".2")
+    sns_plot.savefig('/data2/fking/s03/images/output_kde.png')
 
 
 def plot_timeseries(site):
@@ -224,7 +224,7 @@ def plot_timeseries(site):
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
     units = ['#', 'm-3 mm-1', 'mm-1', 'g cm-3', 'mm', 'mm hr-1', 'm s-1', 'g cm-3']
-    df_rolling = df[cols].rolling(window=50).mean()
+    df_rolling = df[cols].rolling(window=1000).mean()
 
     fig, axs = plt.subplots(4, 2, figsize=(20, 10), sharex=True)
 
@@ -246,7 +246,7 @@ def load_and_plot_pca_for_site(site):
     df = df[(df['Ed'] >= 0)]
     df = df[(df['Ed'] <= 1)]
     df = df[(df['lambda'] <= 2)]
-    df['type'] = df['Ed'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
+    df['type'] = df['Rho'].apply(lambda x: 'snow' if x < 0.4 else 'rain')
 
     df['Log10_n0'] = df['n0'].apply(np.log10)
     df['Log10_lambda'] = df['lambda'].apply(np.log10)
@@ -255,8 +255,8 @@ def load_and_plot_pca_for_site(site):
     # df['Log10_Rho'] = df['Rho'].apply(np.log10)
     # df['Log10_D0'] = df['D0'].apply(np.log10)
     # df['Log10_Sr'] = df['Sr'].apply(np.log10)
-    # df['Log10_Nt'] = df['Nt'].apply(np.log10)
-    df.drop(columns=['n0', 'lambda'], inplace=True)
+    df['Log10_Nt'] = df['Nt'].apply(np.log10)
+    df.drop(columns=['n0', 'lambda', 'Nt'], inplace=True)
     print(df.describe())
     plot_corr(df)
     print(df)
@@ -285,6 +285,6 @@ def load_raw_values_and_save_standardized_version(site):
 if __name__ == '__main__':
     # calc_various_pca_inputs('MQT')
     plot_timeseries('MQT')
-    # load_and_plot_pca_for_site('MQT')
+    load_and_plot_pca_for_site('MQT')
     # load_raw_values_and_save_standardized_version('MQT')
 
