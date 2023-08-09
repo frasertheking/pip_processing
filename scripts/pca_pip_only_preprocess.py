@@ -224,7 +224,7 @@ def plot_timeseries(site):
     df.set_index('time', inplace=True)
     cols = ['Nt', 'n0', 'lambda', 'Ed', 'D0', 'Sr', 'Fs', 'Rho']
     units = ['#', 'm-3 mm-1', 'mm-1', 'g cm-3', 'mm', 'mm hr-1', 'm s-1', 'g cm-3']
-    df_rolling = df[cols].rolling(window=1500).mean()
+    df_rolling = df[cols].rolling(window=50).mean()
 
     fig, axs = plt.subplots(4, 2, figsize=(20, 10), sharex=True)
 
