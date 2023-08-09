@@ -131,9 +131,6 @@ def calc_various_pca_inputs(site):
                 mwd_array.append(np.nan)
                 continue
 
-            print(block_avg)
-            sys.exit()
-
             # Calculate average fallspeed over the 5-minute interval
             vvd_slice = vvd_values[i:i+5, :]
             avg_vvd_array.append(vvd_slice[vvd_slice != 0].mean())
