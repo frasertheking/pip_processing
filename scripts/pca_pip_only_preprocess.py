@@ -133,10 +133,12 @@ def calc_various_pca_inputs(site):
 
             print("\n DSD Values")
             print(dsd_values[i:i+5, :])
+            print(np.mean(dsd_values[i:i+5, :], axis=0))
 
             # Calculate average fallspeed over the 5-minute interval
             avg_vvd_array.append(np.nanmean(vvd_values[i:i+5, :], axis=(0, 1)))
             print("\n VVD Values")
+            print(np.nanmean(vvd_values[i:i+5, :], axis=(0, 1)))
 
             # Calculate the average eDensity of the 5-minute interval
             avg_ed_array.append(np.nanmean(ed_values[i:i+5]))
