@@ -271,19 +271,20 @@ def load_raw_values_and_save_standardized_version(site):
     
     df['Log10_n0'] = df['n0'].apply(np.log10)
     df['Log10_lambda'] = df['lambda'].apply(np.log10)
+    df['Log10_Nt'] = df['Nt'].apply(np.log10)
         
-    df.drop(columns=['n0', 'lambda'], inplace=True)
+    df.drop(columns=['n0', 'lambda', 'Nt'], inplace=True)
     
     # Standardize each column
-    for col in ['Log10_n0', 'Log10_lambda', 'Ed', 'Fs', 'Rho', 'D0', 'Sr', 'Nt']:
+    for col in ['Log10_n0', 'Log10_lambda', 'Ed', 'Fs', 'Rho', 'D0', 'Sr', 'Log_Nt']:
         df['std_'+col] = (df[col] - df[col].mean()) / df[col].std()
 
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/final_' + site + '_pip.csv', index=False)
 
 
 if __name__ == '__main__':
-    calc_various_pca_inputs('MQT')
-    # plot_timeseries('MQT')
+    # calc_various_pca_inputs('MQT')
+    plot_timeseries('MQT')
     # load_and_plot_pca_for_site('MQT')
     # load_raw_values_and_save_standardized_version('MQT')
 
