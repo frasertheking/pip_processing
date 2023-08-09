@@ -65,7 +65,6 @@ def calc_various_pca_inputs(site):
     total_particle_array = []
     avg_ed_array = []
     avg_rho_array = []
-    avg_rho_array2 = []
     avg_sr_array = []
     avg_vvd_array = []
     mwd_array = []
@@ -127,44 +126,24 @@ def calc_various_pca_inputs(site):
                 avg_vvd_array.append(np.nan)
                 avg_ed_array.append(np.nan)
                 avg_rho_array.append(np.nan)
-                avg_rho_array2.append(np.nan)
                 avg_sr_array.append(np.nan)
                 total_particle_array.append(0)
                 mwd_array.append(np.nan)
                 continue
 
-            # print("\n DSD Values")
-            # print(dsd_values[i:i+5, :])
-            # print(np.mean(dsd_values[i:i+5, :], axis=0))
+            print(block_avg)
+            sys.exit()
 
             # Calculate average fallspeed over the 5-minute interval
-            avg_vvd_array.append(np.nanmean(vvd_values[i:i+5, :], axis=(0, 1)))
-            # print("\n VVD Values")
-            # print(vvd_values[i:i+5, :])
-            # print(np.nanmean(vvd_values[i:i+5, :], axis=(0, 1)))
+            vvd_slice = vvd_values[i:i+5, :]
+            avg_vvd_array.append(vvd_slice[vvd_slice != 0].mean())
 
             # Calculate the average eDensity of the 5-minute interval
             avg_ed_array.append(np.nanmean(ed_values[i:i+5]))
 
-            # fig, ax = plt.subplots(figsize=(12,12))
-            # plt.plot(np.arange(len(ed_values[i:i+5])), ed_values[i:i+5])
-            # print("\n ED Values")
-            # print(ed_values[i:i+5])
-            # plt.savefig('test.png')
-
-            # fig, ax = plt.subplots(figsize=(12,12))
-            # plt.plot(np.arange(len(edd_values[i:i+5])), edd_values[i:i+5])
-            # print("\n EDD Values")
-            # print(edd_values[i:i+5])
-            # print(np.nanmean(edd_values[i:i+5]))
-            # plt.savefig('test_edd.png')
-
-            # sys.exit()
-
             # Calculate the average eDensity of the 5-minute interval
             rho_slice = edd_values[i:i+5]
-            avg_rho_array.append(np.nanmean(rho_slice))
-            avg_rho_array2.append(rho_slice[rho_slice != 0].mean())
+            avg_rho_array.append(rho_slice[rho_slice != 0].mean())
 
             # Calculate the average snowfall rate over the 5-minute interval
             avg_sr_array.append(np.nanmean(sr_values[i:i+5]))
@@ -200,7 +179,7 @@ def calc_various_pca_inputs(site):
 
     df = pd.DataFrame(data={'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
                             'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
-                            'Rho': avg_rho_array, 'Rho2': avg_rho_array2,  'lambda': lambda_array})
+                            'Rho': avg_rho_array, 'lambda': lambda_array})
     
     df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip_fixed.csv')
 
