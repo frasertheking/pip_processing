@@ -284,7 +284,7 @@ def load_raw_values_and_save_standardized_version(site):
 
 if __name__ == '__main__':
     # calc_various_pca_inputs('MQT')
-    plot_timeseries('MQT')
-    load_and_plot_pca_for_site('MQT')
-    # load_raw_values_and_save_standardized_version('MQT')
+    # plot_timeseries('MQT')
+    # load_and_plot_pca_for_site('MQT')
+    load_raw_values_and_save_standardized_version('MQT')
 
