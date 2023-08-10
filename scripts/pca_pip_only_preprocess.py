@@ -150,8 +150,22 @@ def calc_various_pca_inputs(site):
 
             # Calculate mean mass diameter over the 5-minute interval
             if edd_values[i:i+5, valid_indices].shape == dsd_values[i:i+5, valid_indices].shape:
+
+                print("EDD")
+                print(edd_values)
+                print("DSD")
+                print(dsd_values)
+                print("valid_indices")
+                print(valid_indices)
+                print("valid_bin_centers")
+                print(valid_bin_centers)
+
                 mass_dist = edd_values[i:i+5, valid_indices] * dsd_values[i:i+5, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
                 mass_weighted_diameter = np.sum(mass_dist * valid_bin_centers) / np.sum(mass_dist)
+
+                print("MWD")
+                print(mass_weighted_diameter)
+
                 mwd_array.append(mass_weighted_diameter)
             else:
                 mwd_array.append(np.nan)
@@ -174,11 +188,11 @@ def calc_various_pca_inputs(site):
         number_of_files += 1
 
 
-    df = pd.DataFrame(data={'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
-                            'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
-                            'Rho': avg_rho_array, 'lambda': lambda_array})
+    # df = pd.DataFrame(data={'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
+    #                         'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
+    #                         'Rho': avg_rho_array, 'lambda': lambda_array})
     
-    df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
+    # df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
 
 def plot_corr(df, size=12):
     # Calculate correlations
@@ -283,8 +297,8 @@ def load_raw_values_and_save_standardized_version(site):
 
 
 if __name__ == '__main__':
-    # calc_various_pca_inputs('MQT')
+    calc_various_pca_inputs('MQT')
     # plot_timeseries('MQT')
     # load_and_plot_pca_for_site('MQT')
-    load_raw_values_and_save_standardized_version('MQT')
+    # load_raw_values_and_save_standardized_version('MQT')
 
