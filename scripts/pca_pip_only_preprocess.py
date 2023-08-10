@@ -165,6 +165,7 @@ def calc_various_pca_inputs(site):
 
                 print("MWD")
                 print(mass_weighted_diameter)
+                sys.exit()
 
                 mwd_array.append(mass_weighted_diameter)
             else:
