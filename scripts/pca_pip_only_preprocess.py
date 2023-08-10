@@ -150,23 +150,8 @@ def calc_various_pca_inputs(site):
 
             # Calculate mean mass diameter over the 5-minute interval
             if edd_values[i:i+5, valid_indices].shape == dsd_values[i:i+5, valid_indices].shape:
-
-                print("EDD")
-                print(edd_values)
-                print("DSD")
-                print(dsd_values)
-                print("valid_indices")
-                print(valid_indices)
-                print("valid_bin_centers")
-                print(valid_bin_centers)
-
                 mass_dist = edd_values[i:i+5, valid_indices] * dsd_values[i:i+5, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
                 mass_weighted_diameter = np.sum(mass_dist * valid_bin_centers) / np.sum(mass_dist)
-
-                print("MWD")
-                print(mass_weighted_diameter)
-                sys.exit()
-
                 mwd_array.append(mass_weighted_diameter)
             else:
                 mwd_array.append(np.nan)
