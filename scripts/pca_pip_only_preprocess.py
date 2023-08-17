@@ -99,7 +99,7 @@ def calc_various_pca_inputs(site):
             print("PIP data record too short for day, skipping!")
             continue
 
-        ########## PIP CALCULATIONS
+        ########## PIP CALCULATIONS 
         func = lambda t, a, b: a * np.exp(-b*t)
 
         # Initialize the datetime object at the start of the day
