@@ -43,7 +43,7 @@ def using_datashader(ax, x, y):
         df,
         ds.Point("x", "y"),
         ds.count(),
-        vmin=0,
+        vmin=1,
         vmax=100000,
         norm="log",
         aspect="auto",
