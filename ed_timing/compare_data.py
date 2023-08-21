@@ -47,6 +47,7 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
     """
     if ax is None :
         fig , ax = plt.subplots()
+    ax.set_facecolor('#3e0751')
     data , x_e, y_e = np.histogram2d( x, y, bins = bins, density = True )
     z = interpn( ( 0.5*(x_e[1:] + x_e[:-1]) , 0.5*(y_e[1:]+y_e[:-1]) ) , data , np.vstack([x,y]).T , method = "splinef2d", bounds_error = False)
 
@@ -67,7 +68,7 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
     return ax
 
 fig, ax = plt.subplots(figsize=(12,12))
-density_scatter(valid_ed, valid_rho, bins = [200,200])
+density_scatter(valid_ed, valid_rho, bins = [1000, 1000])
 plt.savefig('asd.png')
 
 # # Create a 1x2 subplot layout
