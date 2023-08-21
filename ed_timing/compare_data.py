@@ -84,6 +84,22 @@ axs[1].set_title("'adj_ed' vs 'rho'")
 plt.tight_layout()
 plt.savefig('hist.png')
 
+
+merged_data['difference'] = merged_data['ed'] - merged_data['adj_ed']
+
+plt.figure(figsize=(8,8))
+
+# Scatter plot with colors based on the difference
+sns.scatterplot(data=merged_data, x="ed", y="rho", hue="difference", palette="bwr", edgecolor=None)
+
+plt.title("Comparison between 'ed' and 'adj_ed' against 'rho'")
+plt.colorbar(label="Difference (ed - adj_ed)")
+
+plt.tight_layout()
+plt.savefig('diff_comparison.png')
+plt.show()
+
+
 # # Create a 1x2 subplot layout
 # fig, axarr = plt.subplots(1, 2, figsize=(16,8))
 # extent = 1
