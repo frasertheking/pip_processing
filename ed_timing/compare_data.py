@@ -39,7 +39,7 @@ fig, axarr = plt.subplots(1, 2, figsize=(16,8))
 extent = 1
 
 # Histplot with KDE for the first dataset
-sns.histplot(x=valid_rho, y=valid_ed, bins=250, ax=axarr[0], cmap='viridis', kde=True)
+sns.histplot(x=valid_rho, y=valid_ed, bins=1000, ax=axarr[0], cmap='viridis', kde=True)
 axarr[0].set_facecolor('#3e0751')
 axarr[0].set_xlim((0, extent))
 axarr[0].set_ylim((0, extent))
@@ -49,7 +49,7 @@ axarr[0].set_xlabel('Rho (g cm-3)')
 axarr[0].set_ylabel('eD (g cm-3)')
 
 # Histplot with KDE for the second dataset
-sns.histplot(x=valid_rho, y=valid_ed_fixed, bins=250, ax=axarr[1], cmap='viridis', kde=True)
+sns.histplot(x=valid_rho, y=valid_ed_fixed, bins=1000, ax=axarr[1], cmap='viridis', kde=True)
 axarr[1].set_facecolor('#3e0751')
 axarr[1].set_xlim((0, extent))
 axarr[1].set_ylim((0, extent))
