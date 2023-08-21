@@ -30,6 +30,7 @@ for subfolder in "${subfolders[@]}"; do
         echo $ed_file
         # Extract the date from the filename
         date_string=$(echo "$ed_file" | cut -c 23-30)
+        echo $date_string
 
         # Find the corresponding file in the current edensity_distributions directory
         matching_rho_file=$(find "$CUR_RHO_PATH" -name "*${date_string}*_D_minute.nc")
