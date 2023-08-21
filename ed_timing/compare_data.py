@@ -26,10 +26,12 @@ for subfolder in subfolders:
         df = df[(df['rho'] > 0) & (df['ed'] > 0) & (df['adj_ed'] > 0)]
         df = df[(df['rho'] <= 1) & (df['ed'] <= 1) & (df['adj_ed'] <= 1)]
         
+        print(len(df))
         all_data.append(df)
         print(len(all_data))
 
 merged_data = pd.concat(all_data, ignore_index=True)
+print(len(merged_data))
 
 valid_rho = merged_data['rho']
 valid_ed = merged_data['ed']
