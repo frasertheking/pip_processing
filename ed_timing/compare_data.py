@@ -44,8 +44,6 @@ def using_datashader(ax, x, y):
         df,
         ds.Point("x", "y"),
         ds.count(),
-        vmin=1,
-        vmax=10000,
         cmap='inferno',
         norm="log",
         aspect="auto",
@@ -55,7 +53,7 @@ def using_datashader(ax, x, y):
     plt.colorbar(dsartist)
 
 
-fig, ax = plt.subplots(figsize=(12,12))
+fig, ax = plt.subplots(facecolor='black', figsize=(10,10))
 using_datashader(ax, valid_rho, valid_ed)
 plt.savefig('datashader.png')
 
