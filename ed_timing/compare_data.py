@@ -13,6 +13,8 @@ MAIN_PATH = '/data2/fking/s03/converted/'
 LAST_PATH = '/netCDF/adjusted_edensity_lwe_rate/'
 subfolders = ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT']
 
+CUT = 0.4
+
 # 1. Read all CSV files from the combinations of directories
 all_data1 = []
 all_data2 = []
@@ -31,14 +33,12 @@ for subfolder in subfolders:
         df1 = df[['rho', 'ed']]
         df2 = df[['rho', 'adj_ed']]
         df1 = df1[(df1['rho'] > 0) & (df1['ed'] > 0)]
-        df1 = df1[(df1['rho'] <= 1) & (df1['ed'] <= 1)]
+        df1 = df1[(df1['rho'] <= CUT) & (df1['ed'] <= CUT)]
         df2 = df2[(df2['rho'] > 0) & (df2['adj_ed'] > 0)]
-        df2 = df2[(df2['rho'] <= 1) & (df2['adj_ed'] <= 1)]
+        df2 = df2[(df2['rho'] <= CUT) & (df2['adj_ed'] <= CUT)]
         
         all_data1.append(df1)
         all_data2.append(df2)
-
-CUT = 1
 
 merged_data1 = pd.concat(all_data1, ignore_index=True)
 merged_data2 = pd.concat(all_data2, ignore_index=True)
