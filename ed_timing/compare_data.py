@@ -93,11 +93,11 @@ plt.figure(figsize=(8,8))
 sns.scatterplot(data=merged_data, x="ed", y="rho", hue="difference", palette="bwr", edgecolor=None)
 
 plt.title("Comparison between 'ed' and 'adj_ed' against 'rho'")
-plt.colorbar(label="Difference (ed - adj_ed)")
+# plt.colorbar(label="Difference (ed - adj_ed)")
 
 plt.tight_layout()
 plt.savefig('diff_comparison.png')
-plt.show()
+# plt.show()
 
 
 # # Create a 1x2 subplot layout
