@@ -46,7 +46,7 @@ def using_datashader(ax, x, y):
         ds.count(),
         vmin=1,
         vmax=10000,
-        cmap='fire',
+        cmap='inferno',
         norm="log",
         aspect="auto",
         ax=ax,
