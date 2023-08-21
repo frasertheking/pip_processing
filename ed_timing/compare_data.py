@@ -53,8 +53,9 @@ def using_datashader(ax, x, y):
     plt.colorbar(dsartist)
 
 
-fig, ax = plt.subplots(facecolor='black', figsize=(10,10))
+fig, ax = plt.subplots(figsize=(10,10))
 using_datashader(ax, valid_rho, valid_ed)
+ax.set_facecolor('black')
 plt.savefig('datashader.png')
 
 
