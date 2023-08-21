@@ -37,7 +37,7 @@ correlation_adj_ed = merged_data['rho'].corr(merged_data['adj_ed'])
 fig, axarr = plt.subplots(1, 2, figsize=(16,8))
 
 # Heatmap scatter for the first dataset
-hb1 = axarr[0].hexbin(valid_rho, valid_ed, gridsize=250, cmap='viridis', bins='log', vmin=1, vmax=100)
+hb1 = axarr[0].hexbin(valid_rho, valid_ed, gridsize=1000, cmap='viridis', bins='log')#, vmin=1, vmax=100)
 cb1 = plt.colorbar(hb1, ax=axarr[0], label='Density')
 axarr[0].set_facecolor('#3e0751')
 axarr[0].set_xlim((0, 0.4))
@@ -48,7 +48,7 @@ axarr[0].set_xlabel('Rho (g cm-3)')
 axarr[0].set_ylabel('eD (g cm-3)')
 
 # Heatmap scatter for the second dataset
-hb2 = axarr[1].hexbin(valid_rho, valid_ed_fixed, gridsize=250, cmap='viridis', bins='log', vmin=1, vmax=100)
+hb2 = axarr[1].hexbin(valid_rho, valid_ed_fixed, gridsize=1000, cmap='viridis', bins='log')#, vmin=1, vmax=100)
 cb2 = plt.colorbar(hb2, ax=axarr[1], label='Density')
 axarr[1].set_facecolor('#3e0751')
 axarr[1].set_xlim((0, 0.4))
