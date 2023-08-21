@@ -12,6 +12,7 @@ all_data = []
 
 for subfolder in subfolders:
     dir_path = os.path.join(MAIN_PATH, subfolder, LAST_PATH)
+    print(dir_path)
     csv_files = [f for f in os.listdir(dir_path) if f.endswith('.csv')]
     
     for file in csv_files:
@@ -57,5 +58,5 @@ axarr[1].set_title(f'Corrected Effective Density (Corr: {correlation_adj_ed:.3f}
 axarr[1].set_xlabel('Rho (g cm-3)')
 axarr[1].set_ylabel('eD (g cm-3)')
 plt.tight_layout()
-plt.show()
+plt.savefig('comparison.png')
 
