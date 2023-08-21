@@ -18,6 +18,7 @@ for subfolder in subfolders:
     csv_files = [f for f in os.listdir(dir_path) if f.endswith('.csv')]
     
     for file in csv_files:
+        print(file)
         file_path = os.path.join(dir_path, file)
         df = pd.read_csv(file_path)
 
