@@ -28,7 +28,7 @@ for subfolder in subfolders:
         # Drop rows where either variable has NaN or a value <= 0
         df = df.dropna(subset=['rho', 'ed', 'adj_ed'])
         df = df[(df['rho'] > 0) & (df['ed'] > 0) & (df['adj_ed'] > 0)]
-        df = df[(df['rho'] <= 0.4) & (df['ed'] <= 0.4) & (df['adj_ed'] <= 0.4)]
+        df = df[(df['rho'] <= 1) & (df['ed'] <= 1) & (df['adj_ed'] <= 1)]
         
         all_data.append(df)
 
@@ -78,8 +78,8 @@ axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=1, v
 axs[0].set_title(f'Old Effective Density (Corr: {correlation_ed:.3f})')
 axs[0].plot([0, 0.5], [0, 0.5], linewidth=2, color='black', linestyle='--')
 axs[0].set_facecolor('#3e0751')
-axs[0].set_xlim((0, 0.5))
-axs[0].set_ylim((0, 0.5))
+# axs[0].set_xlim((0, 0.5))
+# axs[0].set_ylim((0, 0.5))
 
 # Compute the 2D histogram for 'adj_ed' vs 'rho'
 H2, xedges2, yedges2 = np.histogram2d(merged_data["adj_ed"], merged_data["rho"], bins=256)
@@ -87,8 +87,8 @@ axs[1].pcolormesh(xedges2, yedges2, H2.T, cmap='viridis', norm=LogNorm(vmin=1, v
 axs[1].set_title(f'Corrected Effective Density (Corr: {correlation_adj_ed:.3f})')
 axs[1].plot([0, 0.5], [0, 0.5], linewidth=2, color='black', linestyle='--')
 axs[1].set_facecolor('#3e0751')
-axs[1].set_xlim((0, 0.5))
-axs[1].set_ylim((0, 0.5))
+# axs[1].set_xlim((0, 0.5))
+# axs[1].set_ylim((0, 0.5))
 
 plt.tight_layout()
 plt.savefig('hist.png')
