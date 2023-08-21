@@ -24,7 +24,7 @@ for subfolder in subfolders:
         # Drop rows where either variable has NaN or a value <= 0
         df = df.dropna(subset=['rho', 'ed', 'adj_ed'])
         df = df[(df['rho'] > 0) & (df['ed'] > 0) & (df['adj_ed'] > 0)]
-        df = df[(df['rho'] <= 1) & (df['ed'] <= 1) & (df['adj_ed'] <= 1)]
+        df = df[(df['rho'] <= 0.5) & (df['ed'] <= 0.5) & (df['adj_ed'] <= 0.5)]
         
         all_data.append(df)
 
@@ -58,15 +58,11 @@ def using_datashader(ax, x, y):
 
 
 fig, ax = plt.subplots(figsize=(10,10))
-ax.set_xlim((0, 0.5))
-ax.set_ylim((0, 0.5))
 using_datashader(ax, valid_rho, valid_ed)
 ax.set_facecolor('black')
 plt.savefig('datashader1.png')
 
 fig, ax = plt.subplots(figsize=(10,10))
-ax.set_xlim((0, 0.5))
-ax.set_ylim((0, 0.5))
 using_datashader(ax, valid_rho, valid_ed_fixed)
 ax.set_facecolor('black')
 plt.savefig('datashader2.png')
