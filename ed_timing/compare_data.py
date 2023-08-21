@@ -61,3 +61,29 @@ axarr[1].set_ylabel('eD (g cm-3)')
 plt.tight_layout()
 plt.savefig('comparison.png')
 
+# Create a 1x2 subplot layout
+fig, axarr = plt.subplots(1, 2, figsize=(16,8))
+
+# Scatter plot for the first dataset
+axarr[0].scatter(valid_rho, valid_ed, alpha=0.5, edgecolor='none', s=5, c='blue')
+axarr[0].set_facecolor('#3e0751')
+axarr[0].set_xlim((0, 1))
+axarr[0].set_ylim((0, 1))
+axarr[0].plot([0, 1], [0, 1], linewidth=2, color='black', linestyle='--')
+axarr[0].set_title(f'Old Effective Density (Corr: {correlation_ed:.3f})')
+axarr[0].set_xlabel('Rho (g cm-3)')
+axarr[0].set_ylabel('eD (g cm-3)')
+
+# Scatter plot for the second dataset
+axarr[1].scatter(valid_rho, valid_ed_fixed, alpha=0.5, edgecolor='none', s=5, c='blue')
+axarr[1].set_facecolor('#3e0751')
+axarr[1].set_xlim((0, 1))
+axarr[1].set_ylim((0, 1))
+axarr[1].plot([0, 1], [0, 1], linewidth=2, color='black', linestyle='--')
+axarr[1].set_title(f'Corrected Effective Density (Corr: {correlation_adj_ed:.3f})')
+axarr[1].set_xlabel('Rho (g cm-3)')
+axarr[1].set_ylabel('eD (g cm-3)')
+
+plt.tight_layout()
+plt.savefig('comparison2.png')
+
