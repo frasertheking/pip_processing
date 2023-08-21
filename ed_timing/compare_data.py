@@ -38,6 +38,8 @@ for subfolder in subfolders:
         all_data1.append(df1)
         all_data2.append(df2)
 
+CUT = 1
+
 merged_data1 = pd.concat(all_data1, ignore_index=True)
 merged_data2 = pd.concat(all_data2, ignore_index=True)
 
@@ -54,18 +56,18 @@ fig, axs = plt.subplots(1, 2, figsize=(16, 8))
 H1, xedges1, yedges1 = np.histogram2d(merged_data1["ed"], merged_data1["rho"], bins=400)
 axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=5, vmax=400))
 axs[0].set_title(f'Old Effective Density (Corr: {correlation_ed:.3f})')
-axs[0].plot([0, 0.4], [0,  0.4], linewidth=2, color='black', linestyle='--')
+axs[0].plot([0, CUT], [0,  CUT], linewidth=2, color='black', linestyle='--')
 axs[0].set_facecolor('#3e0751')
-axs[0].set_xlim((0, 0.4))
-axs[0].set_ylim((0, 0.4))
+axs[0].set_xlim((0, CUT))
+axs[0].set_ylim((0, CUT))
 
 H2, xedges2, yedges2 = np.histogram2d(merged_data2["adj_ed"], merged_data2["rho"], bins=400)
 axs[1].pcolormesh(xedges2, yedges2, H2.T, cmap='viridis', norm=LogNorm(vmin=5, vmax=400))
 axs[1].set_title(f'Corrected Effective Density (Corr: {correlation_adj_ed:.3f})')
-axs[1].plot([0, 0.4], [0,  0.4], linewidth=2, color='black', linestyle='--')
+axs[1].plot([0, CUT], [0,  CUT], linewidth=2, color='black', linestyle='--')
 axs[1].set_facecolor('#3e0751')
-axs[1].set_xlim((0, 0.4))
-axs[1].set_ylim((0, 0.4))
+axs[1].set_xlim((0, CUT))
+axs[1].set_ylim((0, CUT))
 
 plt.tight_layout()
 plt.savefig('hist.png')
