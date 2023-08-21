@@ -1,4 +1,5 @@
 import sys,os
+import pandas as pd
 import numpy as np
 import xarray as xr
 from scipy.stats import pearsonr
@@ -121,6 +122,9 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
     encoding = {var: {'dtype': 'float64'} for var in ed_ds.data_vars}
     ed_ds.to_netcdf(out_path + '/' + name, encoding=encoding)
     print("File saved!")
+
+    df = pd.DataFrame(data={'rho': rho_data, 'ed': ed_data, 'adj_ed': fixed_ed_data})
+    df.to_csv(out_path + '/' + name + '.csv')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fix timing for given rho and ed files.")
