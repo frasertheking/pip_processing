@@ -74,13 +74,15 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
 
 fig, axs = plt.subplots(1, 2, figsize=(16, 8))
 
-# 'ed' vs 'rho' plot with logarithmic color scale
-sns.histplot(data=merged_data, x="ed", y="rho", cmap='viridis', bins=128, ax=axs[0], norm=LogNorm())
+# Compute the 2D histogram for 'ed' vs 'rho'
+H1, xedges1, yedges1 = np.histogram2d(merged_data["ed"], merged_data["rho"], bins=128)
+axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=1, vmax=250))
 axs[0].set_title("'ed' vs 'rho'")
 axs[0].set_facecolor('#3e0751')
 
-# 'adj_ed' vs 'rho' plot with logarithmic color scale
-sns.histplot(data=merged_data, x="adj_ed", y="rho", cmap='viridis', bins=128, ax=axs[1], norm=LogNorm())
+# Compute the 2D histogram for 'adj_ed' vs 'rho'
+H2, xedges2, yedges2 = np.histogram2d(merged_data["adj_ed"], merged_data["rho"], bins=128)
+axs[1].pcolormesh(xedges2, yedges2, H2.T, cmap='viridis', norm=LogNorm(vmin=1, vmax=250))
 axs[1].set_title("'adj_ed' vs 'rho'")
 axs[1].set_facecolor('#3e0751')
 
