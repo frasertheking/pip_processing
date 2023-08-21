@@ -34,8 +34,6 @@ for subfolder in subfolders:
 
 merged_data = pd.concat(all_data, ignore_index=True)
 
-print(merged_data)
-
 valid_rho = merged_data['rho']
 valid_ed = merged_data['ed']
 valid_ed_fixed = merged_data['adj_ed']
@@ -75,15 +73,15 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
 fig, axs = plt.subplots(1, 2, figsize=(16, 8))
 
 # Compute the 2D histogram for 'ed' vs 'rho'
-H1, xedges1, yedges1 = np.histogram2d(merged_data["ed"], merged_data["rho"], bins=128)
-axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=1, vmax=250))
-axs[0].set_title("'ed' vs 'rho'")
+H1, xedges1, yedges1 = np.histogram2d(merged_data["ed"], merged_data["rho"], bins=256)
+axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=1, vmax=300))
+axs[0].set_title(f'Old Effective Density (Corr: {correlation_ed:.3f})')
 axs[0].set_facecolor('#3e0751')
 
 # Compute the 2D histogram for 'adj_ed' vs 'rho'
-H2, xedges2, yedges2 = np.histogram2d(merged_data["adj_ed"], merged_data["rho"], bins=128)
-axs[1].pcolormesh(xedges2, yedges2, H2.T, cmap='viridis', norm=LogNorm(vmin=1, vmax=250))
-axs[1].set_title("'adj_ed' vs 'rho'")
+H2, xedges2, yedges2 = np.histogram2d(merged_data["adj_ed"], merged_data["rho"], bins=256)
+axs[1].pcolormesh(xedges2, yedges2, H2.T, cmap='viridis', norm=LogNorm(vmin=1, vmax=300))
+axs[1].set_title(f'Corrected Effective Density (Corr: {correlation_adj_ed:.3f})')
 axs[1].set_facecolor('#3e0751')
 
 plt.tight_layout()
