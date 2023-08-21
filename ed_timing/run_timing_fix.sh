@@ -6,6 +6,11 @@
 # OUT_PATH="fixed"
 # PYTHON_SCRIPT="fix_timing.py"
 
+ED_PATH="edensity_lwe_rate"
+RHO_PATH="edensity_distributions"
+OUT_PATH="adjusted_edensity_lwe_rate"
+PYTHON_SCRIPT="fix_timing.py"
+
 MAIN_PATH='/data2/fking/s03/converted/'
 declare -a subfolders=("2014_MQT/netCDF/" "2015_MQT/netCDF/" "2016_MQT/netCDF/" "2017_MQT/netCDF/" "2018_MQT/netCDF/" "2019_MQT/netCDF/" "2020_MQT/netCDF/" "2021_MQT/netCDF/" "2022_MQT/netCDF/")
 
