@@ -49,7 +49,7 @@ def using_datashader(ax, x, y):
         cmap='inferno',
         norm="log",
         vmin=1,
-        vmax=100,
+        vmax=250,
         aspect="auto",
         ax=ax,
     )
@@ -58,11 +58,15 @@ def using_datashader(ax, x, y):
 
 
 fig, ax = plt.subplots(figsize=(10,10))
+plt.xlim((0, 0.5))
+plt.ylim((0, 0.5))
 using_datashader(ax, valid_rho, valid_ed)
 ax.set_facecolor('black')
 plt.savefig('datashader1.png')
 
 fig, ax = plt.subplots(figsize=(10,10))
+plt.xlim((0, 0.5))
+plt.ylim((0, 0.5))
 using_datashader(ax, valid_rho, valid_ed_fixed)
 ax.set_facecolor('black')
 plt.savefig('datashader2.png')
