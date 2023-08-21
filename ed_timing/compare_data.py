@@ -27,6 +27,7 @@ for subfolder in subfolders:
         df = df[(df['rho'] <= 1) & (df['ed'] <= 1) & (df['adj_ed'] <= 1)]
         
         all_data.append(df)
+        print(len(all_data))
 
 merged_data = pd.concat(all_data, ignore_index=True)
 
