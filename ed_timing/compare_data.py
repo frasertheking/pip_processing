@@ -18,7 +18,6 @@ for subfolder in subfolders:
     csv_files = [f for f in os.listdir(dir_path) if f.endswith('.csv')]
     
     for file in csv_files:
-        print(file)
         file_path = os.path.join(dir_path, file)
         df = pd.read_csv(file_path)
 
@@ -27,12 +26,11 @@ for subfolder in subfolders:
         df = df[(df['rho'] > 0) & (df['ed'] > 0) & (df['adj_ed'] > 0)]
         df = df[(df['rho'] <= 1) & (df['ed'] <= 1) & (df['adj_ed'] <= 1)]
         
-        print(len(df))
         all_data.append(df)
-        print(len(all_data))
 
 merged_data = pd.concat(all_data, ignore_index=True)
-print(len(merged_data))
+
+print(merged_data)
 
 valid_rho = merged_data['rho']
 valid_ed = merged_data['ed']
@@ -50,6 +48,8 @@ def using_datashader(ax, x, y):
         ds.count(),
         cmap='inferno',
         norm="log",
+        vmin=1,
+        vmax=100,
         aspect="auto",
         ax=ax,
     )
@@ -60,7 +60,12 @@ def using_datashader(ax, x, y):
 fig, ax = plt.subplots(figsize=(10,10))
 using_datashader(ax, valid_rho, valid_ed)
 ax.set_facecolor('black')
-plt.savefig('datashader.png')
+plt.savefig('datashader1.png')
+
+fig, ax = plt.subplots(figsize=(10,10))
+using_datashader(ax, valid_rho, valid_ed_fixed)
+ax.set_facecolor('black')
+plt.savefig('datashader2.png')
 
 
 # # Create a 1x2 subplot layout
