@@ -28,7 +28,7 @@ for subfolder in subfolders:
         # Drop rows where either variable has NaN or a value <= 0
         df = df.dropna(subset=['rho', 'ed', 'adj_ed'])
         df = df[(df['rho'] > 0) & (df['ed'] > 0) & (df['adj_ed'] > 0)]
-        df = df[(df['rho'] <= 1) & (df['ed'] <= 1) & (df['adj_ed'] <= 1)]
+        df = df[(df['rho'] <= 0.4) & (df['ed'] <= 0.4) & (df['adj_ed'] <= 0.4)]
         
         all_data.append(df)
 
