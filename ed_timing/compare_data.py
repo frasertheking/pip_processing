@@ -32,9 +32,9 @@ for subfolder in subfolders:
         df = df.dropna(subset=['rho', 'ed', 'adj_ed'])
         df1 = df[['rho', 'ed']]
         df2 = df[['rho', 'adj_ed']]
-        df1 = df1[(df1['rho'] > 0.03) & (df1['ed'] > 0.03)]
+        df1 = df1[(df1['rho'] > 0) & (df1['ed'] > 0)]
         df1 = df1[(df1['rho'] <= CUT) & (df1['ed'] <= CUT)]
-        df2 = df2[(df2['rho'] > 0.03) & (df2['adj_ed'] > 0.03)]
+        df2 = df2[(df2['rho'] > 0) & (df2['adj_ed'] > 0)]
         df2 = df2[(df2['rho'] <= CUT) & (df2['adj_ed'] <= CUT)]
         
         all_data1.append(df1)
