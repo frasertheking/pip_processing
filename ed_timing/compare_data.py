@@ -76,13 +76,13 @@ fig, axs = plt.subplots(1, 2, figsize=(16, 8))
 
 # 'ed' vs 'rho' plot with logarithmic color scale
 sns.histplot(data=merged_data, x="ed", y="rho", cmap='viridis', bins=128, ax=axs[0],
-             vmin=1, vmax=250, norm=LogNorm())
+             norm=LogNorm(vmin=1, vmax=250))
 axs[0].set_title("'ed' vs 'rho'")
 axs[0].set_facecolor('#3e0751')
 
 # 'adj_ed' vs 'rho' plot with logarithmic color scale
 sns.histplot(data=merged_data, x="adj_ed", y="rho", cmap='viridis', bins=128, ax=axs[1],
-             vmin=1, vmax=250, norm=LogNorm())
+             norm=LogNorm(vmin=1, vmax=250))
 axs[1].set_title("'adj_ed' vs 'rho'")
 axs[1].set_facecolor('#3e0751')
 
