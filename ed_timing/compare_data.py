@@ -11,7 +11,7 @@ subfolders = ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_
 all_data = []
 
 for subfolder in subfolders:
-    dir_path = os.path.join(MAIN_PATH, subfolder, LAST_PATH)
+    dir_path = MAIN_PATH+subfolder+LAST_PATH
     print(dir_path)
     csv_files = [f for f in os.listdir(dir_path) if f.endswith('.csv')]
     
