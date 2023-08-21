@@ -3,23 +3,28 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# 1. Read all CSV files from the 'fixed' directory
-csv_files = [f for f in os.listdir('fixed') if f.endswith('.csv')]
+MAIN_PATH = '/data2/fking/s03/converted/'
+LAST_PATH = '/netCDF/adjusted_edensity_lwe_rate/'
+subfolders = ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT']
 
-# 2. Load all the data from these CSV files into a single pandas DataFrame
+# 1. Read all CSV files from the combinations of directories
 all_data = []
-for file in csv_files:
-    file_path = os.path.join('fixed', file)
-    df = pd.read_csv(file_path)
-    
-    # Drop rows where either variable has NaN or a value <= 0
-    df = df.dropna(subset=['rho', 'ed', 'adj_ed'])
-    df = df[(df['rho'] > 0) & (df['ed'] > 0) & (df['adj_ed'] > 0)]
-    
-    all_data.append(df)
-    
-merged_data = pd.concat(all_data, ignore_index=True)
 
+for subfolder in subfolders:
+    dir_path = os.path.join(MAIN_PATH, subfolder, LAST_PATH)
+    csv_files = [f for f in os.listdir(dir_path) if f.endswith('.csv')]
+    
+    for file in csv_files:
+        file_path = os.path.join(dir_path, file)
+        df = pd.read_csv(file_path)
+
+        # Drop rows where either variable has NaN or a value <= 0
+        df = df.dropna(subset=['rho', 'ed', 'adj_ed'])
+        df = df[(df['rho'] > 0) & (df['ed'] > 0) & (df['adj_ed'] > 0)]
+        
+        all_data.append(df)
+
+merged_data = pd.concat(all_data, ignore_index=True)
 
 valid_rho = merged_data['rho']
 valid_ed = merged_data['ed']
