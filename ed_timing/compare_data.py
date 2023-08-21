@@ -72,7 +72,8 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
 # plt.savefig('asd.png')
 
 fig, ax = plt.subplots(figsize=(12,12))
-ax.hist2d(valid_ed, valid_rho, bins = [1000, 1000], cmap=plt.cm.jet)
+# ax.hist2d(valid_ed, valid_rho, bins = [1000, 1000], cmap=plt.cm.jet)
+sns.displot(merged_data, x="ed", y="rho")
 plt.savefig('hist.png')
 
 # # Create a 1x2 subplot layout
