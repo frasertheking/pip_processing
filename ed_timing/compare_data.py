@@ -31,9 +31,9 @@ for subfolder in subfolders:
         df1 = df[['rho', 'ed']]
         df2 = df[['rho', 'adj_ed']]
         df1 = df1[(df1['rho'] > 0) & (df1['ed'] > 0)]
-        df1 = df1[(df1['rho'] <= 0.4) & (df1['ed'] <= 0.4)]
+        df1 = df1[(df1['rho'] <= 1) & (df1['ed'] <= 1)]
         df2 = df2[(df2['rho'] > 0) & (df2['adj_ed'] > 0)]
-        df2 = df2[(df2['rho'] <= 0.4) & (df2['adj_ed'] <= 0.4)]
+        df2 = df2[(df2['rho'] <= 1) & (df2['adj_ed'] <= 1)]
         
         all_data1.append(df1)
         all_data2.append(df2)
