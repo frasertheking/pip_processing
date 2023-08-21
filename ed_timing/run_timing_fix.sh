@@ -29,7 +29,7 @@ for subfolder in "${subfolders[@]}"; do
     for ed_file in "${CUR_ED_PATH}"/*_P_Minute.nc; do
         echo $ed_file
         # Extract the date from the filename
-        date_string=$(echo "$ed_file" | cut -c 23-30)
+        date_string=$(echo "$ed_file" | cut -c 65-72)
         echo $date_string
 
         # Find the corresponding file in the current edensity_distributions directory
