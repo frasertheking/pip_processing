@@ -67,7 +67,7 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
     return ax
 
 fig, ax = plt.subplots(figsize=(12,12))
-density_scatter(valid_ed, valid_rho, ax=ax, bins = [200,200])
+density_scatter(valid_ed, valid_rho, bins = [200,200])
 plt.savefig('asd.png')
 
 # # Create a 1x2 subplot layout
