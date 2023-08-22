@@ -56,7 +56,6 @@ valid_ed_fixed = merged_data2['adj_ed']
 correlation_ed = merged_data1['rho'].corr(merged_data1['ed'])
 correlation_adj_ed = merged_data2['rho'].corr(merged_data2['adj_ed'])
 
-
 fig, axs = plt.subplots(1, 3, figsize=(24, 8))
 H1, xedges1, yedges1 = np.histogram2d(merged_data1["ed"], merged_data1["rho"], bins=200)
 im1 = axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=5, vmax=250))
@@ -78,10 +77,16 @@ axs[1].set_xlim((0, CUT))
 axs[1].set_ylim((0, CUT))
 axs[1].set_xlabel('Adjusted Effective Density (g cm-3)')
 axs[1].set_ylabel('Rho (g cm-3)')
-# Difference
+
+
+with np.errstate(divide='ignore', invalid='ignore'):  # Handle potential divide-by-zero
+    H_diff_percent = (H2 - H1) / ((H1 + H2) / 2) * 100
+    H_diff_percent[np.isnan(H_diff_percent)] = 0  # Convert NaNs to 0
+
 H_diff = H2 - H1
-im_diff = axs[2].pcolormesh(xedges2, yedges2, H_diff.T, cmap='bwr', vmin=-np.max(np.abs(H_diff)), vmax=np.max(np.abs(H_diff)))
-fig.colorbar(im_diff, ax=axs[2], label='Difference')
+im_diff = axs[2].pcolormesh(xedges2, yedges2, H_diff_percent.T, cmap='bwr',
+                            vmin=-np.max(np.abs(H_diff_percent)), vmax=np.max(np.abs(H_diff_percent)))
+fig.colorbar(im_diff, ax=axs[2], label='Percentage Difference (%)')
 axs[2].set_title('Difference between Histograms')
 axs[2].plot([0, CUT], [0, CUT], linewidth=2, color='black', linestyle='--')
 axs[2].set_facecolor('#3e0751')
