@@ -57,7 +57,7 @@ correlation_ed = merged_data1['rho'].corr(merged_data1['ed'])
 correlation_adj_ed = merged_data2['rho'].corr(merged_data2['adj_ed'])
 
 
-fig, axs = plt.subplots(1, 2, figsize=(16, 8))
+fig, axs = plt.subplots(1, 3, figsize=(24, 8))
 H1, xedges1, yedges1 = np.histogram2d(merged_data1["ed"], merged_data1["rho"], bins=200)
 axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=5, vmax=250))
 axs[0].set_title(f'Old Effective Density (Corr: {correlation_ed:.3f})')
@@ -76,6 +76,18 @@ axs[1].set_xlim((0, CUT))
 axs[1].set_ylim((0, CUT))
 axs[1].set_xlabel('Adjusted Effective Density (g cm-3)')
 axs[1].set_ylabel('Rho (g cm-3)')
+# Difference
+H_diff = H2 - H1
+axs[2].pcolormesh(xedges2, yedges2, H_diff.T, cmap='bwr', vmin=-np.max(np.abs(H_diff)), vmax=np.max(np.abs(H_diff)))
+axs[2].set_title('Difference between Histograms')
+axs[2].plot([0, CUT], [0, CUT], linewidth=2, color='black', linestyle='--')
+axs[2].set_facecolor('#3e0751')
+axs[2].set_xlim((0, CUT))
+axs[2].set_ylim((0, CUT))
+axs[2].set_xlabel('Density Difference (g cm-3)')
+axs[2].set_ylabel('Rho Difference (g cm-3)')
+
+# Display & Save
 plt.tight_layout()
 plt.savefig('hist.png')
 plt.show()
