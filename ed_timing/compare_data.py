@@ -80,7 +80,7 @@ axs[1].set_xlabel('Adjusted Effective Density (g cm-3)')
 axs[1].set_ylabel('Rho (g cm-3)')
 
 H_diff = H2 - H1
-im_diff = axs[2].pcolormesh(xedges2, yedges2, H_diff.T, cmap='bwr', vmin=-150, vmax=150)
+im_diff = axs[2].pcolormesh(xedges2, yedges2, H_diff.T, cmap='bwr', vmin=-100, vmax=100)
 fig.colorbar(im_diff, ax=axs[2], label='Difference')
 axs[2].set_title('Difference between Histograms')
 axs[2].plot([0, CUT], [0, CUT], linewidth=2, color='black', linestyle='--')
