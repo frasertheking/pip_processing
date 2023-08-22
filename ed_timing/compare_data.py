@@ -57,6 +57,7 @@ correlation_ed = merged_data1['rho'].corr(merged_data1['ed'])
 correlation_adj_ed = merged_data2['rho'].corr(merged_data2['adj_ed'])
 
 fig, axs = plt.subplots(1, 3, figsize=(24, 8))
+fig.suptitle('Marquette PIP (2015-2022)')
 H1, xedges1, yedges1 = np.histogram2d(merged_data1["ed"], merged_data1["rho"], bins=200)
 im1 = axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=5, vmax=250))
 fig.colorbar(im1, ax=axs[0], label='Count')
