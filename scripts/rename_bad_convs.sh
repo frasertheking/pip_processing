@@ -39,7 +39,7 @@ for dir in "$BASE_DIR"*/; do
           if [ -z "${file_dates["$file_date"]}" ]; then
             # If not found, rename the file by prepending "_old_"
             new_file="${target_dir}miss_$(basename "$file")"
-            "mv $file $new_file"  # Remove 'echo' to actually rename the file
+            mv $file $new_file  # Remove 'echo' to actually rename the file
           fi
         fi
       done
