@@ -38,7 +38,7 @@ for dir in "$BASE_DIR"*/; do
           # Check if the file_date exists in the list of file dates from adjusted_edensity_lwe_rate folder
           if [ -z "${file_dates["$file_date"]}" ]; then
             # If not found, rename the file by prepending "_old_"
-            new_file="${target_dir}_old_$(basename "$file")"
+            new_file="${target_dir}miss_$(basename "$file")"
             echo "mv \"$file\" \"$new_file\""  # Remove 'echo' to actually rename the file
           fi
         fi
