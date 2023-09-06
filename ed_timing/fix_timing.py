@@ -70,10 +70,10 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
     ed_data = reshaped_data.mean(axis=1)
 
     reshaped_data_nrr = ed_ds['nrr'].values.reshape(-1, SIZE)
-    nrr_data = reshaped_data_nrr.mean(axis=1)
+    nrr_data_orig = reshaped_data_nrr.mean(axis=1)
     
     reshaped_data_rr = ed_ds['rr'].values.reshape(-1, SIZE)
-    rr_data = reshaped_data_rr.mean(axis=1)
+    rr_data_orig = reshaped_data_rr.mean(axis=1)
 
     fixed_ed_data, pre_i, pre_nan = align_ed_data(ed_data, rho_data)
 
@@ -87,17 +87,17 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
 
     for i, index in enumerate(pre_i):
         nans = pre_nan[i]
-        nrr_data = np.insert(nrr_data, index, nans)
-        rr_data = np.insert(rr_data, index, nans)
+        nrr_data = np.insert(nrr_data_orig, index, nans)
+        rr_data = np.insert(rr_data_orig, index, nans)
 
     fixed_nrr_data = np.asarray(nrr_data)[:1440]
     fixed_rr_data = np.asarray(rr_data)[:1440]
 
     if correlation > correlation2:  # edge case where the correction fails
-        print("Updated correlation was not improved.. using original values")
+        print("Updated correlation was not improved.. using original values:" + str(correlation) + ' to ' + str(correlation2))
         ed_ds['ed_adj'] = xr.DataArray(ed_data, dims='time')
-        ed_ds['nrr_adj'] = xr.DataArray(nrr_data, dims='time')
-        ed_ds['rr_adj'] = xr.DataArray(rr_data, dims='time')
+        ed_ds['nrr_adj'] = xr.DataArray(nrr_data_orig, dims='time')
+        ed_ds['rr_adj'] = xr.DataArray(rr_data_orig, dims='time')
     else:
         print("Correlation improved from " + str(correlation) + ' to ' + str(correlation2))
         ed_ds['ed_adj'] = xr.DataArray(fixed_ed_data, dims='time')
