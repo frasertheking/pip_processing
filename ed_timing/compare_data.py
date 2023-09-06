@@ -95,7 +95,7 @@ plt.tight_layout()
 plt.savefig('hist.png')
 plt.show()
 
-plt.figure(figsize=(10, 6))  # You can adjust the numbers (10, 6) to your desired dimensions
-sns.kdeplot(data=merged_data3)
-plt.savefig('kdeplot.png')
+# plt.figure(figsize=(10, 6))  # You can adjust the numbers (10, 6) to your desired dimensions
+# sns.kdeplot(data=merged_data3)
+# plt.savefig('kdeplot.png')
 
