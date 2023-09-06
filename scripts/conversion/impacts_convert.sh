@@ -7,29 +7,15 @@
 # using our conv_pip.py utility function. Can convert both distributions
 # and 1D effective density / precipitation rates
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
-LAT=61.845
-LON=24.287
+LAT=41.817
+LON=-72.248
 SHORT="IMP"
-SITE="Hyytiälä Forestry Field Station"
-START_YEAR=2020
-END_YEAR=2023
-PIP_PATH="/data/Finland/PIP/SN_PIP004/"
+SITE="UConn, Storrs site"
+START_YEAR=2021
+END_YEAR=2022
+PIP_PATH="/data/IMPACTS/PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
 CONV_PATH="/data2/fking/s03/temporary"
-
-
-## MRR2
-            # "westBoundingCoordinate": -73.815,
-            # "eastBoundingCoordinate": -73.814,
-            # "northBoundingCoordinate": 42.681,
-            # "southBoundingCoordinate": 42.68
-
-## MRR PRO
-            # "westBoundingCoordinate": -74.017,
-            # "eastBoundingCoordinate": -73.997,
-            # "northBoundingCoordinate": 40.738,
-            # "southBoundingCoordinate": 40.718
-
 
 declare -a arr=("PIP_3/f_1_4_DSD_Tables_ascii/" "PIP_3/f_2_4_VVD_Tables/" "Study/f_2_6_rho_Plots_D_minute_dat/" "Study/f_3_1_Summary_Tables_P/")
 declare -a wild=("" "_A" "" "") # Need this since VVD has A/S/N filepath pattern
