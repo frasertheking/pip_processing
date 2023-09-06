@@ -56,7 +56,7 @@ def make_hist_for_site(site, subfolders):
     correlation_adj_ed = merged_data2['rho'].corr(merged_data2['adj_ed'])
 
     fig, axs = plt.subplots(1, 3, figsize=(24, 8))
-    fig.suptitle('Marquette PIP (2015-2022)')
+    fig.suptitle(site + ' PIP')
     H1, xedges1, yedges1 = np.histogram2d(merged_data1["ed"], merged_data1["rho"], bins=200)
     im1 = axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=5, vmax=250))
     fig.colorbar(im1, ax=axs[0], label='Count')
@@ -94,15 +94,20 @@ def make_hist_for_site(site, subfolders):
     plt.savefig('hist_' + site + '.png')
     plt.show()
 
-make_hist_for_site('mqt', ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT'])
-make_hist_for_site('fin', ['2014_FIN', '2015_FIN', '2016_FIN', '2017_FIN', '2018_FIN', '2019_FIN', '2020_FIN', '2021_FIN'])
-make_hist_for_site('hur', ['2015_HUR', '2016_HUR'])
-make_hist_for_site('hauk', ['2016_HAUK', '2017_HAUK'])
-make_hist_for_site('kis', ['2017_KIS', '2018_KIS'])
-make_hist_for_site('ko1', ['2018_KO1'])
-make_hist_for_site('ko2', ['2018_KO2'])
-make_hist_for_site('nsa', ['2018_NSA', '2019_NSA', '2020_NSA'])
-make_hist_for_site('apx', ['2022_APX'])
+# make_hist_for_site('mqt', ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT'])
+# make_hist_for_site('fin', ['2014_FIN', '2015_FIN', '2016_FIN', '2017_FIN', '2018_FIN', '2019_FIN', '2020_FIN', '2021_FIN'])
+# make_hist_for_site('hur', ['2015_HUR', '2016_HUR'])
+# make_hist_for_site('hauk', ['2016_HAUK', '2017_HAUK'])
+# make_hist_for_site('kis', ['2017_KIS', '2018_KIS'])
+# make_hist_for_site('ko1', ['2018_KO1'])
+# make_hist_for_site('ko2', ['2018_KO2'])
+# make_hist_for_site('nsa', ['2018_NSA', '2019_NSA', '2020_NSA'])
+# make_hist_for_site('apx', ['2022_APX'])
+
+make_hist_for_site('all_sites', ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT',
+                                '2014_FIN', '2015_FIN', '2016_FIN', '2017_FIN', '2018_FIN', '2019_FIN', '2020_FIN', '2021_FIN',
+                                '2015_HUR', '2016_HUR', '2016_HAUK', '2017_HAUK', '2017_KIS', '2018_KIS', '2018_KO1', '2018_KO2',
+                                '2018_NSA', '2019_NSA', '2020_NSA', '2022_APX'])
 
 # plt.figure(figsize=(10, 6))  # You can adjust the numbers (10, 6) to your desired dimensions
 # sns.kdeplot(data=merged_data3)
