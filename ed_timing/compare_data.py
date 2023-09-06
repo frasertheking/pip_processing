@@ -11,8 +11,8 @@ from matplotlib.colors import LogNorm
 
 MAIN_PATH = '/data2/fking/s03/converted/'
 LAST_PATH = '/netCDF/adjusted_edensity_lwe_rate/'
-subfolders = ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT']
-
+# subfolders = ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT']
+subfolders = ['2014_FIN', '2015_FIN', '2016_FIN', '2017_FIN', '2018_FIN', '2019_FIN', '2020_FIN', '2021_FIN']
 CUT = 0.4
 
 # 1. Read all CSV files from the combinations of directories
