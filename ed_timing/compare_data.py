@@ -103,11 +103,12 @@ def make_hist_for_site(site, subfolders):
 # make_hist_for_site('ko2', ['2018_KO2'])
 # make_hist_for_site('nsa', ['2018_NSA', '2019_NSA', '2020_NSA'])
 # make_hist_for_site('apx', ['2022_APX'])
+make_hist_for_site('imp', ['2021_IMP', '2022_IMP'])
 
 make_hist_for_site('all_sites', ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT',
                                 '2014_FIN', '2015_FIN', '2016_FIN', '2017_FIN', '2018_FIN', '2019_FIN', '2020_FIN', '2021_FIN',
                                 '2015_HUR', '2016_HUR', '2016_HAUK', '2017_HAUK', '2017_KIS', '2018_KIS', '2018_KO1', '2018_KO2',
-                                '2018_NSA', '2019_NSA', '2020_NSA', '2022_APX'])
+                                '2018_NSA', '2019_NSA', '2020_NSA', '2022_APX', '2021_IMP', '2022_IMP'])
 
 # plt.figure(figsize=(10, 6))  # You can adjust the numbers (10, 6) to your desired dimensions
 # sns.kdeplot(data=merged_data3)
