@@ -75,6 +75,10 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
     reshaped_data_rr = ed_ds['rr'].values.reshape(-1, SIZE)
     rr_data_orig = reshaped_data_rr.mean(axis=1)
 
+    ed_data = np.clip(ed_data, 0, 1)
+    nrr_data_orig = np.clip(nrr_data_orig, 0, None)
+    rr_data_orig = np.clip(nrr_data_orig, 0, None)
+
     fixed_ed_data, pre_i, pre_nan = align_ed_data(ed_data, rho_data)
 
     valid_rho2 = rho_data[~np.isnan(rho_data) & ~np.isnan(ed_data)]
