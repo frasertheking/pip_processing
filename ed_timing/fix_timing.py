@@ -99,11 +99,13 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
 
     if correlation > correlation2:  # edge case where the correction fails
         print("Updated correlation was not improved.. using original values:" + str(correlation) + ' to ' + str(correlation2))
+        print("Max & Min Values:" + str(np.max(ed_data)) + ', ' + str(np.min(ed_data)))
         ed_ds['ed_adj'] = xr.DataArray(ed_data, dims='time')
         ed_ds['nrr_adj'] = xr.DataArray(nrr_data_orig, dims='time')
         ed_ds['rr_adj'] = xr.DataArray(rr_data_orig, dims='time')
     else:
         print("Correlation improved from " + str(correlation) + ' to ' + str(correlation2))
+        print("Max & Min Values:" + str(np.max(fixed_ed_data)) + ', ' + str(np.min(fixed_ed_data)))
         ed_ds['ed_adj'] = xr.DataArray(fixed_ed_data, dims='time')
         ed_ds['nrr_adj'] = xr.DataArray(fixed_nrr_data, dims='time')
         ed_ds['rr_adj'] = xr.DataArray(fixed_rr_data, dims='time')
