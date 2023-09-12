@@ -8,7 +8,7 @@ from matplotlib import cm
 from matplotlib.colors import Normalize 
 from scipy.interpolate import interpn
 from matplotlib.colors import LogNorm
-plt.rcParams.update({'font.size': 22})
+plt.rcParams.update({'font.size': 18})
 
 MAIN_PATH = '/data2/fking/s03/converted/'
 LAST_PATH = '/netCDF/adjusted_edensity_lwe_rate/'
