@@ -8,6 +8,7 @@ from matplotlib import cm
 from matplotlib.colors import Normalize 
 from scipy.interpolate import interpn
 from matplotlib.colors import LogNorm
+plt.rcParams.update({'font.size': 30})
 
 MAIN_PATH = '/data2/fking/s03/converted/'
 LAST_PATH = '/netCDF/adjusted_edensity_lwe_rate/'
@@ -56,38 +57,38 @@ def make_hist_for_site(site, subfolders):
     correlation_adj_ed = merged_data2['rho'].corr(merged_data2['adj_ed'])
 
     fig, axs = plt.subplots(1, 3, figsize=(24, 8))
-    fig.suptitle(site + ' PIP')
+    # fig.suptitle(site + ' PIP')
     H1, xedges1, yedges1 = np.histogram2d(merged_data1["ed"], merged_data1["rho"], bins=200)
     im1 = axs[0].pcolormesh(xedges1, yedges1, H1.T, cmap='viridis', norm=LogNorm(vmin=10, vmax=500))
     fig.colorbar(im1, ax=axs[0], label='Count')
-    axs[0].set_title(f'Old Effective Density (Corr: {correlation_ed:.3f})')
+    axs[0].set_title(f'Original (r= {correlation_ed:.3f})')
     axs[0].plot([0, CUT], [0,  CUT], linewidth=2, color='black', linestyle='--')
     axs[0].set_facecolor('#3e0751')
     axs[0].set_xlim((0, CUT))
     axs[0].set_ylim((0, CUT))
-    axs[0].set_xlabel('Effective Density (g cm-3)')
-    axs[0].set_ylabel('Rho (g cm-3)')
+    axs[0].set_xlabel('Effective Density (g cm$^{-3}$)')
+    axs[0].set_ylabel('Rho (g cm$^{-3}$)')
     H2, xedges2, yedges2 = np.histogram2d(merged_data2["adj_ed"], merged_data2["rho"], bins=200)
     im2 = axs[1].pcolormesh(xedges2, yedges2, H2.T, cmap='viridis', norm=LogNorm(vmin=10, vmax=500))
     fig.colorbar(im2, ax=axs[1], label='Count')
-    axs[1].set_title(f'Corrected Effective Density (Corr: {correlation_adj_ed:.3f})')
+    axs[1].set_title(f'Adjusted (r= {correlation_adj_ed:.3f})')
     axs[1].plot([0, CUT], [0,  CUT], linewidth=2, color='black', linestyle='--')
     axs[1].set_facecolor('#3e0751')
     axs[1].set_xlim((0, CUT))
     axs[1].set_ylim((0, CUT))
-    axs[1].set_xlabel('Adjusted Effective Density (g cm-3)')
-    axs[1].set_ylabel('Rho (g cm-3)')
+    axs[1].set_xlabel('Adjusted Effective Density (g cm$^{-3}$)')
+    axs[1].set_ylabel('Rho (g cm$^{-3}$)')
 
     H_diff = H2 - H1
     im_diff = axs[2].pcolormesh(xedges2, yedges2, H_diff.T, cmap='bwr', vmin=-100, vmax=100)
-    fig.colorbar(im_diff, ax=axs[2], label='Difference')
-    axs[2].set_title('Difference between Histograms')
+    fig.colorbar(im_diff, ax=axs[2], label='Difference (Count)')
+    axs[2].set_title('Adjusted - Original')
     axs[2].plot([0, CUT], [0, CUT], linewidth=2, color='black', linestyle='--')
     axs[2].set_facecolor('#3e0751')
     axs[2].set_xlim((0, CUT))
     axs[2].set_ylim((0, CUT))
-    axs[2].set_xlabel('Density Difference (g cm-3)')
-    axs[2].set_ylabel('Rho Difference (g cm-3)')
+    axs[2].set_xlabel('Adjusted Effective Density (g cm$^{-3}$)')
+    axs[2].set_ylabel('Rho (g cm$^{-3}$)')
 
     # Display & Save
     plt.tight_layout()
@@ -103,7 +104,7 @@ def make_hist_for_site(site, subfolders):
 # make_hist_for_site('ko2', ['2018_KO2'])
 # make_hist_for_site('nsa', ['2018_NSA', '2019_NSA', '2020_NSA'])
 # make_hist_for_site('apx', ['2022_APX'])
-make_hist_for_site('imp', ['2021_IMP', '2022_IMP'])
+# make_hist_for_site('imp', ['2021_IMP', '2022_IMP'])
 
 make_hist_for_site('all_sites', ['2015_MQT', '2016_MQT', '2017_MQT', '2018_MQT', '2019_MQT', '2020_MQT', '2021_MQT', '2022_MQT',
                                 '2014_FIN', '2015_FIN', '2016_FIN', '2017_FIN', '2018_FIN', '2019_FIN', '2020_FIN', '2021_FIN',
