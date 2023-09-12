@@ -77,7 +77,7 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
 
     ed_data = np.clip(ed_data, 0, 1)
     nrr_data_orig = np.clip(nrr_data_orig, 0, None)
-    rr_data_orig = np.clip(nrr_data_orig, 0, None)
+    rr_data_orig = np.clip(rr_data_orig, 0, None)
 
     fixed_ed_data, pre_i, pre_nan = align_ed_data(ed_data, rho_data)
 
