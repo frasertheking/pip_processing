@@ -14,52 +14,18 @@ warnings.filterwarnings("ignore")
 warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
-def get_cloud_positions(data):
-    cloud_bases = []
-    cloud_tops = []
-
-    for col in data.T:  # Transpose to loop over columns
-        cloud_base = np.nan
-        cloud_top = np.nan
-        count = 0
-        
-        for i in range(len(col)):
-            if not np.isnan(col[i]):
-                if np.isnan(cloud_base):  # Start of the cloud
-                    cloud_base = i
-                count += 1
-            else:
-                if not np.isnan(cloud_base) and count >= 4:  # End of the cloud
-                    cloud_top = i - 1  # The last non-NaN value
-                    break
-                else:  # Reset
-                    cloud_base = np.nan
-                    count = 0
-
-        if not np.isnan(cloud_base) and (cloud_top is None or np.isnan(cloud_top)):
-            # In case the cloud goes up to the last bin in the column
-            if count >= 4:
-                cloud_top = len(col) - 1
-            else:
-                # Cloud size is less than 4, reset
-                cloud_base = np.nan
-                
-        cloud_bases.append(cloud_base)
-        cloud_tops.append(cloud_top)
-
-    return np.array(cloud_bases)[:283], np.array(cloud_tops)[:283], (np.array(cloud_tops) - np.array(cloud_bases))[:283]
-
-
-def calc_various_pca_inputs(site):
-    print("Working on site " + site)
+def calc_various_pca_inputs():
+    sites = ['MQT', 'FIN', 'HUR', 'HAUK', 'KIS', 'KO1', 'KO2', 'IMP', 'APX']
+    inst = ['006', '004', '008', '007', '007', '002', '003', '003', '007']
 
     ### Globals
-    pip_path = '/data/LakeEffect/PIP/Netcdf_Converted/'
+    pip_path = '/Users/fraserking/Development/pip_processing/data/converted/'
         
     pip_dates = []
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
         pip_dates.append(file[-37:-29])
 
+    site_array = []
     N_0_array = []
     lambda_array = []
     total_particle_array = []
@@ -70,115 +36,120 @@ def calc_various_pca_inputs(site):
     mwd_array = []
     times = []
 
-    number_of_files = 0
-    for date in pip_dates:
-        print("Working on day", date)
-        
-        year = int(date[:4])
-        month = int(date[4:6])
-        day = int(date[-2:])
+    for w,site in enumerate(sites):
+        print("Working on site " + site)
+        number_of_files = 0
+        for date in pip_dates:
+            print("Working on day", date)
+            
+            year = int(date[:4])
+            month = int(date[4:6])
+            day = int(date[-2:])
 
-        # Load PIP data
-        try:
-            ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_lwe_rate/006' + date + '2350_01_P_Minute.nc')
-            ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/006' + date + '2350_01_rho_Plots_D_minute.nc')
-            ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/006' + date + '2350_01_vvd_A.nc')
-            ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/006' + date + '2350_01_dsd.nc')
-        except FileNotFoundError:
-            print("Could not open PIP file, likely ended before 2350")
-            continue
-        
-        dsd_values = ds_particle_size_distributions['psd'].values
-        edd_values = ds_edensity_distributions['rho'].values
-        vvd_values = ds_velocity_distributions['vvd'].values
-        sr_values = ds_edensity_lwe_rate['nrr'].values
-        ed_values = ds_edensity_lwe_rate['ed'].values
-        bin_centers = ds_particle_size_distributions['bin_centers'].values
-
-        if len(ds_particle_size_distributions.time) != 1440:
-            print("PIP data record too short for day, skipping!")
-            continue
-
-        ########## PIP CALCULATIONS 
-        func = lambda t, a, b: a * np.exp(-b*t)
-
-        # Initialize the datetime object at the start of the day
-        current_time = datetime(year, month, day, 0, 0)
-
-        # Loop over each 5-minute block
-        count = 0
-        for i in range(0, dsd_values.shape[0], 5):
-            if i >= 1435:
-                continue
-
-            count += 1
-            block_avg = np.mean(dsd_values[i:i+5, :], axis=0)
-            valid_indices = ~np.isnan(block_avg)
-            block_avg = block_avg[valid_indices]
-            valid_bin_centers = bin_centers[valid_indices]
-
-            times.append(current_time.strftime("%Y-%m-%d %H:%M:%S"))
-            current_time += timedelta(minutes=5)
-
-            if block_avg.size == 0:
-                N_0_array.append(np.nan)
-                lambda_array.append(np.nan)
-                avg_vvd_array.append(np.nan)
-                avg_ed_array.append(np.nan)
-                avg_rho_array.append(np.nan)
-                avg_sr_array.append(np.nan)
-                total_particle_array.append(0)
-                mwd_array.append(np.nan)
-                continue
-
-            # Calculate average fallspeed over the 5-minute interval
-            vvd_slice = vvd_values[i:i+5, :]
-            avg_vvd_array.append(vvd_slice[vvd_slice != 0].mean())
-
-            # Calculate the average eDensity of the 5-minute interval
-            avg_ed_array.append(np.nanmean(ed_values[i:i+5]))
-
-            # Calculate the average eDensity of the 5-minute interval
-            rho_slice = edd_values[i:i+5]
-            avg_rho_array.append(rho_slice[rho_slice != 0].mean())
-
-            # Calculate the average snowfall rate over the 5-minute interval
-            avg_sr_array.append(np.nanmean(sr_values[i:i+5]))
-
-            # Calculate total number of particles over the 5-minute interval
-            total_particle_array.append(np.nansum(dsd_values[i:i+5, :], axis=(0, 1)))
-
-            # Calculate mean mass diameter over the 5-minute interval
-            if edd_values[i:i+5, valid_indices].shape == dsd_values[i:i+5, valid_indices].shape:
-                mass_dist = edd_values[i:i+5, valid_indices] * dsd_values[i:i+5, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
-                mass_weighted_diameter = np.sum(mass_dist * valid_bin_centers) / np.sum(mass_dist)
-                mwd_array.append(mass_weighted_diameter)
-            else:
-                mwd_array.append(np.nan)
-
-            # Calculate N0 and Lambda
+            # Load PIP data
             try:
-                popt, pcov = curve_fit(func, valid_bin_centers, block_avg, p0 = [1e4, 2], maxfev=600)
-                if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
-                    N_0_array.append(popt[0])
-                    lambda_array.append(popt[1])
+                ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/adjusted_edensity_lwe_rate/' + inst[w] + date + '2350_01_P_Minute.nc')
+                ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/' + inst[w] + date + '2350_01_rho_Plots_D_minute.nc')
+                ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/' + inst[w] + date + '2350_01_vvd_A.nc')
+                ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + inst[w] + date + '2350_01_dsd.nc')
+            except FileNotFoundError:
+                print("Could not open PIP file, likely ended before 2350")
+                continue
+            
+            dsd_values = ds_particle_size_distributions['psd'].values
+            edd_values = ds_edensity_distributions['rho'].values
+            vvd_values = ds_velocity_distributions['vvd'].values
+            sr_values = ds_edensity_lwe_rate['nrr_adj'].values
+            ed_values = ds_edensity_lwe_rate['ed_adj'].values
+            bin_centers = ds_particle_size_distributions['bin_centers'].values
+
+            if len(ds_particle_size_distributions.time) != 1440:
+                print("PIP data record too short for day, skipping!")
+                continue
+
+            ########## PIP CALCULATIONS 
+            func = lambda t, a, b: a * np.exp(-b*t)
+
+            # Initialize the datetime object at the start of the day
+            current_time = datetime(year, month, day, 0, 0)
+
+            # Loop over each 5-minute block
+            count = 0
+            for i in range(0, dsd_values.shape[0], 5):
+                if i >= 1435:
+                    continue
+
+                count += 1
+                block_avg = np.mean(dsd_values[i:i+5, :], axis=0)
+                valid_indices = ~np.isnan(block_avg)
+                block_avg = block_avg[valid_indices]
+                valid_bin_centers = bin_centers[valid_indices]
+
+                times.append(current_time.strftime("%Y-%m-%d %H:%M:%S"))
+                current_time += timedelta(minutes=5)
+
+                if block_avg.size == 0:
+                    N_0_array.append(np.nan)
+                    lambda_array.append(np.nan)
+                    avg_vvd_array.append(np.nan)
+                    avg_ed_array.append(np.nan)
+                    avg_rho_array.append(np.nan)
+                    avg_sr_array.append(np.nan)
+                    total_particle_array.append(0)
+                    mwd_array.append(np.nan)
+                    site_array.append(np.nan)
+                    continue
+
+                # Calculate average fallspeed over the 5-minute interval
+                vvd_slice = vvd_values[i:i+5, :]
+                avg_vvd_array.append(vvd_slice[vvd_slice != 0].mean())
+
+                # Calculate the average eDensity of the 5-minute interval
+                avg_ed_array.append(np.nanmean(ed_values[i:i+5]))
+
+                # Calculate the average eDensity of the 5-minute interval
+                rho_slice = edd_values[i:i+5]
+                avg_rho_array.append(rho_slice[rho_slice != 0].mean())
+
+                # Calculate the average snowfall rate over the 5-minute interval
+                avg_sr_array.append(np.nanmean(sr_values[i:i+5]))
+
+                # Calculate total number of particles over the 5-minute interval
+                total_particle_array.append(np.nansum(dsd_values[i:i+5, :], axis=(0, 1)))
+
+                # Calculate mean mass diameter over the 5-minute interval
+                if edd_values[i:i+5, valid_indices].shape == dsd_values[i:i+5, valid_indices].shape:
+                    mass_dist = edd_values[i:i+5, valid_indices] * dsd_values[i:i+5, valid_indices] * (4/3) * np.pi * (valid_bin_centers/2)**3
+                    mass_weighted_diameter = np.sum(mass_dist * valid_bin_centers) / np.sum(mass_dist)
+                    mwd_array.append(mass_weighted_diameter)
                 else:
+                    mwd_array.append(np.nan)
+
+                # Calculate N0 and Lambda
+                try:
+                    popt, pcov = curve_fit(func, valid_bin_centers, block_avg, p0 = [1e4, 2], maxfev=600)
+                    if popt[0] > 0 and popt[0] < 10**7 and popt[1] > 0 and popt[1] < 10:
+                        N_0_array.append(popt[0])
+                        lambda_array.append(popt[1])
+                    else:
+                        N_0_array.append(np.nan)
+                        lambda_array.append(np.nan)
+
+                except RuntimeError:
                     N_0_array.append(np.nan)
                     lambda_array.append(np.nan)
 
-            except RuntimeError:
-                N_0_array.append(np.nan)
-                lambda_array.append(np.nan)
+                site_array.append(site)
+
+            number_of_files += 1
 
 
-        number_of_files += 1
-
-
-    # df = pd.DataFrame(data={'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
-    #                         'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
-    #                         'Rho': avg_rho_array, 'lambda': lambda_array})
+    df = pd.DataFrame(data={'site': site_array, 'time': times, 'n0': N_0_array,  'D0': mwd_array, 'Nt': total_particle_array, \
+                            'Fs': avg_vvd_array, 'Sr': avg_sr_array,  'Ed': avg_ed_array, \
+                            'Rho': avg_rho_array, 'lambda': lambda_array})
+    df.dropna(inplace=True)
     
-    # df.to_csv('/data2/fking/s03/data/processed/pca_inputs/' + site + '_pip.csv')
+    df.to_csv('/Users/fraserking/Development/pip_processing/data/processed/pca_inputs/all_sites_pip.csv')
 
 def plot_corr(df, size=12):
     # Calculate correlations
@@ -283,7 +254,7 @@ def load_raw_values_and_save_standardized_version(site):
 
 
 if __name__ == '__main__':
-    calc_various_pca_inputs('MQT')
+    calc_various_pca_inputs()
     # plot_timeseries('MQT')
     # load_and_plot_pca_for_site('MQT')
     # load_raw_values_and_save_standardized_version('MQT')
