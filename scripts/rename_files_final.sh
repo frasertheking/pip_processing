@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the root path
-ROOT_PATH="/data2/fking/s03/converted"
+ROOT_PATH="/data2/fking/s03/converted/2018_NSA/"
 
 # Define subdirectories and suffixes
 SUBDIRS=("adjusted_edensity_lwe_rate" "particle_size_distributions" "edensity_distributions" "velocity_distributions")
@@ -24,6 +24,7 @@ for SUBFOLDER in "$ROOT_PATH"/*/; do
                 
                 # Check if the file actually exists (to handle the case where no .nc files are found)
                 if [ -e "$FILE" ]; then
+                    echo mv "$FILE" "$SUBFOLDER/netCDF/$SUBDIR/$NEW_NAME"
                     mv "$FILE" "$SUBFOLDER/netCDF/$SUBDIR/$NEW_NAME"
                 fi
             done
