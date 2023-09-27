@@ -15,15 +15,15 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
 def calc_various_pca_inputs():
-    sites = ['MQT', 'FIN', 'HUR', 'HAUK', 'KIS', 'KO1', 'KO2', 'IMP', 'APX']
-    inst = ['006', '004', '008', '007', '007', '002', '003', '003', '007']
+    sites = ['MQT', 'FIN', 'HUR', 'HAUK', 'KIS', 'KO1', 'KO2', 'IMP', 'APX', 'NSA']
+    inst = ['006', '004', '008', '007', '007', '002', '003', '003', '007', '010']
 
     ### Globals
     pip_path = '/Users/fraserking/Development/pip_processing/data/converted/'
         
     pip_dates = []
     for file in glob.glob(os.path.join(pip_path, '**', 'edensity_distributions', '*.nc'), recursive=True):
-        pip_dates.append(file[-37:-29])
+        pip_dates.append(file[-15:-7])
 
     site_array = []
     N_0_array = []
@@ -48,10 +48,10 @@ def calc_various_pca_inputs():
 
             # Load PIP data
             try:
-                ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/adjusted_edensity_lwe_rate/' + inst[w] + date + '2350_01_P_Minute.nc')
-                ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/' + inst[w] + date + '2350_01_rho_Plots_D_minute.nc')
-                ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/' + inst[w] + date + '2350_01_vvd_A.nc')
-                ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + inst[w] + date + '2350_01_dsd.nc')
+                ds_edensity_lwe_rate = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/adjusted_edensity_lwe_rate/' + inst[w] + date + '_min.nc')
+                ds_edensity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/edensity_distributions/' + inst[w] + date + '_rho.nc')
+                ds_velocity_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/velocity_distributions/' + inst[w] + date + '_vvd.nc')
+                ds_particle_size_distributions = xr.open_dataset(pip_path + str(year) + '_' + site + '/netCDF/particle_size_distributions/' + inst[w] + date + '_dsd.nc')
             except FileNotFoundError:
                 print("Could not open PIP file, likely ended before 2350")
                 continue
