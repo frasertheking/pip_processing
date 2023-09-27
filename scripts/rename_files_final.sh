@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the root path
-ROOT_PATH="/data2/fking/s03/converted/2018_NSA/"
+ROOT_PATH="/data2/fking/s03/converted/2018_NSA"
 
 # Define subdirectories and suffixes
 SUBDIRS=("adjusted_edensity_lwe_rate" "particle_size_distributions" "edensity_distributions" "velocity_distributions")
