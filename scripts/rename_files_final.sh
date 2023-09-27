@@ -13,7 +13,7 @@ for SUBFOLDER in "$ROOT_PATH"/*/; do
     if [ -d "$SUBFOLDER" ]; then
 
         # Check if 'NSA' is in the $SUBFOLDER name
-        if [[ "$SUBFOLDER" == *NSA* ]]; then
+        if [[ "$SUBFOLDER" != *NSA* ]]; then
             # If NSA is found, continue to the next iteration of the loop
             echo "Skipping $SUBFOLDER due to NSA in name"
             continue
