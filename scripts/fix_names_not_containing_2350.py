@@ -18,7 +18,7 @@ def find_files(base_path):
                     new_full_path = os.path.join(root, new_filename)
                     
                     # Rename the file
-                    # os.rename(old_full_path, new_full_path)
+                    os.rename(old_full_path, new_full_path)
                     print(f"Renamed: {old_full_path} -> {new_full_path}")
 
                 # Else just print the path of files that do not contain "2350_01"
