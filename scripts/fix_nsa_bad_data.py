@@ -38,7 +38,10 @@ def delete_files(bad_file_strings):
     root_paths = [
         '/Users/fraserking/Development/pip_processing/data/converted/2018_NSA',
         '/Users/fraserking/Development/pip_processing/data/converted/2019_NSA',
-        '/Users/fraserking/Development/pip_processing/data/converted/2020_NSA'
+        '/Users/fraserking/Development/pip_processing/data/converted/2020_NSA',
+        '/Users/fraserking/Development/pip_processing/data/converted/2021_NSA',
+        '/Users/fraserking/Development/pip_processing/data/converted/2022_NSA',
+        '/Users/fraserking/Development/pip_processing/data/converted/2023_NSA'
     ]
 
     # Loop through each root path
