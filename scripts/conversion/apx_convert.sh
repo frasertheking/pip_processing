@@ -8,7 +8,6 @@
 # and 1D effective density / precipitation rates
 
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
-, 
 LAT=44.9079
 LON=-84.7187
 SHORT="APX"
