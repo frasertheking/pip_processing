@@ -12,7 +12,7 @@ OUT_PATH="adjusted_edensity_lwe_rate"
 PYTHON_SCRIPT="fix_timing.py"
 
 MAIN_PATH='/data2/fking/s03/converted/'
-declare -a subfolders=("2015_MQT/netCDF/" "2016_MQT/netCDF/" "2017_MQT/netCDF/" "2018_MQT/netCDF/" "2019_MQT/netCDF/" "2020_MQT/netCDF/" "2021_MQT/netCDF/" "2022_MQT/netCDF/")
+declare -a subfolders=("2022_MQT/netCDF/" "2023_MQT/netCDF/")
 
 PYTHON_SCRIPT="fix_timing.py"
 
