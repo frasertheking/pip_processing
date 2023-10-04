@@ -14,7 +14,7 @@ SHORT="YFB"
 SITE="Iqaluit, Nunavut"
 START_YEAR=2017
 END_YEAR=2019
-PIP_PATH="/data2/fking/s03/data/Iqaluit_Raw_PIP"
+PIP_PATH="/data2/fking/s03/data/Iqaluit_Raw_PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
 CONV_PATH="/data2/fking/s03/temporary"
 
