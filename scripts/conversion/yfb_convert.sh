@@ -37,7 +37,7 @@ do
     LOC=0
     for i in "${arr[@]}"
     do
-        DATA_PATH="${PIP_PATH}${SHORT}_${y}/"
+        DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
         OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
