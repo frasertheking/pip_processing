@@ -15,8 +15,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 plt.rcParams.update({'font.size': 15})
 
 def calc_various_pca_inputs():
-    sites = ['MQT', 'FIN', 'HUR', 'HAUK', 'KIS', 'KO1', 'KO2', 'IMP', 'APX', 'NSA']
-    inst = ['006', '004', '008', '007', '007', '002', '003', '003', '007', '010']
+    sites = ['MQT', 'FIN', 'HUR', 'HAUK', 'KIS', 'KO1', 'KO2', 'IMP', 'APX', 'NSA', 'YFB']
+    inst = ['006', '004', '008', '007', '007', '002', '003', '003', '007', '010', '003']
 
     ### Globals
     pip_path = '/Users/fraserking/Development/pip_processing/data/converted/'
