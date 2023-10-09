@@ -5,8 +5,8 @@ scripts/pca_preprocess.py
 scripts/pca_pip_only_preprocess.py
 scripts/fix_nsa_bad_data.py
 scripts/fix_double_site_comment.py
-scripts/fix_double_site.py
-scripts/fix_names_not_containing_2350
+scripts/fix_double_site.sh
+scripts/fix_names_not_containing_2350.py
 /data/
 /images/
 /example_data/
