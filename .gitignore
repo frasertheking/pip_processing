@@ -1,6 +1,8 @@
 notebooks/train_pca.ipynb
 notebooks/train_vae_umap.ipynb
 notebooks/essd_figures.ipynb
+scripts/rename_bad_convs.sh
+scripts/rename_files_final.sh
 scripts/pca_preprocess.py
 scripts/pca_pip_only_preprocess.py
 scripts/fix_nsa_bad_data.py
