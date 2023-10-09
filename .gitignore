@@ -1,3 +1,12 @@
+notebooks/train_pca.ipynb
+notebooks/train_vae_umap.ipynb
+notebooks/essd_figures.ipynb
+scripts/pca_preprocess.py
+scripts/pca_pip_only_preprocess.py
+scripts/fix_nsa_bad_data.py
+scripts/fix_double_site_comment.py
+scripts/fix_double_site.py
+scripts/fix_names_not_containing_2350
 /data/
 /images/
 /example_data/
