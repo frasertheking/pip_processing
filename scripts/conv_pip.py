@@ -123,15 +123,13 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
 """
 def convert_ed(filepath, outpath, lat, lon, loc):
     basename = os.path.splitext(os.path.basename(filepath))[0]
-    print("ZWorking on", basename)
+    print("Working on", basename)
 
     f = open(filepath)
     lines = f.readlines()
     if len(lines) < 11:
         print("File is empty!")
         return
-
-    print('asd0')
 
     ##### Parse input
     df = pd.read_csv(filepath, sep='\t', skiprows=range(0, 8))
@@ -140,8 +138,6 @@ def convert_ed(filepath, outpath, lat, lon, loc):
     df['time'] +=  pd.to_timedelta(df.hr, unit='h')
     df['time'] +=  pd.to_timedelta(df.minute, unit='m')
     df.drop(columns=['yr', 'DOY', 'hr', 'minute'], inplace=True)
-
-    print(df)
 
     ##### Fill missing time
     end_datetime = df.iloc[len(df)-1]
@@ -158,8 +154,6 @@ def convert_ed(filepath, outpath, lat, lon, loc):
                                                                         str(end_datetime.time.day) + ' 23:59:00')}, index=[0])
         df = pd.concat([df, correct_end], axis=0)
 
-    print('asd1')
-
     ##### Fill missing values with NaN and convert to xarray dataset
     df.sort_values('time', inplace=True)
     df = df.set_index('time').asfreq('1Min')
@@ -168,9 +162,6 @@ def convert_ed(filepath, outpath, lat, lon, loc):
     ds = ds.rename({'nR_mmhr': 'nrr', 'R_mmhr': 'rr', 'eDensity': 'ed'})
     ds['lat'] = float(lat)
     ds['lon'] = float(lon)
-
-    print('asd2')
-    print(ds)
 
     ##### Define global/variable attributes according to CF-1.10 conventions
     ds.ed.attrs['units'] = 'g cm-3'
@@ -199,8 +190,6 @@ def convert_ed(filepath, outpath, lat, lon, loc):
     ds.attrs['Reference3'] = 'https://doi.org/10.1175/JAMC-D-19-0099.1'
     ds.attrs['Reference4'] = 'https://doi.org/10.1175/BAMS-D-19-0128.1'
     ds.attrs['Comment1'] = 'Data was acquired at the ' + loc + ' site (Lat: ' + str(lat) + ', Lon: ' + str(lon) + ')'
-
-    print('asd3')
 
     ##### Compress and save in NETCDF4 format
     comp = dict(zlib=True, complevel=2)
