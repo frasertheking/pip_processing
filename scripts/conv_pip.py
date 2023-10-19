@@ -131,6 +131,8 @@ def convert_ed(filepath, outpath, lat, lon, loc):
         print("File is empty!")
         return
 
+    print('asd0')
+
     ##### Parse input
     df = pd.read_csv(filepath, sep='\t', skiprows=range(0, 8))
     df = df[df['yr'] > -99]
