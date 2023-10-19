@@ -43,7 +43,8 @@ do
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
             echo $file
-            if grep -q "20221117" "$file"; then
+            if grep -q "20221220" "$file"; then
+                echo "FOUND"
                 # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
                 if [[ $LOC -lt 3 ]]; then
                     python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"
