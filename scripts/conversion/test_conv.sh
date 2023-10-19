@@ -42,7 +42,7 @@ do
         OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
         echo "${DATA_PATH}${i}"
         for file in "${DATA_PATH}${i}"*"${wild[$LOC]}".dat; do
-            if [[ $file == *"20221123"* ]]; then
+            if [[ $file == *"20221220"* ]]; then
                 echo $file
                 # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
                 if [[ $LOC -lt 3 ]]; then
