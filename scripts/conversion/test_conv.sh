@@ -46,8 +46,10 @@ do
                 echo $file
                 # echo python dist_wrap.py $file "${OUT_PATH}${vars[$LOC]}/" ${vars[$LOC]} $LAT $LON ${units[$LOC]} ${long[$LOC]} ${standard[$LOC]}
                 if [[ $LOC -lt 3 ]]; then
+                    echo 'python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"'
                     python dist_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" "${vars[$LOC]}" $LAT $LON "${units[$LOC]}" "${long[$LOC]}" "${standard[$LOC]}" "${SITE}"
                 else
+                    echo 'python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"'
                     python ed_wrap.py $file "${OUT_PATH}${longnames[$LOC]}/" $LAT $LON "${SITE}"
                 fi
             fi
