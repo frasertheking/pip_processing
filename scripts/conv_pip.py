@@ -123,7 +123,7 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
 """
 def convert_ed(filepath, outpath, lat, lon, loc):
     basename = os.path.splitext(os.path.basename(filepath))[0]
-    print("Working on", basename)
+    print("ZWorking on", basename)
 
     f = open(filepath)
     lines = f.readlines()
