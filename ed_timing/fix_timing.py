@@ -76,6 +76,18 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
         ed_ds_time = xr.concat([ed_ds_time, pad_ds], dim='time')
         ed_ds = xr.merge([ed_ds_time, ed_ds[['lat', 'lon']]])
 
+    if len(rho_ds['time']) < 1440:
+        diff = 1440 - len(rho_ds['time'])
+        last_time = pd.Timestamp(rho_ds['time'].values[-1])
+        extended_time = pd.date_range(start=last_time, periods=diff+1, freq='T')[1:]
+        data_vars = {
+            'rho': (('time', 'bin_centers'), np.full((diff, len(rho_ds['bin_centers'])), np.nan))
+        }
+        pad_ds = xr.Dataset(data_vars, coords={'time': extended_time, 'bin_centers': rho_ds['bin_centers']})
+        rho_ds_time = rho_ds.drop_vars(['lat', 'lon'])
+        rho_ds_time = xr.concat([rho_ds_time, pad_ds], dim='time')
+        rho_ds = xr.merge([rho_ds_time, rho_ds[['lat', 'lon']]])
+
     non_zeros_rho = rho_ds['rho'].where(rho_ds['rho'] != 0)
     resampled_rho = non_zeros_rho.resample(time=str(SIZE)+'T').mean('time', skipna=True).values
     rho_data = np.nanmean(resampled_rho, axis=1)
@@ -100,6 +112,10 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
     valid_ed_fixed = fixed_ed_data[~np.isnan(rho_data) & ~np.isnan(fixed_ed_data)]
     valid_rho_fixed = rho_data[~np.isnan(rho_data) & ~np.isnan(fixed_ed_data)]
 
+    if len(valid_rho2) < 2:
+        print("Skipping day, since no data")
+        return
+    
     correlation, _ = pearsonr(valid_rho2, valid_ed2)
     correlation2, _ = pearsonr(valid_rho_fixed, valid_ed_fixed)
 
