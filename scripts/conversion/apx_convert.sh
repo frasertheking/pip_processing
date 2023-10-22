@@ -12,7 +12,7 @@ LAT=44.9079
 LON=-84.7187
 SHORT="APX"
 SITE="Gaylord, Michigan"
-START_YEAR=2023
+START_YEAR=2022
 END_YEAR=2023
 PIP_PATH="/data/APX/PIP/"
 TMP_OUT="/data2/fking/s03/converted/"
@@ -24,8 +24,8 @@ declare -a wild=("" "_A" "" "") # Need this since VVD has A/S/N filepath pattern
 declare -a longnames=("particle_size_distributions" "velocity_distributions" "edensity_distributions" "edensity_lwe_rate")
 declare -a vars=("psd" "vvd" "rho" "ed")
 declare -a units=("m−3 mm−1" "m s-1" "g cm-3" "g cm-3")
-declare -a long=("Drop size distributions" "Vertical velocity distributions" "Effective density distributions" "Effective density")
-declare -a standard=("drop_size_distribution" "velocity_distribution" "effective_density_distribution" "effective_density")
+declare -a long=("Particle size distributions" "Vertical velocity distributions" "Effective density distributions" "Effective density")
+declare -a standard=("particle_size_distribution" "velocity_distribution" "effective_density_distribution" "effective_density")
 
 for y in $(seq $START_YEAR $END_YEAR)
 do
