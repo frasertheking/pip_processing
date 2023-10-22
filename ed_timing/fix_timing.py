@@ -62,6 +62,20 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
     rho_ds = xr.open_dataset(rho_path)
     ed_ds = xr.open_dataset(ed_path)
 
+    if len(ed_ds['time']) < 1440:
+        diff = 1440 - len(ed_ds['time'])
+        last_time = pd.Timestamp(ed_ds['time'].values[-1])
+        extended_time = pd.date_range(start=last_time, periods=diff+1, freq='T')[1:]
+        data_vars = {
+            'rr': (('time',), np.full(diff, np.nan)),
+            'nrr': (('time',), np.full(diff, np.nan)),
+            'ed': (('time',), np.full(diff, np.nan))
+        }
+        pad_ds = xr.Dataset(data_vars, coords={'time': extended_time})
+        ed_ds_time = ed_ds.drop_vars(['lat', 'lon'])
+        ed_ds_time = xr.concat([ed_ds_time, pad_ds], dim='time')
+        ed_ds = xr.merge([ed_ds_time, ed_ds[['lat', 'lon']]])
+
     non_zeros_rho = rho_ds['rho'].where(rho_ds['rho'] != 0)
     resampled_rho = non_zeros_rho.resample(time=str(SIZE)+'T').mean('time', skipna=True).values
     rho_data = np.nanmean(resampled_rho, axis=1)
