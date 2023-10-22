@@ -76,17 +76,17 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
         ed_ds_time = xr.concat([ed_ds_time, pad_ds], dim='time')
         ed_ds = xr.merge([ed_ds_time, ed_ds[['lat', 'lon']]])
 
-    if len(rho_ds['time']) < 1440:
-        diff = 1440 - len(rho_ds['time'])
-        last_time = pd.Timestamp(rho_ds['time'].values[-1])
-        extended_time = pd.date_range(start=last_time, periods=diff+1, freq='T')[1:]
-        data_vars = {
-            'rho': (('time', 'bin_centers'), np.full((diff, len(rho_ds['bin_centers'])), np.nan))
-        }
-        pad_ds = xr.Dataset(data_vars, coords={'time': extended_time, 'bin_centers': rho_ds['bin_centers']})
-        rho_ds_time = rho_ds.drop_vars(['lat', 'lon'])
-        rho_ds_time = xr.concat([rho_ds_time, pad_ds], dim='time')
-        rho_ds = xr.merge([rho_ds_time, rho_ds[['lat', 'lon']]])
+    # if len(rho_ds['time']) < 1440:
+    #     diff = 1440 - len(rho_ds['time'])
+    #     last_time = pd.Timestamp(rho_ds['time'].values[-1])
+    #     extended_time = pd.date_range(start=last_time, periods=diff+1, freq='T')[1:]
+    #     data_vars = {
+    #         'rho': (('time', 'bin_centers'), np.full((diff, len(rho_ds['bin_centers'])), np.nan))
+    #     }
+    #     pad_ds = xr.Dataset(data_vars, coords={'time': extended_time, 'bin_centers': rho_ds['bin_centers']})
+    #     rho_ds_time = rho_ds.drop_vars(['lat', 'lon'])
+    #     rho_ds_time = xr.concat([rho_ds_time, pad_ds], dim='time')
+    #     rho_ds = xr.merge([rho_ds_time, rho_ds[['lat', 'lon']]])
 
     non_zeros_rho = rho_ds['rho'].where(rho_ds['rho'] != 0)
     resampled_rho = non_zeros_rho.resample(time=str(SIZE)+'T').mean('time', skipna=True).values

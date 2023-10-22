@@ -55,20 +55,37 @@ def convert_dist(filepath, outpath, var, lat, lon, units, long_name, standard_na
         columns=['Bin_cen', 'Num_d', 'day_time', 'hr_d', 'min_d', 'year', 'month', 'day', 'hour', 'minute']
     df.drop(columns=columns, inplace=True)
 
-    ##### Fill missing time
-    end_datetime = df.iloc[len(df)-1]
-    start_datetime = df.iloc[0]
-    if start_datetime.time.minute != 0:
-        correct_start = pd.DataFrame(data={'time': pd.to_datetime(str(start_datetime.time.year) + '-' + \
-                                                                str(start_datetime.time.month) + '-' + \
-                                                                    str(start_datetime.time.day) + ' 00:00:00')}, index=[0])
-        df = pd.concat([df, correct_start], axis=0)
+    # ##### Fill missing time
+    # end_datetime = df.iloc[len(df)-1]
+    # start_datetime = df.iloc[0]
+    # if start_datetime.time.minute != 0:
+    #     correct_start = pd.DataFrame(data={'time': pd.to_datetime(str(start_datetime.time.year) + '-' + \
+    #                                                             str(start_datetime.time.month) + '-' + \
+    #                                                                 str(start_datetime.time.day) + ' 00:00:00')}, index=[0])
+    #     df = pd.concat([df, correct_start], axis=0)
 
-    if end_datetime.time.minute != 59:
-        correct_end = pd.DataFrame(data={'time': pd.to_datetime(str(end_datetime.time.year) + '-' + \
-                                                                    str(end_datetime.time.month) + '-' + \
-                                                                        str(end_datetime.time.day) + ' 23:59:00')}, index=[0])
-        df = pd.concat([df, correct_end], axis=0)
+    # if end_datetime.time.minute != 59:
+    #     correct_end = pd.DataFrame(data={'time': pd.to_datetime(str(end_datetime.time.year) + '-' + \
+    #                                                                 str(end_datetime.time.month) + '-' + \
+    #                                                                     str(end_datetime.time.day) + ' 23:59:00')}, index=[0])
+    #     df = pd.concat([df, correct_end], axis=0)
+
+    # ##### Fill missing values with NaN and convert to xarray dataset
+    # df.sort_values('time', inplace=True)
+    # df = df.set_index('time').asfreq('1Min')
+    # times = df.index.values
+    # df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+
+    ##### Fill missing time
+    start_datetime = df['time'].iloc[0]
+    end_datetime = df['time'].iloc[-1]
+
+    all_dates_range = pd.date_range(start=start_datetime.replace(hour=0, minute=0),
+                                    end=end_datetime.replace(hour=23, minute=59),
+                                    freq='1Min')
+
+    # Set dataframe with full day's range and fill with NaN by default
+    df = df.set_index('time').reindex(all_dates_range).reset_index().rename(columns={"index": "time"})
 
     ##### Fill missing values with NaN and convert to xarray dataset
     df.sort_values('time', inplace=True)

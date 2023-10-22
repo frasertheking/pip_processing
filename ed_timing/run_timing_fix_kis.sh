@@ -33,7 +33,7 @@ for subfolder in "${subfolders[@]}"; do
         echo $date_string
 
         # Find the corresponding file in the current edensity_distributions directory
-        matching_rho_file=$(find "$CUR_RHO_PATH" -name "*${date_string}*_D_minute.nc")
+        matching_rho_file=$(find "$CUR_RHO_PATH" -name "*${date_string}*_D_minute.nc" | sort | head -n 1)
 
         # If there's a matching file
         if [ -n "$matching_rho_file" ]; then
