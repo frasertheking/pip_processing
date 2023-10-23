@@ -103,86 +103,86 @@ done
 
 
 # PIP_2
-for y in $(seq $START_YEAR $END_YEAR)
-do
-    mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
-    DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
-    OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
-    for dir in "${DATA_PATH}PIP_2/a_Particle_Tables/"*/; do
-        if [ -d "$dir" ]; then
-            # handle .zip files
-            for filepath in "${dir}"*.zip; do
-                echo "Found zipfiles"
-                echo $filepath
-                last_dir=$(basename ${dir})
+# for y in $(seq $START_YEAR $END_YEAR)
+# do
+#     mkdir -p "${TMP_OUT}${y}_${SHORT}/netCDF/a_particle_tables/"
+#     DATA_PATH="${PIP_PATH}${y}_${SHORT}/"
+#     OUT_PATH="${TMP_OUT}${y}_${SHORT}/netCDF/"
+#     for dir in "${DATA_PATH}PIP_2/a_Particle_Tables/"*/; do
+#         if [ -d "$dir" ]; then
+#             # handle .zip files
+#             for filepath in "${dir}"*.zip; do
+#                 echo "Found zipfiles"
+#                 echo $filepath
+#                 last_dir=$(basename ${dir})
 
-                # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*.*}").nc"
+#                 # define output file name based on the input file (assuming output extension is .nc)
+#                 outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*.*}").nc"
 
-                # if output file already exists, skip to the next iteration
-                if [ -f "$outfile" ]; then
-                    echo "Skipping already processed file: $filepath"
-                    continue
-                fi
+#                 # if output file already exists, skip to the next iteration
+#                 if [ -f "$outfile" ]; then
+#                     echo "Skipping already processed file: $filepath"
+#                     continue
+#                 fi
 
-                mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-                mkdir -p "${CONV_PATH}${dir}"
-                cp  $filepath -d "${CONV_PATH}${filepath}"
+#                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
+#                 mkdir -p "${CONV_PATH}${dir}"
+#                 cp  $filepath -d "${CONV_PATH}${filepath}"
 
-                unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/" # "${CONV_PATH}${filepath%.zip}"   # Need to unzip the tables first
-                python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-                rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
-                rm -r "${CONV_PATH}${dir}"
-            done
+#                 unzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%/*}/" # "${CONV_PATH}${filepath%.zip}"   # Need to unzip the tables first
+#                 python pt_wrap.py "${CONV_PATH}${filepath%.zip}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+#                 rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
+#                 rm -r "${CONV_PATH}${dir}"
+#             done
 
-            # handle .gz files
-            for filepath in "${dir}"*.gz; do
-                echo "Found gz files"
-                echo $filepath
+#             # handle .gz files
+#             for filepath in "${dir}"*.gz; do
+#                 echo "Found gz files"
+#                 echo $filepath
 
-                last_dir=$(basename ${dir})
+#                 last_dir=$(basename ${dir})
 
-                # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*.*}").nc"
+#                 # define output file name based on the input file (assuming output extension is .nc)
+#                 outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*.*}").nc"
 
-                # if output file already exists, skip to the next iteration
-                if [ -f "$outfile" ]; then
-                    echo "Skipping already processed file: $filepath"
-                    continue
-                fi
+#                 # if output file already exists, skip to the next iteration
+#                 if [ -f "$outfile" ]; then
+#                     echo "Skipping already processed file: $filepath"
+#                     continue
+#                 fi
 
-                mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-                mkdir -p "${CONV_PATH}${dir}"
-                cp  $filepath -d "${CONV_PATH}${filepath}"
-                gzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
-                python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-                rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
-                rm -r "${CONV_PATH}${dir}"
-            done
+#                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
+#                 mkdir -p "${CONV_PATH}${dir}"
+#                 cp  $filepath -d "${CONV_PATH}${filepath}"
+#                 gzip "${CONV_PATH}${filepath}" -d "${CONV_PATH}${filepath%.gz}"   # Need to unzip the tables first
+#                 python pt_wrap.py "${CONV_PATH}${filepath%.gz}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+#                 rm -r "${CONV_PATH}${filepath}"    # Delete unzipped file
+#                 rm -r "${CONV_PATH}${dir}"
+#             done
 
-            # handle uncompressed files
-            for filepath in "${dir}"*.dat; do
-                echo "Found uncompressed files"
-                echo $filepath
-                last_dir=$(basename ${dir})
+#             # handle uncompressed files
+#             for filepath in "${dir}"*.dat; do
+#                 echo "Found uncompressed files"
+#                 echo $filepath
+#                 last_dir=$(basename ${dir})
 
-                # define output file name based on the input file (assuming output extension is .nc)
-                outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
-                echo $outfile
+#                 # define output file name based on the input file (assuming output extension is .nc)
+#                 outfile="${OUT_PATH}a_particle_tables/${last_dir}/$(basename "${filepath%.*}").nc"
+#                 echo $outfile
 
-                # if output file already exists, skip to the next iteration
-                if [ -f "$outfile" ]; then
-                    echo "Skipping already processed file: $filepath"
-                    continue
-                fi
+#                 # if output file already exists, skip to the next iteration
+#                 if [ -f "$outfile" ]; then
+#                     echo "Skipping already processed file: $filepath"
+#                     continue
+#                 fi
 
-                mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
-                python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
-            done
+#                 mkdir -p "${OUT_PATH}a_particle_tables/${last_dir}"
+#                 python pt_wrap.py "${filepath}" "${OUT_PATH}a_particle_tables/${last_dir}/" $LAT $LON "${SITE}"
+#             done
 
-        fi
-    done
-done
+#         fi
+#     done
+# done
 
 
 echo "Conversion complete!"

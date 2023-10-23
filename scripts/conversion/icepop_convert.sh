@@ -8,9 +8,9 @@
 # and 1D effective density / precipitation rates
 ### NOTE: Replace the path and lat/lon/site information for the site you are converting.
 LAT=37.738
-LON=128.806
+LON=128.756
 SHORT="KO1"
-SITE="South Korea"
+SITE="South Korea, BKC"
 START_YEAR=2018
 END_YEAR=2018
 PIP_PATH="/data/ICE_POP/PIP/SN_PIP002/"
