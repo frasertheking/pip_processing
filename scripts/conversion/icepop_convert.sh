@@ -21,7 +21,7 @@ SHORT="KO2"
 SITE="South Korea, MHS"
 START_YEAR=2018
 END_YEAR=2018
-PIP_PATH="/data/ICE_POP/PIP/SN_PIP001/"
+PIP_PATH="/data/ICE_POP/PIP/SN_PIP003/"
 
 TMP_OUT="/data2/fking/s03/converted/"
 CONV_PATH="/data2/fking/s03/temporary"
