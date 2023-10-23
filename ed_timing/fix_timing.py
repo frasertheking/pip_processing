@@ -165,8 +165,8 @@ def fix_timing(rho_path, ed_path, out_path, SIZE=1):
     ed_ds.to_netcdf(out_path + '/' + name, encoding=encoding)
     print("File saved!")
 
-    df = pd.DataFrame(data={'rho': rho_data, 'ed': ed_data, 'adj_ed': fixed_ed_data})
-    df.to_csv(out_path + '/' + name + '.csv')
+    # df = pd.DataFrame(data={'rho': rho_data, 'ed': ed_data, 'adj_ed': fixed_ed_data})
+    # df.to_csv(out_path + '/' + name + '.csv')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fix timing for given rho and ed files.")
