@@ -11,11 +11,8 @@ output_folder_base_path = '/Users/fraserking/Desktop/HAK_OUT/'
 
 try:
     ds = xr.open_dataset(input_file_path)
-
-    # Convert 'UTC_Time' to datetime64, assuming it's in nanoseconds
     ds['time'] = pd.to_datetime(ds['Time_Unix'], unit='ns')
 
-    # Renaming variables according to your specification
     variable_mapping = {
         'Temperature': 'temperature',
         'Wind_speed_10m_mast1': 'wind_speed_mast1',
@@ -24,31 +21,54 @@ try:
         'Wind_direction_10m_mast2': 'wind_direction_mast2',
     }
     
-    # Apply renaming
     ds_renamed = ds.rename(variable_mapping)
-    
-    # Ensure latitude, longitude, and metadata are set
+
+    attrs_to_assign = {
+        'temperature': {
+            'units': 'degrees C',
+            'standard_name': 'surface_temperature',
+            'long_name': 'Surface Temperature'
+        },
+        'wind_speed_mast1': {
+            'units': 'm s-1',
+            'standard_name': 'wind_speed',
+            'long_name': 'Wind Speed at Mast 1'
+        },
+        'wind_speed_mast2': {
+            'units': 'm s-1',
+            'standard_name': 'wind_speed',
+            'long_name': 'Wind Speed at Mast 2'
+        },
+        'wind_direction_mast1': {
+            'units': 'degrees',
+            'standard_name': 'wind_from_direction',
+            'long_name': 'Wind Direction at Mast 1'
+        },
+        'wind_direction_mast2': {
+            'units': 'degrees',
+            'standard_name': 'wind_from_direction',
+            'long_name': 'Wind Direction at Mast 2'
+        }
+    }
+
+    for var_name, attrs in attrs_to_assign.items():
+        ds_renamed[var_name].attrs.update(attrs)
+        
     ds_renamed = ds_renamed.assign(lat=xr.DataArray(LAT, dims=()), lon=xr.DataArray(LON, dims=()))
     ds_renamed.attrs['Comment1'] = f"Data was acquired at the {SITE} site (Lat: {LAT}, Lon: {LON})"
+    ds_renamed.attrs['Comment2'] = f"1 minute temporal resolution."
     
-    # Filter to only include specified variables plus 'lat', 'lon', and 'time'
     filtered_variables = list(variable_mapping.values()) + ['lat', 'lon', 'time']
     ds_filtered = ds_renamed[filtered_variables]
     
-    # Group by day and save separate files
     for group, group_ds in ds_filtered.resample(time='D'):
-        # Skip empty groups
         if group_ds.sizes['time'] == 0:
             continue
             
-        # Convert numpy.datetime64 to datetime.date for the group label
         group_date = pd.to_datetime(str(group)).date()
         
-        # Format the date for the filename
         date_str = group_date.strftime('%Y%m%d')
         output_file_path = os.path.join(output_folder_base_path, f"{date_str}_met.nc")
-        
-        # Save the daily data
         group_ds.to_netcdf(output_file_path)
         print(f"Saved data for {date_str} to {output_file_path}")
 

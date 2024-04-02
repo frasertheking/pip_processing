@@ -41,6 +41,7 @@ def create_netcdf(data, date_str, lat, lon, output_folder_base_path, site):
     filename = os.path.join(output_folder_base_path, f'{date_str}_met.nc')
     with Dataset(filename, 'w', format='NETCDF4') as nc:
         nc.Comment1 = f"Data was acquired at the {site} site (Lat: {lat}, Lon: {lon})"
+        nc.Comment2 = f"5 minute temporal resolution."
         
         nc.createDimension('time', None)
         time_var = nc.createVariable('time', 'f8', ('time',))
@@ -55,7 +56,14 @@ def create_netcdf(data, date_str, lat, lon, output_folder_base_path, site):
         
         temp_var.units = 'degrees C'
         rh_var.units = 'percent'
-        ws_var.units = 'm/s'
+        ws_var.units = 'm s-1'
+
+        temp_var.standard_name = "surface_temperature"
+        temp_var.long_name = "Surface Temperature"
+        rh_var.standard_name = "relative_humidity"
+        rh_var.long_name = "Relative Humidity"
+        ws_var.standard_name = "wind_speed"
+        ws_var.long_name = "Wind Speed"
 
         lat_var[:] = lat
         lon_var[:] = lon

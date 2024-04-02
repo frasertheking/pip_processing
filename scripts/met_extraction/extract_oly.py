@@ -13,18 +13,12 @@ output_folder_base_path = '/Users/fraserking/Desktop/OLY_OUT/'
 try:
     ds = xr.open_dataset(input_file_path)
 
-    # Check if 'time' needs conversion from numeric values representing minutes
     if not np.issubdtype(ds['time'].dtype, np.datetime64):
-        # Assuming ds['time'] contains numeric values representing minutes since the origin
         time_origin = pd.Timestamp("2015-11-14 00:00:00")
         ds['time'] = pd.to_timedelta(ds['time'].values, unit='m') + time_origin
     else:
-        # Handle case where 'time' is already in datetime64 format
-        # This part might need adjustment based on actual dataset characteristics
         print("'time' appears to be already in datetime format.")
 
-
-    # Renaming variables according to your specification
     variable_mapping = {
         'WXT520_temp': 'temperature',
         'WXT520_press': 'pressure',
@@ -33,31 +27,54 @@ try:
         'WXT520_wdir': 'wind_direction',
     }
     
-    # Apply renaming
     ds_renamed = ds.rename(variable_mapping)
     
-    # Ensure latitude, longitude, and metadata are set
+    attrs_to_assign = {
+        'temperature': {
+            'units': 'degrees C',
+            'standard_name': 'surface_temperature',
+            'long_name': 'Surface Temperature'
+        },
+        'pressure': {
+            'units': 'hPa',
+            'standard_name': 'surface_air_pressure',
+            'long_name': 'Surface Air Pressure'
+        },
+        'relative_humidity': {
+            'units': 'percent',
+            'standard_name': 'relative_humidity',
+            'long_name': 'Relative Humidity'
+        },
+        'wind_speed': {
+            'units': 'm s-1',
+            'standard_name': 'wind_speed',
+            'long_name': 'Wind Speed'
+        },
+        'wind_direction': {
+            'units': 'degrees',
+            'standard_name': 'wind_from_direction',
+            'long_name': 'Wind From Direction'
+        }
+    }
+    
+    for var_name, attrs in attrs_to_assign.items():
+        ds_renamed[var_name].attrs.update(attrs)
+
     ds_renamed = ds_renamed.assign(lat=xr.DataArray(LAT, dims=()), lon=xr.DataArray(LON, dims=()))
     ds_renamed.attrs['Comment1'] = f"Data was acquired at the {SITE} site (Lat: {LAT}, Lon: {LON})"
+    ds_renamed.attrs['Comment2'] = f"1 minute temporal resolution."
     
-    # Filter to only include specified variables plus 'lat', 'lon', and 'time'
     filtered_variables = list(variable_mapping.values()) + ['lat', 'lon', 'time']
     ds_filtered = ds_renamed[filtered_variables]
     
-    # Group by day and save separate files
     for group, group_ds in ds_filtered.resample(time='D'):
-        # Skip empty groups
         if group_ds.sizes['time'] == 0:
             continue
             
-        # Convert numpy.datetime64 to datetime.date for the group label
         group_date = pd.to_datetime(str(group)).date()
         
-        # Format the date for the filename
         date_str = group_date.strftime('%Y%m%d')
         output_file_path = os.path.join(output_folder_base_path, f"{date_str}_met.nc")
-        
-        # Save the daily data
         group_ds.to_netcdf(output_file_path)
         print(f"Saved data for {date_str} to {output_file_path}")
 

@@ -45,7 +45,8 @@ def read_txt_file(filename):
 def create_netcdf(data, date_str, output_folder_base_path, site):
     filename = os.path.join(output_folder_base_path, f'{date_str}_met.nc')
     with Dataset(filename, 'w', format='NETCDF4') as nc:
-        nc.site_info = f"Data was acquired at the {site} site."
+        nc.site_info = f"Data was acquired at the {site} site (Lat: {LAT}, Lon: {LON})."
+        nc.Comment2 = f"1 minute temporal resolution."
         
         nc.createDimension('time', None)
         time_var = nc.createVariable('time', 'f8', ('time',))
@@ -60,11 +61,22 @@ def create_netcdf(data, date_str, output_folder_base_path, site):
         press_var = nc.createVariable('pressure', 'f4', ('time',), fill_value=-9999.0)
         rh_var = nc.createVariable('relative_humidity', 'f4', ('time',), fill_value=-9999.0)
         
-        wd_var.units = 'degrees'
-        ws_var.units = 'm/s'
         temp_var.units = 'degrees C'
-        press_var.units = 'mb'
+        press_var.units = 'hPa'
         rh_var.units = 'percent'
+        ws_var.units = 'm s-1'
+        wd_var.units = 'degrees'
+
+        temp_var.standard_name = "surface_temperature"
+        temp_var.long_name = "Surface Temperature"
+        press_var.standard_name = "surface_air_pressure"
+        press_var.long_name = "Surface Air Pressure"
+        rh_var.standard_name = "relative_humidity"
+        rh_var.long_name = "Relative Humidity"
+        ws_var.standard_name = "wind_speed"
+        ws_var.long_name = "Wind Speed"
+        wd_var.standard_name = "wind_from_direction"
+        wd_var.long_name = "Wind From Direction"
         
         lat_var[:] = LAT
         lon_var[:] = LON
