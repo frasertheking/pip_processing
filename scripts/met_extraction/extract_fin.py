@@ -49,6 +49,10 @@ try:
             variables_to_extract = [var for var in ['temperature', 'pressure', 'relative_humidity', 'wind_speed', 'wind_direction'] if var in ds.variables]
             extracted_variables = ds[variables_to_extract]
             
+            if 'temperature' in extracted_variables:
+                temp_values = extracted_variables['temperature'].values - 273.15
+                extracted_variables['temperature'].values = temp_values
+                
             for var in extracted_variables.variables:
                 if var in variable_attrs:
                     extracted_variables[var].attrs.update(variable_attrs[var])

@@ -28,6 +28,9 @@ try:
             
             ds_renamed = ds.rename(variable_mapping)
             
+            if 'pressure' in ds_renamed:
+                ds_renamed['pressure'] = ds_renamed['pressure'] * 10
+
             attrs_to_assign = {
                 'temperature': {
                     'units': 'degrees C',
